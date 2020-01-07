@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Maos520" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="一、系统环境配置  要使用Hexo,需要在你的系统中支持Nodejs以及Git.  安装Node.js下载 Node.js 参考地址： 安装Node.js 安装Git下载Git参考地址： 安装Git 安装Hexo注：为了后面部署到github上方面，建议子啊gitbash上操作（Windows）123456$ cd E:&#x2F;Github$ mkdir -r .&#x2F;hexo&#x2F;blog&#x2F;$ cd .&#x2F;he">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo + Github 个人博客环境搭建">
+<meta property="og:url" content="https://maos520.github.io/2019/10/21/Hexo%20+%20Github%20%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="Maos520">
+<meta property="og:description" content="一、系统环境配置  要使用Hexo,需要在你的系统中支持Nodejs以及Git.  安装Node.js下载 Node.js 参考地址： 安装Node.js 安装Git下载Git参考地址： 安装Git 安装Hexo注：为了后面部署到github上方面，建议子啊gitbash上操作（Windows）123456$ cd E:&#x2F;Github$ mkdir -r .&#x2F;hexo&#x2F;blog&#x2F;$ cd .&#x2F;he">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://maos520.github.io/2019/10/21/Hexo%20+%20Github%20%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/%E5%9B%BE%E7%89%87%E5%90%8D%E5%AD%97.%E5%9B%BE%E7%89%87%E6%A0%BC%E5%BC%8F">
+<meta property="og:image" content="https://maos520.github.io/2019/10/21/Hexo%20+%20Github%20%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/1.png">
+<meta property="article:published_time" content="2019-10-21T11:03:17.000Z">
+<meta property="article:modified_time" content="2019-10-21T14:30:58.000Z">
+<meta property="article:author" content="maos520">
+<meta property="article:tag" content="Markdown">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://maos520.github.io/2019/10/21/Hexo%20+%20Github%20%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/%E5%9B%BE%E7%89%87%E5%90%8D%E5%AD%97.%E5%9B%BE%E7%89%87%E6%A0%BC%E5%BC%8F">
+
+<link rel="canonical" href="https://maos520.github.io/2019/10/21/Hexo%20+%20Github%20%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Hexo + Github 个人博客环境搭建 | Maos520</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/maos520" target="_blank" rel="noopener"><img width="149" height="149" style = "position: absolute; top: 0; right: 0; border: 0;" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+   
+   <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Maos520</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">不忘初心，方得始终</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/10/21/Hexo%20+%20Github%20%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hexo + Github 个人博客环境搭建
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2019-10-21 19:03:17 / Modified: 22:30:58" itemprop="dateCreated datePublished" datetime="2019-10-21T19:03:17+08:00">2019-10-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Tools/" itemprop="url" rel="index">
+                    <span itemprop="name">Tools</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Tools/Blog-Related/" itemprop="url" rel="index">
+                    <span itemprop="name">Blog Related</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <html><head></head><body></body></html><html><head></head><body><h1 id="一、系统环境配置"><a href="#一、系统环境配置" class="headerlink" title="一、系统环境配置"></a>一、系统环境配置</h1><p>  要使用Hexo,需要在你的系统中支持<kbd>Nodejs</kbd>以及<kbd>Git</kbd>.</p>
+<ul>
+<li><strong>安装Node.js</strong><br>下载<a href="https://nodejs.org/en/download/" target="_blank" rel="noopener"> Node.js </a><br>参考地址： <a href="https://www.runoob.com/nodejs/nodejs-install-setup.html" target="_blank" rel="noopener">安装Node.js</a></li>
+<li><strong>安装Git</strong><br>下载<a href="http://git-scm.com/download/" target="_blank" rel="noopener">Git</a><br>参考地址： <a href="https://www.liaoxuefeng.com/wiki/896043488029600/896067074338496" target="_blank" rel="noopener">安装Git</a></li>
+<li><strong>安装Hexo</strong><br>注：为了后面部署到github上方面，建议子啊gitbash上操作（Windows）<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> E:/Github</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mkdir -r ./hexo/blog/</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> ./hexo/blog</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> npm install -g hexo-cli</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> hexo -v</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> hexo init</span></span><br></pre></td></tr></tbody></table></figure>
+<h1 id="二、-Hexo常用命令"><a href="#二、-Hexo常用命令" class="headerlink" title="二、 Hexo常用命令"></a>二、 Hexo常用命令</h1></li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ hexo n  "postname" #新建文件</span><br><span class="line">$ hexo n p "pagename" #新建页面</span><br><span class="line">$ hexo clean        </span><br><span class="line">$ hexo g             #生成</span><br><span class="line">$ hexo s             #启动本地web服务器</span><br><span class="line">$ hexo d             #远程部署</span><br><span class="line">$ hexo d -g</span><br><span class="line">$ hexo s -g</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="三、-Hexo主题设置"><a href="#三、-Hexo主题设置" class="headerlink" title="三、 Hexo主题设置"></a>三、 Hexo主题设置</h1><p>这里以yilia为例进行说明。</p>
+<ul>
+<li><p><strong>安装主题</strong></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo clean$ git <span class="built_in">clone</span> https://github.com/litten/hexo-theme-yilia.git themes/yilia</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p><strong>启用主题</strong></p>
+<p> 修改Hexo目录下的_config.yml配置文件中的theme属性，将其设置为yilia。 </p>
+</li>
+<li><p><strong>更新主题</strong></p>
+</li>
+<li><pre><code class="shell"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> themes/yilia</span>
+<span class="meta">$</span><span class="bash"> git pull</span>
+<span class="meta">$</span><span class="bash"> hexo g <span class="comment"># 生成</span></span>
+<span class="meta">$</span><span class="bash"> hexo s <span class="comment"># 启动本地web服务器</span></span>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"># 四、Github Pages设置</span><br><span class="line"></span><br><span class="line">+ **什么是Github Pages**</span><br><span class="line"></span><br><span class="line">[GitHub Pages](https://pages.github.com/) 本用于介绍托管在GitHub的项目，不过，由于他的空间免费稳定，用来做搭建一个博客再好不过了。</span><br><span class="line"></span><br><span class="line">每个帐号只能有一个仓库来存放个人主页，而且仓库的名字必须是username/username.github.io，这是特殊的命名约定。你可以通过[http://username.github.io](http://username.github.io/) 来访问你的个人主页。</span><br><span class="line"></span><br><span class="line">这里特别提醒一下，需要注意的个人主页的网站内容是在master分支下的。</span><br><span class="line"></span><br><span class="line">+ **创建自己的Github Pages**</span><br><span class="line"></span><br><span class="line">注册GitHub及使用Github Pages的过程已经有很多文章讲过，在此不再详述，可以参考：</span><br><span class="line"></span><br><span class="line">[一步步在GitHub上创建博客主页 全系列](http://pchou.info/web-build/2013/01/03/build-github-blog-page-01.html)</span><br><span class="line"></span><br><span class="line">[如何搭建一个独立博客——简明Github Pages与Hexo教程](http://www.jianshu.com/p/05289a4bc8b2)</span><br><span class="line"></span><br><span class="line">在这里我创建了一个github repo叫做 [jiji262.github.io](https://github.com/jiji262/jiji262.github.io). 创建完成之后，需要有一次提交(git commit)操作，然后就可以通过链接http://jiji262.github.io/ 访问了。（现在还没有内容，别着急）</span><br><span class="line"></span><br><span class="line"># 五、部署Hexo到Github Pages</span><br><span class="line"></span><br><span class="line">这一步恐怕是最关键的一步了，让我们把在本地web环境下预览到的博客部署到github上，然后就可以直接通过http://jiji262.github.io/访问了。不过很多教程文章对这个步骤语焉不详，这里着重说下。</span><br><span class="line"></span><br><span class="line">首先需要明白所谓部署到github的原理。</span><br><span class="line"></span><br><span class="line">1. 之前步骤中在Github上创建的那个特别的repo（jiji262.github.io）一个最大的特点就是其master中的html静态文件，可以通过链接[http://jiji262.github.io来直接访问。](http://jiji262.github.xn--io-uf6d50l9qytq2ao5o./)</span><br><span class="line">2. Hexo -g 会生成一个静态网站（第一次会生成一个public目录），这个静态文件可以直接访问。</span><br><span class="line">3. 需要将hexo生成的静态网站，提交(git commit)到github上。</span><br><span class="line"></span><br><span class="line">明白了原理，怎么做自然就清晰了。</span><br><span class="line"></span><br><span class="line">+ **使用hexo deploy部署**</span><br><span class="line"></span><br><span class="line">hexo deploy可以部署到很多平台，具体可以[参考这个链接](https://hexo.io/docs/deployment.html). 如果部署到github，需要在配置文件_config.xml中作如下修改：</span><br></pre></td></tr></tbody></table></figure>
+deploy:  type: git  repo: git@github.com:jiji262/jiji262.github.io.git  branch: master
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">然后在命令行中执行</span><br></pre></td></tr></tbody></table></figure>
+hexo d
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">即可完成部署。</span><br><span class="line"></span><br><span class="line">**踩坑提醒**</span><br><span class="line"></span><br><span class="line">1）注意需要提前安装一个扩展：</span><br></pre></td></tr></tbody></table></figure>
+<span class="meta">$</span><span class="bash"> npm install hexo-deployer-git --save</span>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">2）如果出现下面这样的错误，</span><br></pre></td></tr></tbody></table></figure>
+Permission denied (publickey).fatal: Could not read from remote repository.Please make sure you have the correct access rightsand the repository exists.
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">则是因为没有设置好public key所致。</span><br><span class="line">在本机生成public key(参考[github帮助](https://help.github.com/articles/generating-an-ssh-key/))：</span><br></pre></td></tr></tbody></table></figure>
+＃ssh-keygen -t rsa -b 4096 -C "xxx@xxx.com"
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">然后在#user_id/.ssh目录下会生成两个文件，id_rsa.pub和id_rsa.</span><br><span class="line">然后登陆github，在[SSH设置页面](https://github.com/settings/ssh)添加上刚才的public key文件也就是id_rsa.pub的内容即可。</span><br><span class="line"></span><br><span class="line">+ **使用git命令行部署（optional）**   </span><br><span class="line"></span><br><span class="line">不幸的是，上述命令虽然简单方便，但是偶尔会有莫名其妙的问题出现，因此，我们也可以追本溯源，使用git命令来完成部署的工作。</span><br><span class="line"></span><br><span class="line">   + clone github repo</span><br></pre></td></tr></tbody></table></figure>
+<span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> d:/hexo/blog$ git <span class="built_in">clone</span> https://github.com/jiji262/jiji262.github.io.git .deploy/jiji262.github.io</span>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">将我们之前创建的repo克隆到本地，新建一个目录叫做.deploy用于存放克隆的代码。</span><br><span class="line"></span><br><span class="line">   + 创建一个deploy脚本文件</span><br></pre></td></tr></tbody></table></figure>
+hexo generatecp -R public/* .deploy/jiji262.github.iocd .deploy/jiji262.github.iogit add .git commit -m “update”git push origin master</code></pre>
+</li>
+</ul>
+<p>简单解释一下，hexo generate生成public文件夹下的新内容，然后将其拷贝至jiji262.github.io的git目录下，然后使用git commit命令提交代码到jiji262.github.io这个repo的master branch上。</p>
+<p>需要部署的时候，执行这段脚本就可以了（比如可以将其保存为deploy.sh）。执行过程中可能需要让你输入Github账户的用户名及密码，按照提示操作即可。</p>
+<h1 id="六、Hexo-插入图片"><a href="#六、Hexo-插入图片" class="headerlink" title="六、Hexo 插入图片"></a>六、Hexo 插入图片</h1><p>1.设置站点配置_config.yml:将post_asset_folder: false改为post_asset_folder: true<br>2.安装插件:npm install <a href="https://github.com/CodeFalling/hexo-asset-image" target="_blank" rel="noopener">https://github.com/CodeFalling/hexo-asset-image</a> – save<br>3.运行hexo n “XXXXXX”,生成XXXXX.md博文时就会在/source/_posts目录下生成XXXXXX的文件夹，将你想在XXXXX博文中插入的照片放置到这个同名文件夹中即可，图片的命名随意。<br>4.添加图片:在想添加的位置写入<img src="%E5%9B%BE%E7%89%87%E5%90%8D%E5%AD%97.%E5%9B%BE%E7%89%87%E6%A0%BC%E5%BC%8F" alt>),例如<img src="1.png" alt>。</p>
+<h1 id="七、参考"><a href="#七、参考" class="headerlink" title="七、参考"></a>七、参考</h1><p><a href="https://linghucong.js.org/2016/04/15/2016-04-15-hexo-github-pages-blog/" target="_blank" rel="noopener">https://linghucong.js.org/2016/04/15/2016-04-15-hexo-github-pages-blog/</a></p>
+<p><a href="https://www.bilibili.com/video/av44544186" target="_blank" rel="noopener">https://www.bilibili.com/video/av44544186</a></p>
+</body></html>
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+ 
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Markdown/" rel="tag"># Markdown</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/10/21/Markdown%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" rel="next" title="Markdown基本语法">
+                  <i class="fa fa-chevron-left"></i> Markdown基本语法
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/10/21/FSM%E8%AE%BE%E8%AE%A1/" rel="prev" title="FSM设计">
+                  FSM设计 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、系统环境配置"><span class="nav-text">一、系统环境配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、-Hexo常用命令"><span class="nav-text">二、 Hexo常用命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、-Hexo主题设置"><span class="nav-text">三、 Hexo主题设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、Hexo-插入图片"><span class="nav-text">六、Hexo 插入图片</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#七、参考"><span class="nav-text">七、参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="maos520"
+    src="/images/timg.jpg">
+  <p class="site-author-name" itemprop="name">maos520</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/maos520" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;maos520" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/sujingjing@sina.com" title="E-Mail &amp;rarr; sujingjing@sina.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">maos520</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.2
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.4.2.js"></script>
+
+<script src="/js/motion.js?v=7.4.2.js"></script>
+
+
+<script src="/js/schemes/pisces.js?v=7.4.2.js"></script>
+
+
+<script src="/js/next-boot.js?v=7.4.2.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

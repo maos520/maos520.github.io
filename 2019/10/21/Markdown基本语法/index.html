@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Maos520" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="1.前言  Markdown 是一种纯文本的标记语言。通过简单的语法标记，他可以使普通文本内容具有一定的格式。  这也是我除此接触Markdown，将一些基本的语法进行记录以备以后查用。 2.标题  在想要设置为标题的文字前面加#来表示，注意#和标题之间有空格，一个#表示一级标题，二个#表示二级标题，以此类推。示例： 123# 这是一级标题## 这是二级标题### 这是三级标题  3.字体示例：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Markdown基本语法">
+<meta property="og:url" content="https://maos520.github.io/2019/10/21/Markdown%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/index.html">
+<meta property="og:site_name" content="Maos520">
+<meta property="og:description" content="1.前言  Markdown 是一种纯文本的标记语言。通过简单的语法标记，他可以使普通文本内容具有一定的格式。  这也是我除此接触Markdown，将一些基本的语法进行记录以备以后查用。 2.标题  在想要设置为标题的文字前面加#来表示，注意#和标题之间有空格，一个#表示一级标题，二个#表示二级标题，以此类推。示例： 123# 这是一级标题## 这是二级标题### 这是三级标题  3.字体示例：">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/6860761-fd2f51090a890873.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/550/format/webp">
+<meta property="article:published_time" content="2019-10-21T11:03:17.000Z">
+<meta property="article:modified_time" content="2020-01-02T13:33:32.000Z">
+<meta property="article:author" content="maos520">
+<meta property="article:tag" content="Markdown">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/6860761-fd2f51090a890873.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/550/format/webp">
+
+<link rel="canonical" href="https://maos520.github.io/2019/10/21/Markdown%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Markdown基本语法 | Maos520</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/maos520" target="_blank" rel="noopener"><img width="149" height="149" style = "position: absolute; top: 0; right: 0; border: 0;" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+   
+   <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Maos520</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">不忘初心，方得始终</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/10/21/Markdown%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Markdown基本语法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-10-21 19:03:17" itemprop="dateCreated datePublished" datetime="2019-10-21T19:03:17+08:00">2019-10-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-02 21:33:32" itemprop="dateModified" datetime="2020-01-02T21:33:32+08:00">2020-01-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Tools/" itemprop="url" rel="index">
+                    <span itemprop="name">Tools</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Tools/Blog-Related/" itemprop="url" rel="index">
+                    <span itemprop="name">Blog Related</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <html><head></head><body></body></html><html><head></head><body><h2 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h2><p>  Markdown 是一种纯文本的标记语言。通过简单的语法标记，他可以使普通文本内容具有一定的格式。<br>  这也是我除此接触Markdown，将一些基本的语法进行记录以备以后查用。</p>
+<h2 id="2-标题"><a href="#2-标题" class="headerlink" title="2.标题"></a>2.标题</h2><p>  在想要设置为标题的文字前面加#来表示，注意#和标题之间有空格，一个#表示一级标题，二个#表示二级标题，以此类推。<br><strong>示例：</strong></p>
+<figure class="highlight markdown"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 这是一级标题</span></span><br><span class="line"><span class="section">## 这是二级标题</span></span><br><span class="line"><span class="section">### 这是三级标题</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="3-字体"><a href="#3-字体" class="headerlink" title="3.字体"></a>3.字体</h2><p><strong>示例：</strong></p>
+<ul>
+<li><p>加粗<br><code>** statement **</code></p>
+</li>
+<li><p>斜体<br><code>* statement *</code></p>
+</li>
+<li><p>斜体加粗<br><code>*** statement ***</code></p>
+</li>
+<li><p>删除线<br><code>~~ statement ~~</code></p>
+</li>
+</ul>
+<p><strong>效果如下：</strong><br><strong>statement</strong><br><em>statement</em><br><strong><em>statement</em></strong><br><del>statement</del></p>
+<h2 id="4-引用"><a href="#4-引用" class="headerlink" title="4.引用"></a>4.引用</h2><p><strong>示例：</strong></p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">>引用内容</span><br><span class="line">>>引用内容</span><br><span class="line">>>>引用内容</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>效果如下：</strong></p>
+<blockquote>
+<p>引用内容</p>
+<blockquote>
+<p>引用内容</p>
+<blockquote>
+<p>引用内容</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h2 id="5-分割线"><a href="#5-分割线" class="headerlink" title="5.分割线"></a>5.分割线</h2><p><strong>示例：</strong></p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">----</span><br><span class="line">****</span><br><span class="line">***</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>效果如下：</strong></p>
+<hr>
+<hr>
+<hr>
+<hr>
+<h2 id="6-图片"><a href="#6-图片" class="headerlink" title="6.图片"></a>6.图片</h2><p>语法：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">![图片alt](图片地址 <span class="string">''</span>图片title<span class="string">''</span>)</span><br><span class="line"></span><br><span class="line">图片alt就是显示在图片下面的文字，相当于对图片内容的解释。</span><br><span class="line">图片title是图片的标题，当鼠标移到图片上时显示的内容。title可加可不加</span><br></pre></td></tr></tbody></table></figure>
+
+<p>示例：</p>
+<figure class="highlight cpp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">![blockchain](https:<span class="comment">//ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/</span></span><br><span class="line">u=<span class="number">702257389</span>,<span class="number">1274025419</span>&fm=<span class="number">27</span>&gp=<span class="number">0.</span>jpg <span class="string">"区块链"</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>效果如下：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/6860761-fd2f51090a890873.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/550/format/webp" alt="img"></p>
+<p>​                                                                                        blockchain</p>
+<p><strong>上传本地图片直接点击导航栏的图片标志，选择图片即可</strong></p>
+<h2 id="7-超链接"><a href="#7-超链接" class="headerlink" title="7.超链接"></a>7.超链接</h2><p>语法：</p>
+<figure class="highlight csharp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">超链接名</span>](超链接地址 <span class="string">"超链接title"</span>)</span><br><span class="line">title可加可不加</span><br></pre></td></tr></tbody></table></figure>
+
+<p>示例：</p>
+<figure class="highlight csharp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">简书</span>](http:<span class="comment">//jianshu.com)</span></span><br><span class="line">[<span class="meta">百度</span>](http:<span class="comment">//baidu.com)</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>效果如下：</p>
+<p><a href="https://www.jianshu.com/u/1f5ac0cf6a8b" target="_blank" rel="noopener">简书</a><br><a href="http://baidu.com/" target="_blank" rel="noopener">百度</a></p>
+<p>注：Markdown本身语法不支持链接在新页面中打开，貌似简书做了处理，是可以的。别的平台可能就不行了，如果想要在新页面中打开的话可以用html语言的a标签代替。</p>
+<figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag"><<span class="name">a</span> <span class="attr">href</span>=<span class="string">"超链接地址"</span> <span class="attr">target</span>=<span class="string">"_blank"</span>></span>超链接名<span class="tag"></<span class="name">a</span>></span></span><br><span class="line"></span><br><span class="line">示例</span><br><span class="line"><span class="tag"><<span class="name">a</span> <span class="attr">href</span>=<span class="string">"https://www.jianshu.com/u/1f5ac0cf6a8b"</span> <span class="attr">target</span>=<span class="string">"_blank"</span>></span>简书<span class="tag"></<span class="name">a</span>></span></span><br></pre></td></tr></tbody></table></figure>
+
+<hr>
+<h2 id="8-列表"><a href="#8-列表" class="headerlink" title="8.列表"></a>8.列表</h2><ul>
+<li><h5 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h5></li>
+</ul>
+<p>语法：<br>无序列表用 - + * 任何一种都可以</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- 列表内容</span><br><span class="line">+ 列表内容</span><br><span class="line">* 列表内容</span><br><span class="line"></span><br><span class="line">注意：- + * 跟内容之间都要有一个空格</span><br></pre></td></tr></tbody></table></figure>
+
+<p>效果如下：</p>
+<ul>
+<li><p>列表内容</p>
+</li>
+<li><p>列表内容</p>
+</li>
+<li><p>列表内容</p>
+</li>
+<li><h5 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h5></li>
+</ul>
+<p>语法：<br>数字加点</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.列表内容</span><br><span class="line">2.列表内容</span><br><span class="line">3.列表内容</span><br><span class="line"></span><br><span class="line">注意：序号跟内容之间要有空格</span><br></pre></td></tr></tbody></table></figure>
+
+<p>效果如下：</p>
+<p>1.列表内容<br>2.列表内容<br>3.列表内容</p>
+<ul>
+<li><h5 id="列表嵌套"><a href="#列表嵌套" class="headerlink" title="列表嵌套"></a>列表嵌套</h5></li>
+</ul>
+<p><strong>上一级和下一级之间敲三个空格即可</strong></p>
+<ul>
+<li>一级无序列表内容<ul>
+<li>二级无序列表内容</li>
+<li>二级无序列表内容</li>
+<li>二级无序列表内容</li>
+</ul>
+</li>
+<li>一级无序列表内容<ol>
+<li>二级有序列表内容</li>
+<li>二级有序列表内容</li>
+<li>二级有序列表内容</li>
+</ol>
+</li>
+</ul>
+<ol>
+<li>一级有序列表内容<ul>
+<li>二级无序列表内容</li>
+<li>二级无序列表内容</li>
+<li>二级无序列表内容</li>
+</ul>
+</li>
+<li>一级有序列表内容<ol>
+<li>二级有序列表内容</li>
+<li>二级有序列表内容</li>
+<li>二级有序列表内容</li>
+</ol>
+</li>
+</ol>
+<h2 id="9-表格"><a href="#9-表格" class="headerlink" title="9.表格"></a>9.表格</h2><p>语法：</p>
+<figure class="highlight ruby"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">表头<span class="params">|表头|</span>表头</span><br><span class="line">---<span class="params">|:--:|</span>---<span class="symbol">:</span></span><br><span class="line">内容<span class="params">|内容|</span>内容</span><br><span class="line">内容<span class="params">|内容|</span>内容</span><br><span class="line"></span><br><span class="line">第二行分割表头和内容。</span><br><span class="line">- 有一个就行，为了对齐，多加了几个</span><br><span class="line">文字默认居左</span><br><span class="line">-两边加：表示文字居中</span><br><span class="line">-右边加：表示文字居右</span><br><span class="line">注：原生的语法两边都要用 <span class="params">| 包起来。此处省略</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>示例：</p>
+<figure class="highlight ruby"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">姓名<span class="params">|技能|</span>排行</span><br><span class="line">--<span class="params">|:--:|</span>--<span class="symbol">:</span></span><br><span class="line">刘备<span class="params">|哭|</span>大哥</span><br><span class="line">关羽<span class="params">|打|</span>二哥</span><br><span class="line">张飞<span class="params">|骂|</span>三弟</span><br></pre></td></tr></tbody></table></figure>
+
+<p>效果如下：</p>
+<table>
+<thead>
+<tr>
+<th>姓名</th>
+<th align="center">技能</th>
+<th align="right">排行</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>刘备</td>
+<td align="center">哭</td>
+<td align="right">大哥</td>
+</tr>
+<tr>
+<td>关羽</td>
+<td align="center">打</td>
+<td align="right">二哥</td>
+</tr>
+<tr>
+<td>张飞</td>
+<td align="center">骂</td>
+<td align="right">三弟</td>
+</tr>
+</tbody></table>
+<h2 id="10-代码"><a href="#10-代码" class="headerlink" title="10.代码"></a>10.代码</h2><p>语法：<br>单行代码：代码之间分别用一个反引号包起来</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`代码内容`</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>代码块：代码之间分别用三个反引号包起来，且两边的反引号单独占一行</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(<span class="string">``</span><span class="string">`)</span></span><br><span class="line"><span class="string">  代码...</span></span><br><span class="line"><span class="string">  代码...</span></span><br><span class="line"><span class="string">  代码...</span></span><br><span class="line"><span class="string">(`</span><span class="string">``</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>注：为了防止转译，前后三个反引号处加了小括号，实际是没有的。这里只是用来演示，实际中去掉两边小括号即可。</p>
+</blockquote>
+<p>示例：</p>
+<p>单行代码</p>
+<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`create database hero;`</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>代码块</p>
+<figure class="highlight php"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(```)</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">fun</span><span class="params">()</span></span>{</span><br><span class="line">         <span class="keyword">echo</span> <span class="string">"这是一句非常牛逼的代码"</span>;</span><br><span class="line">    }</span><br><span class="line">    fun();</span><br><span class="line">(```)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>效果如下：</p>
+<p>单行代码</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create database hero;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>代码块</p>
+<figure class="highlight php"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fun</span><span class="params">()</span></span>{</span><br><span class="line">  <span class="keyword">echo</span> <span class="string">"这是一句非常牛逼的代码"</span>;</span><br><span class="line">}</span><br><span class="line">fun();</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="11-Todo"><a href="#11-Todo" class="headerlink" title="11.Todo"></a>11.Todo</h2><p><strong>示例：</strong></p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-[]不勾选</span><br><span class="line">-[x]勾选</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>效果如下：</strong></p>
+<ul>
+<li><input disabled type="checkbox"> 不勾选</li>
+<li><input checked disabled type="checkbox"> 勾选</li>
+</ul>
+<h2 id="12-xml语法"><a href="#12-xml语法" class="headerlink" title="12.xml语法"></a>12.xml语法</h2><h3 id="12-1-加方框"><a href="#12-1-加方框" class="headerlink" title="12.1 加方框"></a>12.1 加方框</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><kbd>内容</kbd></span><br></pre></td></tr></tbody></table></figure>
+<p><kbd> 内容 </kbd></p>
+<h3 id="12-2-居中加粗"><a href="#12-2-居中加粗" class="headerlink" title="12.2 居中加粗"></a>12.2 居中加粗</h3><figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag"><<span class="name">center</span>></span><span class="tag"><<span class="name">strong</span>></span>这一行需要居中<span class="tag"></<span class="name">strong</span>></span><span class="tag"></<span class="name">center</span>></span></span><br></pre></td></tr></tbody></table></figure>
+
+<center>这一行需要居中</center>
+### 12.3 字体及颜色更换
+
+<figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag"><<span class="name">font</span> <span class="attr">face</span>=<span class="string">"黑体"</span>></span>这是黑体字<span class="tag"></<span class="name">font</span>></span></span><br><span class="line"><span class="tag"><<span class="name">font</span> <span class="attr">face</span>=<span class="string">"黑体"</span> <span class="attr">size</span>=<span class="string">10</span>></span>这是黑体字<span class="tag"></<span class="name">font</span>></span></span><br><span class="line"><span class="tag"><<span class="name">font</span> <span class="attr">face</span>=<span class="string">"黑体"</span> <span class="attr">size</span>=<span class="string">10</span> <span class="attr">color</span>=<span class="string">pink</span>></span>颜色字体大小<span class="tag"></<span class="name">font</span>></span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><font face="黑体" size="10" color="pink">颜色字体大小</font></p>
+<h3 id="12-4-图片居中"><a href="#12-4-图片居中" class="headerlink" title="12.4 图片居中"></a>12.4 图片居中</h3><figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag"><<span class="name">div</span> <span class="attr">align</span>=<span class="string">center</span>></span>![]()<span class="tag"></<span class="name">div</span>></span></span><br><span class="line"><span class="tag"><<span class="name">img</span> <span class="attr">src</span>=<span class="string">"http:..."</span> <span class="attr">width</span> = <span class="string">20%</span> <span class="attr">height</span> = <span class="string">20%</span> <span class="attr">div</span> <span class="attr">align</span>=<span class="string">right</span> /></span></span><br></pre></td></tr></tbody></table></figure>
+<h2 id="13-其他"><a href="#13-其他" class="headerlink" title="13.其他"></a>13.其他</h2><p>罗马数字 Ⅰ·Ⅱ·Ⅲ·Ⅳ·Ⅴ·Ⅵ·Ⅶ·Ⅷ·Ⅸ·Ⅹ·Ⅺ·Ⅻ  ① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩</p>
+</body></html>
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+ 
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Markdown/" rel="tag"># Markdown</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/10/21/Hexo%20+%20Github%20%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="prev" title="Hexo + Github 个人博客环境搭建">
+                  Hexo + Github 个人博客环境搭建 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-前言"><span class="nav-text">1.前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-标题"><span class="nav-text">2.标题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-字体"><span class="nav-text">3.字体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-引用"><span class="nav-text">4.引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-分割线"><span class="nav-text">5.分割线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-图片"><span class="nav-text">6.图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-超链接"><span class="nav-text">7.超链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-列表"><span class="nav-text">8.列表</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#无序列表"><span class="nav-text">无序列表</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#有序列表"><span class="nav-text">有序列表</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#列表嵌套"><span class="nav-text">列表嵌套</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-表格"><span class="nav-text">9.表格</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-代码"><span class="nav-text">10.代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-Todo"><span class="nav-text">11.Todo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-xml语法"><span class="nav-text">12.xml语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#12-1-加方框"><span class="nav-text">12.1 加方框</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-2-居中加粗"><span class="nav-text">12.2 居中加粗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-4-图片居中"><span class="nav-text">12.4 图片居中</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-其他"><span class="nav-text">13.其他</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="maos520"
+    src="/images/timg.jpg">
+  <p class="site-author-name" itemprop="name">maos520</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/maos520" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;maos520" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/sujingjing@sina.com" title="E-Mail &amp;rarr; sujingjing@sina.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">maos520</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.2
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.4.2.js"></script>
+
+<script src="/js/motion.js?v=7.4.2.js"></script>
+
+
+<script src="/js/schemes/pisces.js?v=7.4.2.js"></script>
+
+
+<script src="/js/next-boot.js?v=7.4.2.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
