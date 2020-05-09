@@ -203,6 +203,410 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/04/28/Verilog%E4%B9%8Bcase%E8%AF%AD%E5%8F%A5%E5%B0%8F%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/28/Verilog%E4%B9%8Bcase%E8%AF%AD%E5%8F%A5%E5%B0%8F%E7%BB%93/" class="post-title-link" itemprop="url">Verilog之case语句小结</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-28 19:17:07" itemprop="dateCreated datePublished" datetime="2020-04-28T19:17:07+08:00">2020-04-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-05-09 21:28:00" itemprop="dateModified" datetime="2020-05-09T21:28:00+08:00">2020-05-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Language/" itemprop="url" rel="index">
+                    <span itemprop="name">Language</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Language/Verilog/" itemprop="url" rel="index">
+                    <span itemprop="name">Verilog</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><h2 id="Ⅰ·Preface"><a href="#Ⅰ·Preface" class="headerlink" title="Ⅰ·Preface"></a>Ⅰ·Preface</h2><p>​    case语句是多路决策语句，与if-else语句以及多if语句类似，后两者带有明显的优先级特点，而case语句可以通过设计判断项目以及综合指令去除优先级。</p>
+<h2 id="Ⅱ·case语句执行"><a href="#Ⅱ·case语句执行" class="headerlink" title="Ⅱ·case语句执行"></a>Ⅱ·case语句执行</h2><p>​    case语句的基本定义以及语法形式，这里不再赘述，主要记录下case的执行过程：</p>
+<ol>
+<li>计算 case expression，只计算一次，然后按照代码顺序从上向下和 case item 逐个比较</li>
+<li>比较过程中，如果有 default 分支，则暂时先忽略</li>
+<li>如果有某个 item 和 expression 匹配，则执行此 item 下的语句</li>
+<li>如果匹配失败，有 default 分支，则执行该 default 分支</li>
+<li>如果匹配失败，没有 default 分支，则终止</li>
+</ol>
+<p>这个按照顺序比较的过程就是可能导致 priority encoder 的原因。</p>
+<h2 id="Ⅲ·-Full-case"><a href="#Ⅲ·-Full-case" class="headerlink" title="Ⅲ· Full case"></a>Ⅲ· Full case</h2><p>“full” 的意思就是 expression 的任何取值都有一个 item/default 分支与其对应，否者就不是 “full case”。</p>
+<p>**example1: Non-“full” case</p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> mux3a (y, a, b, c, d, sel);</span><br><span class="line">    <span class="keyword">output</span> y;</span><br><span class="line">    <span class="keyword">input</span> [<span class="number">1</span>:<span class="number">0</span>] sel;</span><br><span class="line">    <span class="keyword">input</span> a, b, c;</span><br><span class="line">    <span class="keyword">reg</span> y;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">always</span> @* <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">case</span> (sel)</span><br><span class="line">            <span class="number">2'b00</span>: y = a;</span><br><span class="line">            <span class="number">2'b01</span>: y = b;</span><br><span class="line">            <span class="number">2'b10</span>: y = c;</span><br><span class="line">        <span class="keyword">endcase</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>在这个例子中，当 sel 的取值是 2’b11 时，由于没有定义输出值 y 为多少，仿真器会保持之前的取值，综合器会综合出一个 latch。</p>
+<p>避免产生latch的方法主要有3种：</p>
+<p>1.综合指令(* full case *)，不同的综合工具指令的形式不同但是作用相同，虽然这些指令有好处，但是一定要谨慎使用，而且使用时需要注意：</p>
+<p>​    + 这些综合指令只对综合工具有用，仿真工具会自动忽略这些指令，所以有可能造成前后仿真不一致的问题</p>
+<p>​    + 有时候使用指令，会适得其反，导致结果面积变大、速度变慢</p>
+<ul>
+<li>一般有迷信的说法：“使用 full case 指令，可以消除 latch。” 这个说法太绝对了，事实上并不总是这样。如果有多个输出需要赋值，而有些分支只忽略了一些赋值，那么即使使用 full_case 指令，也不能避免 latch 的产生。</li>
+</ul>
+<ol start="2">
+<li>添加default分支</li>
+<li>在case语句前，给所有的输出赋一个默认这。<h2 id="Ⅳ·-‘Parallel’-case-statement"><a href="#Ⅳ·-‘Parallel’-case-statement" class="headerlink" title="Ⅳ· ‘Parallel’ case statement"></a>Ⅳ· ‘Parallel’ case statement</h2></li>
+</ol>
+<p>“parallel” 的意思就是 expression 的取值每次有且只有一个 item 与其对应，否则就不是 “parallel” case，而匹配的 items 称为 “overlapping” case items。不满足parallel case条件的语句往往以为着会综合出优先级电路，优先级意味着语句的执行与否不仅仅取决于其对应的case item 还受其之前的case items。下图是带优先级和不带优先级的电路结构示意图。</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200430212753.png"></div>
+<center><strong>Figure 1 - 左边带优先级结构示意图，右边不带优先级结构示意图</strong></center>
+"parallel" 的意思就是 expression 的取值每次有且只有一个 item 与其对应，否则就不是 "parallel" case，而匹配的 items 称为 "overlapping" case items。
+
+<h3 id="1-Non-parallel-case-statements"><a href="#1-Non-parallel-case-statements" class="headerlink" title="1. Non-parallel case statements"></a>1. Non-parallel case statements</h3><figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">always</span> @sel <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">casez</span> (sel)</span><br><span class="line">        <span class="number">3'b1</span>??: y = <span class="number">3'b100</span>;</span><br><span class="line">        <span class="number">3</span>'b?<span class="number">1</span>?: y = <span class="number">3'b010</span>;</span><br><span class="line">        <span class="number">3</span>'b??<span class="number">1</span>: y = <span class="number">3'b001</span>;</span><br><span class="line">    <span class="keyword">endcase</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>当输入是 3’b011, 3’b101, 3’b110, 3’b111 时，会有多个 item 与 expression 对应，所以不是 parallel 的，会综合出一个 priority encoder。</p>
+<h3 id="2-Parallel-case-statements"><a href="#2-Parallel-case-statements" class="headerlink" title="2. Parallel case statements"></a>2. Parallel case statements</h3><p>对上面的例子稍微修改一下，就得到了 parallel case：</p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">always</span> @sel <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">casez</span> (sel)</span><br><span class="line">        <span class="number">3'b1</span>??: y1 = <span class="number">1'b1</span>;</span><br><span class="line">        <span class="number">3'b01</span>?: y2 = <span class="number">1'b1</span>;</span><br><span class="line">        <span class="number">3'b001</span>: y3 = <span class="number">1'b1</span>;</span><br><span class="line">    <span class="keyword">endcase</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="3-XST-parallel-case"><a href="#3-XST-parallel-case" class="headerlink" title="3. XST parallel case"></a>3. XST parallel case</h3><p>语法同 full case，只需要将 full_case 替换为 parallel_case 即可。如果 case 本来就是 parallel 的，那么这个指令就完全不起作用，只是一些额外的代码。</p>
+<p>不要故意使用 Non-parallel case 来推译 priority encoder，这是不好的编程习惯。如果我们的目的就是要生成 priority encoder，应该使用级联的 if-else 语句，这样更能表达意图。</p>
+<h2 id="Ⅴ·-REF"><a href="#Ⅴ·-REF" class="headerlink" title="Ⅴ· REF"></a>Ⅴ· REF</h2><p><a href="http://www.sunburst-design.com/papers/CummingsSNUG1999Boston_FullParallelCase.pdf" target="_blank" rel="noopener">“full_case parallel_case”, the Evil Twins of Verilog Synthesis</a></p>
+<p><a href="http://www.phei.com.cn/module/goods/wssd_content.jsp?bookid=38848" target="_blank" rel="noopener">Verilog 编程艺术</a></p>
+<p><a href="http://guqian110.github.io/posts/ic/summary_of_case_in_verilog.html#summary_of_case_in_verilog" target="_blank" rel="noopener">Verilog 的 case 小结</a></p>
+</body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/03/13/Eyeriss-v2-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/13/Eyeriss-v2-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">Eyeriss v2 阅读笔记</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-03-13 15:44:33" itemprop="dateCreated datePublished" datetime="2020-03-13T15:44:33+08:00">2020-03-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-03-15 13:24:22" itemprop="dateModified" datetime="2020-03-15T13:24:22+08:00">2020-03-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Papers/" itemprop="url" rel="index">
+                    <span itemprop="name">Papers</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Papers/Notes/" itemprop="url" rel="index">
+                    <span itemprop="name">Notes</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><h2 id="Prefer"><a href="#Prefer" class="headerlink" title="Prefer"></a>Prefer</h2><p>​    此篇论文是MIT的研究团队eyeriss系列的第三篇文章，也是第二代eyeriss神经网络加速器，    其可以很好的支持现如今结构紧凑和数据稀疏的CNN网络。其主要贡献有两点，一是提出了一种创新的片上网络，以满足不同的数据带宽需求的神经网络。二是其PE单元可以感知权重和特征值稀疏性，从而提高吞吐量和能效。</p>
+<h2 id="Ⅰ·-Introduction"><a href="#Ⅰ·-Introduction" class="headerlink" title="Ⅰ· Introduction"></a>Ⅰ· Introduction</h2><p>​    在介绍部分作者分析了现有神经网络为了减少复杂的计算量，所做的优化–数据稀疏和结构紧凑，对现有加速器构成的挑战。主要分为两个介绍：</p>
+<p>a ) Challenges for Compact DNNs</p>
+<p>​    神经网络结构的各种数据维度可能会随之消失，作者概括如下：</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200315114539.png"></div>
+
+</body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/02/21/Basic-Circiut-UART/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/21/Basic-Circiut-UART/" class="post-title-link" itemprop="url">Basic Circuit -- UART</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-02-21 11:52:56 / Modified: 12:32:22" itemprop="dateCreated datePublished" datetime="2020-02-21T11:52:56+08:00">2020-02-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA&IC</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/Basic-Circuit/" itemprop="url" rel="index">
+                    <span itemprop="name">Basic Circuit</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><h2 id="Perface"><a href="#Perface" class="headerlink" title="Perface"></a>Perface</h2><p>​    UART是一种通用串行数据总线，用于异步通信。该总线双向通信，可以实现全双工传输和接收。在嵌入式设计中，UART用于主机与辅助设备通信，如汽车音响与外接AP之间的通信，与PC机通信包括与监控调试器和其它器件，如EEPROM通信。代码参考：</p>
+<h2 id="Ⅰ·-UART协议简介"><a href="#Ⅰ·-UART协议简介" class="headerlink" title="Ⅰ· UART协议简介"></a>Ⅰ· UART协议简介</h2><p>​    </p>
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2></body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/02/13/Basic-Circiut-RISC-SPM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/13/Basic-Circiut-RISC-SPM/" class="post-title-link" itemprop="url">Basic Circiut —— RISC_SPM</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-02-13 11:07:33" itemprop="dateCreated datePublished" datetime="2020-02-13T11:07:33+08:00">2020-02-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-02-21 11:53:02" itemprop="dateModified" datetime="2020-02-21T11:53:02+08:00">2020-02-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA&IC</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/Basic-Circuit/" itemprop="url" rel="index">
+                    <span itemprop="name">Basic Circuit</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><h2 id="Perface"><a href="#Perface" class="headerlink" title="Perface"></a>Perface</h2><p>​    本篇博客主要介绍一个非常简单的CPU的设计，主要是为了了解数据通路控制器的设计和综合，学会如何合理的划分数据通路单元和控制单元，以使系统结构清晰并有利于简化设计。</p>
+<p>​    <strong>数据通路单元</strong>由计算资源（ALU、存储寄存器）、控制数字系统内的流动并完成计算单元和内部寄存器之间数据传输的逻辑资源，以及系统和外部环境之间完成输入/输出的数据通路构成。可以用数据流图来表示</p>
+<p>​    <strong>控制单元</strong>实现对数据通路的控制，重用FSM或者ASM来建模。</p>
+<h2 id="Ⅰ·-RISC-SPM-：-Processor-Architecture"><a href="#Ⅰ·-RISC-SPM-：-Processor-Architecture" class="headerlink" title="Ⅰ· RISC SPM ： Processor Architecture"></a>Ⅰ· RISC SPM ： Processor Architecture</h2><p>​    </p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200213134204.png"></div> 
+<center><strong>Figure1 RISC SPM整体架构</strong></center>
+## Ⅱ· RISC SPM :  Instruction Set
+
+<p>​    此处理器的指令集，分为短指令和长指令，短指令由一个字节构成，高四位为操作码，低四位分为两位源地址寄存器和两位目的地址寄存器；长指令由两字节构成，第一个字节类似短指令，第二个字节用以存放存储器地址。4=6[]</p>
+<center><strong>Table 1 RISC SPM 指令集 </strong></center><div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200213145346.png">
+
+<h2 id="Ⅲ·-RISC-SPM：-Controller"><a href="#Ⅲ·-RISC-SPM：-Controller" class="headerlink" title="Ⅲ· RISC SPM： Controller"></a>Ⅲ· RISC SPM： Controller</h2><p>​    </p>
+</div></body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/01/07/hello-world/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1022,758 +1426,12 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/10/22/vim%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/timg.jpg">
-      <meta itemprop="name" content="maos520">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Maos520">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/10/22/vim%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="post-title-link" itemprop="url">vim常用命令</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-10-22 18:46:14" itemprop="dateCreated datePublished" datetime="2019-10-22T18:46:14+08:00">2019-10-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-05 11:07:12" itemprop="dateModified" datetime="2020-01-05T11:07:12+08:00">2020-01-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/vim/" itemprop="url" rel="index">
-                    <span itemprop="name">vim</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <html><head></head><body></body></html><html><head></head><body><h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>​    本篇博客主要记录一些我在使用vim中常用的快捷键</p>
-<h2 id="二、基本操作"><a href="#二、基本操作" class="headerlink" title="二、基本操作"></a>二、基本操作</h2><p>​    vim的快捷很多，但是常用的并不是特别多</p>
-<ol>
-<li><p>移动</p>
-<ul>
-<li><kbd>h,j,k,l</kbd>基本的上下左右移动</li>
-<li><kbd>gg</kbd>  文章开头</li>
-<li><kbd>GG</kbd> 文章结尾</li>
-<li><kbd>^</kbd>     行首</li>
-<li><kbd>$</kbd>     行尾</li>
-</ul>
-</li>
-<li><p>查找和替换</p>
-<ul>
-<li><kbd>gd</kbd>   查找光标所在变量定义处</li>
-<li><kbd>*</kbd>    向后查找单词</li>
-<li><kbd>#</kbd>   向前查找单词</li>
-<li><kbd> f  / F / t / T</kbd>  行内差字母</li>
-<li><kbd>；</kbd> 重复 f 命令</li>
-<li><kbd> / + 查找内容 </kbd> </li>
-<li><kbd>：%s/old/new/gc </kbd> 替换   c  表示要确认</li>
-<li><kbd>n</kbd>下一个匹配</li>
-</ul>
-</li>
-<li><p>删除 、复制和粘贴</p>
-<ul>
-<li><p><kbd>dd </kbd></p>
-</li>
-<li><p><kbd>dw</kbd></p>
-</li>
-<li><p><kbd>x</kbd></p>
-</li>
-<li><p><kbd>y</kbd></p>
-</li>
-<li><p><kbd>p</kbd></p>
-</li>
-<li><p><kbd>"{寄存器}y</kbd> 将选中内容复制到寄存器里</p>
-</li>
-<li><p><kbd>“{寄存器}p</kbd> 将寄存器的内容粘贴</p>
-</li>
-</ul>
-</li>
-<li><p>标记 mark</p>
-<ul>
-<li><p>在normal模式下 <kbd>m+{a-z}</kbd>用字母a-z标记现在光标的位置</p>
-</li>
-<li><p><kbd>`+{mark}</kbd>跳转到标记处；<kbd>'+{mark}</kbd>跳转到标记处行首</p>
-</li>
-<li><p><kbd>:marks</kbd>显示标记列表</p>
-</li>
-<li><p>常用特殊标记</p>
-<ol>
-<li><kbd>'</kbd>跳转前的位置</li>
-<li><kbd>"</kbd>最后修改的位置</li>
-</ol>
-</li>
-</ul>
-</li>
-</ol>
-<h2 id="三、多文件操作"><a href="#三、多文件操作" class="headerlink" title="三、多文件操作"></a>三、多文件操作</h2><ol>
-<li><p>buffer相关快捷键</p>
-<ul>
-<li><kbd>:edit</kbd> 编辑</li>
-<li><kbd>:new</kbd>创建</li>
-<li><kbd>:bn</kbd> 下一个</li>
-<li><kbd>:bp</kbd>上一个</li>
-<li><kbd>:bd</kbd>关闭当前</li>
-<li><kbd>:ls b</kbd>显示</li>
-<li><kbd>:b 数字</kbd>跳到相应buffer</li>
-</ul>
-</li>
-<li><p>窗口相关快捷键</p>
-<ul>
-<li><kbd>:sp + 文件</kbd>  水平分割窗口 </li>
-<li><kbd>:vsp +文件</kbd>  垂直分割窗口 </li>
-<li><kbd>ctrl-w h</kbd> 跳转到左边的窗口 </li>
-<li><kbd>ctrl-w k</kbd>  跳转到上面的窗口</li>
-<li><kbd>ctrl-w l</kbd> 跳转到右边的窗口 </li>
-<li><kbd>ctrl-w j</kbd>  跳转到下面的窗口 </li>
-<li><kbd>ctrl-w c</kbd> 关闭当前窗口</li>
-</ul>
-</li>
-</ol>
-<h2 id="四、-批量操作"><a href="#四、-批量操作" class="headerlink" title="四、 批量操作"></a>四、 批量操作</h2><ol>
-<li><p>命令宏</p>
-<p><kbd>qx+命令串+q</kbd> 将会录制命令串，然后同<kbd>数字+@+x</kbd>将会重读执行录制的命令串，结合移动(h,j,k,l)，查找（f t）,修改命令，会变得很强大。</p>
-</li>
-</ol>
-<ol start="2">
-<li><kbd>ctrl + v</kbd>  进行块选中模式 ，选中相应的块 通过大写的 <kbd>I</kbd> 进入插入模式，这时对首行修改完之后按ESC，修改的操作会自动加在之前选中的其他行。</li>
-</ol>
-<h2 id="五、括号操作"><a href="#五、括号操作" class="headerlink" title="五、括号操作"></a>五、括号操作</h2><ol>
-<li><p><kbd>v/y/d/c+i/a+{/[/(</kbd>，其中<kbd>v,y,d,c</kbd>即我们常用的选择，复制，删除和修改，<kbd>i</kbd>即inside的意思，对括号里面的</p>
-<p>内容进行操作，不包括括号；<kbd>a</kbd>即at的意思，对括号里的内容包括括号进行操作。</p>
-</li>
-<li><p><kbd>%</kbd>在表示范围时，表示整个文档，除此之外，还有匹配括号的作用。</p>
-</li>
-</ol>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ol>
-<li><p><kbd>ctrl + s</kbd> ：vim会停止向终端输出，像死掉了一般！！！</p>
-</li>
-<li><p><kbd>ctrl + q</kbd> ：vim会退出停止状态！！！！</p>
-</li>
-<li><p><kbd>vmap</kbd>,<kbd>imap</kbd>,<kbd>imap</kbd>前首字母分别代表不同的模式，分别代表虚拟模式，普通模式，插入模式。<kbd>nore</kbd>代表非递归。</p>
-</li>
-<li><p><kbd>gu</kbd>， <kbd>gU</kbd>， <kbd>guw</kbd> ，<kbd>~</kbd>大小写转换相关命令</p>
-</li>
-<li><p><kbd>:sh</kbd> ，<kbd> ctrl+d </kbd>进入命令行以及返回vim</p>
-</li>
-<li><p><kbd>:!command</kbd>调用shell命令,<kbd> : r !command</kbd>将结果插入到下一行 ，e.g. <kbd>:r !data</kbd>将当前日期插入到下一行</p>
-</li>
-</ol>
-</body></html>
-      
-    </div>
-
-
-    
-    
-    
-	
-	<div>
-     
-   </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/10/21/FSM%E8%AE%BE%E8%AE%A1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/timg.jpg">
-      <meta itemprop="name" content="maos520">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Maos520">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/10/21/FSM%E8%AE%BE%E8%AE%A1/" class="post-title-link" itemprop="url">FSM设计</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-10-21 22:20:16" itemprop="dateCreated datePublished" datetime="2019-10-21T22:20:16+08:00">2019-10-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-03 13:20:26" itemprop="dateModified" datetime="2020-01-03T13:20:26+08:00">2020-01-03</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Language/" itemprop="url" rel="index">
-                    <span itemprop="name">Language</span>
-                  </a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Language/Verilog/" itemprop="url" rel="index">
-                    <span itemprop="name">Verilog</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <html><head></head><body></body></html><html><head></head><body><h2 id="一、FSM简介"><a href="#一、FSM简介" class="headerlink" title="一、FSM简介"></a>一、FSM简介</h2><hr>
-<p><strong>有限状态机（Finite State Machine FSM）</strong> 有时也简称为 <strong>状态机</strong>，它是一种数学模型。通常用来设计电脑程序或者时序电路。</p>
-<p><strong>组成元素 ：</strong> </p>
-<ul>
-<li><p><strong>输入：</strong> </p>
-</li>
-<li><p><strong>状态：</strong> 使用状态划分逻辑顺序和时序规律</p>
-</li>
-<li><p><strong>输出：</strong> </p>
-</li>
-</ul>
-<p><strong>描述方式 ：</strong>  </p>
-<ul>
-<li><p>状态转移图</p>
-</li>
-<li><p>状态转移表</p>
-</li>
-<li><p>HDL描述</p>
-</li>
-</ul>
-<p><strong>分类：</strong></p>
-<p>   状态机的框图如下：</p>
-<div align="center"><img src="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226104024.png/"></div>
-<center><strong>Figure 1 - FSM Block Diagram</strong></center>
-   按照输出的方式，可以将状态机分为两类：
-
-<ul>
-<li><p>Moore</p>
-<p>它的输出只取决于当前状态，而与输入无关。Moore 状态机最重要的特点就是将输入与输出信号隔离开来，而且输出与时钟信号同步的。</p>
-</li>
-<li><p>Meely</p>
-<p>不仅和当前状态有关，而且和输入也有关。Mealy 有限状态机对输入的响应发生在当前时钟周期，比 Moore 有限状态机对输入信号的响应要早一个周期。因此，输入信号的噪声可能影响在输出的信号。</p>
-</li>
-</ul>
-<h2 id="二、状态机实现"><a href="#二、状态机实现" class="headerlink" title="二、状态机实现"></a>二、状态机实现</h2><h3 id="coding-goals"><a href="#coding-goals" class="headerlink" title="coding goals"></a>coding goals</h3><p>我们的代码需要达到的目的应该是：</p>
-<blockquote>
-<ol>
-<li>The FSM coding style should be easily modified to change state encodings and FSM styles</li>
-<li>The coding style should be compact</li>
-<li>The coding style should be easy to code and understand</li>
-<li>The coding style should facilitate debugging</li>
-<li>The coding style should yield efficient synthesis results</li>
-</ol>
-</blockquote>
-<h3 id="Always-Block"><a href="#Always-Block" class="headerlink" title="Always Block"></a>Always Block</h3><p>状态机一般有三种写法，他们在速度、面积、代码可维护性等各个方面互有优劣。</p>
-<p><strong>一段式：</strong> 其描述结构图如图2 ， 只有一个always block，把所有的逻辑（输入、输出、状态）都在一个always block中实现</p>
-<ul>
-<li>优点：看起来很简洁</li>
-<li>缺点：代码不清晰，不利于维护，不利于附加约束。</li>
-</ul>
-<p>不推荐这种方法，但是在简单的状态机可以使用。</p>
-<div align="center"><img src="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226221039.png/"></div>
-<center><strong>Figure 2 一段式描述结构图</strong></center>
-**二段式：** 其描述结构图如图3，有两个always block，把时序逻辑和组合逻辑分隔开来。时序逻辑里进行当前状态和下一状态的切换，组合逻辑实现各个输入、输出以及状态判断。
-
-<ul>
-<li>优点：便于阅读、理解、维护，而且利于综合器优化代码，利于用户添加合适的时序约束条件，利于布局布线器实现设计</li>
-<li>缺点：输出是组合逻辑，可能含有毛刺 <div align="center"><img src="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226222428.png/"></div>
-<center><strong>Figure 3 二段式描述结构图</strong></center>
-解决输出毛刺的问题，最简单的方法就是用寄存器打一拍，但很多情况不允许插入寄存器节拍，此时使用三段式描述。其优势在于能够根据状态转移规律，在上一状态根据输入条件判断出当前状态的输出，从而不需要额外插入时钟节拍。
-
-</li>
-</ul>
-<p><strong>三段式：</strong> 其描述结构图如图4 有三个always block，一个时序逻辑采用同步时序的方式描述状态转移，一个采用组合逻辑的方式判断状态转移条件、描述状态转移规律，第三个模块使用同步时序的方式描述每个状态的输出。这 3 个 always block 正好对应图示的 3 个子模块，更加容易理解。</p>
-<ul>
-<li>优点：代码容易维护，时序逻辑的输出解决了两段式组合逻辑的毛刺问题</li>
-<li>缺点： 代码量大、资源消耗多一些，从输入到寄存器状态输出的路径上，要经过两部分组合逻辑，时序相对紧张。</li>
-</ul>
-<div align="center"><img src="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226223109.png/"></div>
-<center><strong>Figure 4 三段式描述结构图</strong></center></body></html>
-      
-    </div>
-
-
-    
-    
-    
-	
-	<div>
-     
-   </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/10/21/Hexo%20+%20Github%20%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/timg.jpg">
-      <meta itemprop="name" content="maos520">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Maos520">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/10/21/Hexo%20+%20Github%20%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="post-title-link" itemprop="url">Hexo + Github 个人博客环境搭建</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2019-10-21 19:03:17 / Modified: 22:30:58" itemprop="dateCreated datePublished" datetime="2019-10-21T19:03:17+08:00">2019-10-21</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Tools/" itemprop="url" rel="index">
-                    <span itemprop="name">Tools</span>
-                  </a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Tools/Blog-Related/" itemprop="url" rel="index">
-                    <span itemprop="name">Blog Related</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <html><head></head><body></body></html><html><head></head><body><h1 id="一、系统环境配置"><a href="#一、系统环境配置" class="headerlink" title="一、系统环境配置"></a>一、系统环境配置</h1><p>  要使用Hexo,需要在你的系统中支持<kbd>Nodejs</kbd>以及<kbd>Git</kbd>.</p>
-<ul>
-<li><strong>安装Node.js</strong><br>下载<a href="https://nodejs.org/en/download/" target="_blank" rel="noopener"> Node.js </a><br>参考地址： <a href="https://www.runoob.com/nodejs/nodejs-install-setup.html" target="_blank" rel="noopener">安装Node.js</a></li>
-<li><strong>安装Git</strong><br>下载<a href="http://git-scm.com/download/" target="_blank" rel="noopener">Git</a><br>参考地址： <a href="https://www.liaoxuefeng.com/wiki/896043488029600/896067074338496" target="_blank" rel="noopener">安装Git</a></li>
-<li><strong>安装Hexo</strong><br>注：为了后面部署到github上方面，建议子啊gitbash上操作（Windows）<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> E:/Github</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mkdir -r ./hexo/blog/</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> ./hexo/blog</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> npm install -g hexo-cli</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> hexo -v</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> hexo init</span></span><br></pre></td></tr></tbody></table></figure>
-<h1 id="二、-Hexo常用命令"><a href="#二、-Hexo常用命令" class="headerlink" title="二、 Hexo常用命令"></a>二、 Hexo常用命令</h1></li>
-</ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ hexo n  "postname" #新建文件</span><br><span class="line">$ hexo n p "pagename" #新建页面</span><br><span class="line">$ hexo clean        </span><br><span class="line">$ hexo g             #生成</span><br><span class="line">$ hexo s             #启动本地web服务器</span><br><span class="line">$ hexo d             #远程部署</span><br><span class="line">$ hexo d -g</span><br><span class="line">$ hexo s -g</span><br></pre></td></tr></tbody></table></figure>
-<h1 id="三、-Hexo主题设置"><a href="#三、-Hexo主题设置" class="headerlink" title="三、 Hexo主题设置"></a>三、 Hexo主题设置</h1><p>这里以yilia为例进行说明。</p>
-<ul>
-<li><p><strong>安装主题</strong></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo clean$ git <span class="built_in">clone</span> https://github.com/litten/hexo-theme-yilia.git themes/yilia</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><p><strong>启用主题</strong></p>
-<p> 修改Hexo目录下的_config.yml配置文件中的theme属性，将其设置为yilia。 </p>
-</li>
-<li><p><strong>更新主题</strong></p>
-</li>
-<li><pre><code class="shell"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> themes/yilia</span>
-<span class="meta">$</span><span class="bash"> git pull</span>
-<span class="meta">$</span><span class="bash"> hexo g <span class="comment"># 生成</span></span>
-<span class="meta">$</span><span class="bash"> hexo s <span class="comment"># 启动本地web服务器</span></span>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"># 四、Github Pages设置</span><br><span class="line"></span><br><span class="line">+ **什么是Github Pages**</span><br><span class="line"></span><br><span class="line">[GitHub Pages](https://pages.github.com/) 本用于介绍托管在GitHub的项目，不过，由于他的空间免费稳定，用来做搭建一个博客再好不过了。</span><br><span class="line"></span><br><span class="line">每个帐号只能有一个仓库来存放个人主页，而且仓库的名字必须是username/username.github.io，这是特殊的命名约定。你可以通过[http://username.github.io](http://username.github.io/) 来访问你的个人主页。</span><br><span class="line"></span><br><span class="line">这里特别提醒一下，需要注意的个人主页的网站内容是在master分支下的。</span><br><span class="line"></span><br><span class="line">+ **创建自己的Github Pages**</span><br><span class="line"></span><br><span class="line">注册GitHub及使用Github Pages的过程已经有很多文章讲过，在此不再详述，可以参考：</span><br><span class="line"></span><br><span class="line">[一步步在GitHub上创建博客主页 全系列](http://pchou.info/web-build/2013/01/03/build-github-blog-page-01.html)</span><br><span class="line"></span><br><span class="line">[如何搭建一个独立博客——简明Github Pages与Hexo教程](http://www.jianshu.com/p/05289a4bc8b2)</span><br><span class="line"></span><br><span class="line">在这里我创建了一个github repo叫做 [jiji262.github.io](https://github.com/jiji262/jiji262.github.io). 创建完成之后，需要有一次提交(git commit)操作，然后就可以通过链接http://jiji262.github.io/ 访问了。（现在还没有内容，别着急）</span><br><span class="line"></span><br><span class="line"># 五、部署Hexo到Github Pages</span><br><span class="line"></span><br><span class="line">这一步恐怕是最关键的一步了，让我们把在本地web环境下预览到的博客部署到github上，然后就可以直接通过http://jiji262.github.io/访问了。不过很多教程文章对这个步骤语焉不详，这里着重说下。</span><br><span class="line"></span><br><span class="line">首先需要明白所谓部署到github的原理。</span><br><span class="line"></span><br><span class="line">1. 之前步骤中在Github上创建的那个特别的repo（jiji262.github.io）一个最大的特点就是其master中的html静态文件，可以通过链接[http://jiji262.github.io来直接访问。](http://jiji262.github.xn--io-uf6d50l9qytq2ao5o./)</span><br><span class="line">2. Hexo -g 会生成一个静态网站（第一次会生成一个public目录），这个静态文件可以直接访问。</span><br><span class="line">3. 需要将hexo生成的静态网站，提交(git commit)到github上。</span><br><span class="line"></span><br><span class="line">明白了原理，怎么做自然就清晰了。</span><br><span class="line"></span><br><span class="line">+ **使用hexo deploy部署**</span><br><span class="line"></span><br><span class="line">hexo deploy可以部署到很多平台，具体可以[参考这个链接](https://hexo.io/docs/deployment.html). 如果部署到github，需要在配置文件_config.xml中作如下修改：</span><br></pre></td></tr></tbody></table></figure>
-deploy:  type: git  repo: git@github.com:jiji262/jiji262.github.io.git  branch: master
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">然后在命令行中执行</span><br></pre></td></tr></tbody></table></figure>
-hexo d
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">即可完成部署。</span><br><span class="line"></span><br><span class="line">**踩坑提醒**</span><br><span class="line"></span><br><span class="line">1）注意需要提前安装一个扩展：</span><br></pre></td></tr></tbody></table></figure>
-<span class="meta">$</span><span class="bash"> npm install hexo-deployer-git --save</span>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">2）如果出现下面这样的错误，</span><br></pre></td></tr></tbody></table></figure>
-Permission denied (publickey).fatal: Could not read from remote repository.Please make sure you have the correct access rightsand the repository exists.
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">则是因为没有设置好public key所致。</span><br><span class="line">在本机生成public key(参考[github帮助](https://help.github.com/articles/generating-an-ssh-key/))：</span><br></pre></td></tr></tbody></table></figure>
-＃ssh-keygen -t rsa -b 4096 -C "xxx@xxx.com"
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">然后在#user_id/.ssh目录下会生成两个文件，id_rsa.pub和id_rsa.</span><br><span class="line">然后登陆github，在[SSH设置页面](https://github.com/settings/ssh)添加上刚才的public key文件也就是id_rsa.pub的内容即可。</span><br><span class="line"></span><br><span class="line">+ **使用git命令行部署（optional）**   </span><br><span class="line"></span><br><span class="line">不幸的是，上述命令虽然简单方便，但是偶尔会有莫名其妙的问题出现，因此，我们也可以追本溯源，使用git命令来完成部署的工作。</span><br><span class="line"></span><br><span class="line">   + clone github repo</span><br></pre></td></tr></tbody></table></figure>
-<span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> d:/hexo/blog$ git <span class="built_in">clone</span> https://github.com/jiji262/jiji262.github.io.git .deploy/jiji262.github.io</span>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">将我们之前创建的repo克隆到本地，新建一个目录叫做.deploy用于存放克隆的代码。</span><br><span class="line"></span><br><span class="line">   + 创建一个deploy脚本文件</span><br></pre></td></tr></tbody></table></figure>
-hexo generatecp -R public/* .deploy/jiji262.github.iocd .deploy/jiji262.github.iogit add .git commit -m “update”git push origin master</code></pre>
-</li>
-</ul>
-<p>简单解释一下，hexo generate生成public文件夹下的新内容，然后将其拷贝至jiji262.github.io的git目录下，然后使用git commit命令提交代码到jiji262.github.io这个repo的master branch上。</p>
-<p>需要部署的时候，执行这段脚本就可以了（比如可以将其保存为deploy.sh）。执行过程中可能需要让你输入Github账户的用户名及密码，按照提示操作即可。</p>
-<h1 id="六、Hexo-插入图片"><a href="#六、Hexo-插入图片" class="headerlink" title="六、Hexo 插入图片"></a>六、Hexo 插入图片</h1><p>1.设置站点配置_config.yml:将post_asset_folder: false改为post_asset_folder: true<br>2.安装插件:npm install <a href="https://github.com/CodeFalling/hexo-asset-image" target="_blank" rel="noopener">https://github.com/CodeFalling/hexo-asset-image</a> – save<br>3.运行hexo n “XXXXXX”,生成XXXXX.md博文时就会在/source/_posts目录下生成XXXXXX的文件夹，将你想在XXXXX博文中插入的照片放置到这个同名文件夹中即可，图片的命名随意。<br>4.添加图片:在想添加的位置写入<img src="%E5%9B%BE%E7%89%87%E5%90%8D%E5%AD%97.%E5%9B%BE%E7%89%87%E6%A0%BC%E5%BC%8F" alt>),例如<img src="1.png" alt>。</p>
-<h1 id="七、参考"><a href="#七、参考" class="headerlink" title="七、参考"></a>七、参考</h1><p><a href="https://linghucong.js.org/2016/04/15/2016-04-15-hexo-github-pages-blog/" target="_blank" rel="noopener">https://linghucong.js.org/2016/04/15/2016-04-15-hexo-github-pages-blog/</a></p>
-<p><a href="https://www.bilibili.com/video/av44544186" target="_blank" rel="noopener">https://www.bilibili.com/video/av44544186</a></p>
-</body></html>
-      
-    </div>
-
-
-    
-    
-    
-	
-	<div>
-     
-   </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/10/21/Markdown%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/timg.jpg">
-      <meta itemprop="name" content="maos520">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Maos520">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/10/21/Markdown%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" class="post-title-link" itemprop="url">Markdown基本语法</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-10-21 19:03:17" itemprop="dateCreated datePublished" datetime="2019-10-21T19:03:17+08:00">2019-10-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-02 21:33:32" itemprop="dateModified" datetime="2020-01-02T21:33:32+08:00">2020-01-02</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Tools/" itemprop="url" rel="index">
-                    <span itemprop="name">Tools</span>
-                  </a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Tools/Blog-Related/" itemprop="url" rel="index">
-                    <span itemprop="name">Blog Related</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <html><head></head><body></body></html><html><head></head><body><h2 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h2><p>  Markdown 是一种纯文本的标记语言。通过简单的语法标记，他可以使普通文本内容具有一定的格式。<br>  这也是我除此接触Markdown，将一些基本的语法进行记录以备以后查用。</p>
-<h2 id="2-标题"><a href="#2-标题" class="headerlink" title="2.标题"></a>2.标题</h2><p>  在想要设置为标题的文字前面加#来表示，注意#和标题之间有空格，一个#表示一级标题，二个#表示二级标题，以此类推。<br><strong>示例：</strong></p>
-<figure class="highlight markdown"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 这是一级标题</span></span><br><span class="line"><span class="section">## 这是二级标题</span></span><br><span class="line"><span class="section">### 这是三级标题</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="3-字体"><a href="#3-字体" class="headerlink" title="3.字体"></a>3.字体</h2><p><strong>示例：</strong></p>
-<ul>
-<li><p>加粗<br><code>** statement **</code></p>
-</li>
-<li><p>斜体<br><code>* statement *</code></p>
-</li>
-<li><p>斜体加粗<br><code>*** statement ***</code></p>
-</li>
-<li><p>删除线<br><code>~~ statement ~~</code></p>
-</li>
-</ul>
-<p><strong>效果如下：</strong><br><strong>statement</strong><br><em>statement</em><br><strong><em>statement</em></strong><br><del>statement</del></p>
-<h2 id="4-引用"><a href="#4-引用" class="headerlink" title="4.引用"></a>4.引用</h2><p><strong>示例：</strong></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">>引用内容</span><br><span class="line">>>引用内容</span><br><span class="line">>>>引用内容</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>效果如下：</strong></p>
-<blockquote>
-<p>引用内容</p>
-<blockquote>
-<p>引用内容</p>
-<blockquote>
-<p>引用内容</p>
-</blockquote>
-</blockquote>
-</blockquote>
-<h2 id="5-分割线"><a href="#5-分割线" class="headerlink" title="5.分割线"></a>5.分割线</h2><p><strong>示例：</strong></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">----</span><br><span class="line">****</span><br><span class="line">***</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>效果如下：</strong></p>
-<hr>
-<hr>
-<hr>
-<hr>
-<h2 id="6-图片"><a href="#6-图片" class="headerlink" title="6.图片"></a>6.图片</h2><p>语法：</p>
-<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">![图片alt](图片地址 <span class="string">''</span>图片title<span class="string">''</span>)</span><br><span class="line"></span><br><span class="line">图片alt就是显示在图片下面的文字，相当于对图片内容的解释。</span><br><span class="line">图片title是图片的标题，当鼠标移到图片上时显示的内容。title可加可不加</span><br></pre></td></tr></tbody></table></figure>
-
-<p>示例：</p>
-<figure class="highlight cpp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">![blockchain](https:<span class="comment">//ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/</span></span><br><span class="line">u=<span class="number">702257389</span>,<span class="number">1274025419</span>&fm=<span class="number">27</span>&gp=<span class="number">0.</span>jpg <span class="string">"区块链"</span>)</span><br></pre></td></tr></tbody></table></figure>
-
-<p>效果如下：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/6860761-fd2f51090a890873.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/550/format/webp" alt="img"></p>
-<p>​                                                                                        blockchain</p>
-<p><strong>上传本地图片直接点击导航栏的图片标志，选择图片即可</strong></p>
-<h2 id="7-超链接"><a href="#7-超链接" class="headerlink" title="7.超链接"></a>7.超链接</h2><p>语法：</p>
-<figure class="highlight csharp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">超链接名</span>](超链接地址 <span class="string">"超链接title"</span>)</span><br><span class="line">title可加可不加</span><br></pre></td></tr></tbody></table></figure>
-
-<p>示例：</p>
-<figure class="highlight csharp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">简书</span>](http:<span class="comment">//jianshu.com)</span></span><br><span class="line">[<span class="meta">百度</span>](http:<span class="comment">//baidu.com)</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>效果如下：</p>
-<p><a href="https://www.jianshu.com/u/1f5ac0cf6a8b" target="_blank" rel="noopener">简书</a><br><a href="http://baidu.com/" target="_blank" rel="noopener">百度</a></p>
-<p>注：Markdown本身语法不支持链接在新页面中打开，貌似简书做了处理，是可以的。别的平台可能就不行了，如果想要在新页面中打开的话可以用html语言的a标签代替。</p>
-<figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag"><<span class="name">a</span> <span class="attr">href</span>=<span class="string">"超链接地址"</span> <span class="attr">target</span>=<span class="string">"_blank"</span>></span>超链接名<span class="tag"></<span class="name">a</span>></span></span><br><span class="line"></span><br><span class="line">示例</span><br><span class="line"><span class="tag"><<span class="name">a</span> <span class="attr">href</span>=<span class="string">"https://www.jianshu.com/u/1f5ac0cf6a8b"</span> <span class="attr">target</span>=<span class="string">"_blank"</span>></span>简书<span class="tag"></<span class="name">a</span>></span></span><br></pre></td></tr></tbody></table></figure>
-
-<hr>
-<h2 id="8-列表"><a href="#8-列表" class="headerlink" title="8.列表"></a>8.列表</h2><ul>
-<li><h5 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h5></li>
-</ul>
-<p>语法：<br>无序列表用 - + * 任何一种都可以</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- 列表内容</span><br><span class="line">+ 列表内容</span><br><span class="line">* 列表内容</span><br><span class="line"></span><br><span class="line">注意：- + * 跟内容之间都要有一个空格</span><br></pre></td></tr></tbody></table></figure>
-
-<p>效果如下：</p>
-<ul>
-<li><p>列表内容</p>
-</li>
-<li><p>列表内容</p>
-</li>
-<li><p>列表内容</p>
-</li>
-<li><h5 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h5></li>
-</ul>
-<p>语法：<br>数字加点</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.列表内容</span><br><span class="line">2.列表内容</span><br><span class="line">3.列表内容</span><br><span class="line"></span><br><span class="line">注意：序号跟内容之间要有空格</span><br></pre></td></tr></tbody></table></figure>
-
-<p>效果如下：</p>
-<p>1.列表内容<br>2.列表内容<br>3.列表内容</p>
-<ul>
-<li><h5 id="列表嵌套"><a href="#列表嵌套" class="headerlink" title="列表嵌套"></a>列表嵌套</h5></li>
-</ul>
-<p><strong>上一级和下一级之间敲三个空格即可</strong></p>
-<ul>
-<li>一级无序列表内容<ul>
-<li>二级无序列表内容</li>
-<li>二级无序列表内容</li>
-<li>二级无序列表内容</li>
-</ul>
-</li>
-<li>一级无序列表内容<ol>
-<li>二级有序列表内容</li>
-<li>二级有序列表内容</li>
-<li>二级有序列表内容</li>
-</ol>
-</li>
-</ul>
-<ol>
-<li>一级有序列表内容<ul>
-<li>二级无序列表内容</li>
-<li>二级无序列表内容</li>
-<li>二级无序列表内容</li>
-</ul>
-</li>
-<li>一级有序列表内容<ol>
-<li>二级有序列表内容</li>
-<li>二级有序列表内容</li>
-<li>二级有序列表内容</li>
-</ol>
-</li>
-</ol>
-<h2 id="9-表格"><a href="#9-表格" class="headerlink" title="9.表格"></a>9.表格</h2><p>语法：</p>
-<figure class="highlight ruby"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">表头<span class="params">|表头|</span>表头</span><br><span class="line">---<span class="params">|:--:|</span>---<span class="symbol">:</span></span><br><span class="line">内容<span class="params">|内容|</span>内容</span><br><span class="line">内容<span class="params">|内容|</span>内容</span><br><span class="line"></span><br><span class="line">第二行分割表头和内容。</span><br><span class="line">- 有一个就行，为了对齐，多加了几个</span><br><span class="line">文字默认居左</span><br><span class="line">-两边加：表示文字居中</span><br><span class="line">-右边加：表示文字居右</span><br><span class="line">注：原生的语法两边都要用 <span class="params">| 包起来。此处省略</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>示例：</p>
-<figure class="highlight ruby"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">姓名<span class="params">|技能|</span>排行</span><br><span class="line">--<span class="params">|:--:|</span>--<span class="symbol">:</span></span><br><span class="line">刘备<span class="params">|哭|</span>大哥</span><br><span class="line">关羽<span class="params">|打|</span>二哥</span><br><span class="line">张飞<span class="params">|骂|</span>三弟</span><br></pre></td></tr></tbody></table></figure>
-
-<p>效果如下：</p>
-<table>
-<thead>
-<tr>
-<th>姓名</th>
-<th align="center">技能</th>
-<th align="right">排行</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>刘备</td>
-<td align="center">哭</td>
-<td align="right">大哥</td>
-</tr>
-<tr>
-<td>关羽</td>
-<td align="center">打</td>
-<td align="right">二哥</td>
-</tr>
-<tr>
-<td>张飞</td>
-<td align="center">骂</td>
-<td align="right">三弟</td>
-</tr>
-</tbody></table>
-<h2 id="10-代码"><a href="#10-代码" class="headerlink" title="10.代码"></a>10.代码</h2><p>语法：<br>单行代码：代码之间分别用一个反引号包起来</p>
-<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`代码内容`</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>代码块：代码之间分别用三个反引号包起来，且两边的反引号单独占一行</p>
-<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(<span class="string">``</span><span class="string">`)</span></span><br><span class="line"><span class="string">  代码...</span></span><br><span class="line"><span class="string">  代码...</span></span><br><span class="line"><span class="string">  代码...</span></span><br><span class="line"><span class="string">(`</span><span class="string">``</span>)</span><br></pre></td></tr></tbody></table></figure>
-
-<blockquote>
-<p>注：为了防止转译，前后三个反引号处加了小括号，实际是没有的。这里只是用来演示，实际中去掉两边小括号即可。</p>
-</blockquote>
-<p>示例：</p>
-<p>单行代码</p>
-<figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`create database hero;`</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>代码块</p>
-<figure class="highlight php"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(```)</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">fun</span><span class="params">()</span></span>{</span><br><span class="line">         <span class="keyword">echo</span> <span class="string">"这是一句非常牛逼的代码"</span>;</span><br><span class="line">    }</span><br><span class="line">    fun();</span><br><span class="line">(```)</span><br></pre></td></tr></tbody></table></figure>
-
-<p>效果如下：</p>
-<p>单行代码</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create database hero;</span><br></pre></td></tr></tbody></table></figure>
-
-<p>代码块</p>
-<figure class="highlight php"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fun</span><span class="params">()</span></span>{</span><br><span class="line">  <span class="keyword">echo</span> <span class="string">"这是一句非常牛逼的代码"</span>;</span><br><span class="line">}</span><br><span class="line">fun();</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="11-Todo"><a href="#11-Todo" class="headerlink" title="11.Todo"></a>11.Todo</h2><p><strong>示例：</strong></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-[]不勾选</span><br><span class="line">-[x]勾选</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>效果如下：</strong></p>
-<ul>
-<li><input disabled type="checkbox"> 不勾选</li>
-<li><input checked disabled type="checkbox"> 勾选</li>
-</ul>
-<h2 id="12-xml语法"><a href="#12-xml语法" class="headerlink" title="12.xml语法"></a>12.xml语法</h2><h3 id="12-1-加方框"><a href="#12-1-加方框" class="headerlink" title="12.1 加方框"></a>12.1 加方框</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><kbd>内容</kbd></span><br></pre></td></tr></tbody></table></figure>
-<p><kbd> 内容 </kbd></p>
-<h3 id="12-2-居中加粗"><a href="#12-2-居中加粗" class="headerlink" title="12.2 居中加粗"></a>12.2 居中加粗</h3><figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag"><<span class="name">center</span>></span><span class="tag"><<span class="name">strong</span>></span>这一行需要居中<span class="tag"></<span class="name">strong</span>></span><span class="tag"></<span class="name">center</span>></span></span><br></pre></td></tr></tbody></table></figure>
-
-<center>这一行需要居中</center>
-### 12.3 字体及颜色更换
-
-<figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag"><<span class="name">font</span> <span class="attr">face</span>=<span class="string">"黑体"</span>></span>这是黑体字<span class="tag"></<span class="name">font</span>></span></span><br><span class="line"><span class="tag"><<span class="name">font</span> <span class="attr">face</span>=<span class="string">"黑体"</span> <span class="attr">size</span>=<span class="string">10</span>></span>这是黑体字<span class="tag"></<span class="name">font</span>></span></span><br><span class="line"><span class="tag"><<span class="name">font</span> <span class="attr">face</span>=<span class="string">"黑体"</span> <span class="attr">size</span>=<span class="string">10</span> <span class="attr">color</span>=<span class="string">pink</span>></span>颜色字体大小<span class="tag"></<span class="name">font</span>></span></span><br></pre></td></tr></tbody></table></figure>
-
-<p><font face="黑体" size="10" color="pink">颜色字体大小</font></p>
-<h3 id="12-4-图片居中"><a href="#12-4-图片居中" class="headerlink" title="12.4 图片居中"></a>12.4 图片居中</h3><figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag"><<span class="name">div</span> <span class="attr">align</span>=<span class="string">center</span>></span>![]()<span class="tag"></<span class="name">div</span>></span></span><br><span class="line"><span class="tag"><<span class="name">img</span> <span class="attr">src</span>=<span class="string">"http:..."</span> <span class="attr">width</span> = <span class="string">20%</span> <span class="attr">height</span> = <span class="string">20%</span> <span class="attr">div</span> <span class="attr">align</span>=<span class="string">right</span> /></span></span><br></pre></td></tr></tbody></table></figure>
-<h2 id="13-其他"><a href="#13-其他" class="headerlink" title="13.其他"></a>13.其他</h2><p>罗马数字 Ⅰ·Ⅱ·Ⅲ·Ⅳ·Ⅴ·Ⅵ·Ⅶ·Ⅷ·Ⅸ·Ⅹ·Ⅺ·Ⅻ  ① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩</p>
-</body></html>
-      
-    </div>
-
-
-    
-    
-    
-	
-	<div>
-     
-   </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-  
-  
-
   </div>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+  </nav>
 
 
 
@@ -1818,20 +1476,20 @@ hexo generatecp -R public/* .deploy/jiji262.github.iocd .deploy/jiji262.github.i
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

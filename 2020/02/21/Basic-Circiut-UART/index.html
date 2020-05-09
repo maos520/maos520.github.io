@@ -67,26 +67,21 @@
   };
 </script>
 
-  <meta name="description" content="一、FSM简介 有限状态机（Finite State Machine FSM） 有时也简称为 状态机，它是一种数学模型。通常用来设计电脑程序或者时序电路。 组成元素 ：   输入：   状态： 使用状态划分逻辑顺序和时序规律  输出：    描述方式 ：    状态转移图  状态转移表  HDL描述   分类：    状态机的框图如下：  Figure 1 - FSM Block Diagram">
+  <meta name="description" content="Perface​    UART是一种通用串行数据总线，用于异步通信。该总线双向通信，可以实现全双工传输和接收。在嵌入式设计中，UART用于主机与辅助设备通信，如汽车音响与外接AP之间的通信，与PC机通信包括与监控调试器和其它器件，如EEPROM通信。代码参考： Ⅰ· UART协议简介​     Ref">
 <meta property="og:type" content="article">
-<meta property="og:title" content="FSM设计">
-<meta property="og:url" content="https://maos520.github.io/2019/10/21/FSM%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:title" content="Basic Circuit -- UART">
+<meta property="og:url" content="https://maos520.github.io/2020/02/21/Basic-Circiut-UART/index.html">
 <meta property="og:site_name" content="Maos520">
-<meta property="og:description" content="一、FSM简介 有限状态机（Finite State Machine FSM） 有时也简称为 状态机，它是一种数学模型。通常用来设计电脑程序或者时序电路。 组成元素 ：   输入：   状态： 使用状态划分逻辑顺序和时序规律  输出：    描述方式 ：    状态转移图  状态转移表  HDL描述   分类：    状态机的框图如下：  Figure 1 - FSM Block Diagram">
+<meta property="og:description" content="Perface​    UART是一种通用串行数据总线，用于异步通信。该总线双向通信，可以实现全双工传输和接收。在嵌入式设计中，UART用于主机与辅助设备通信，如汽车音响与外接AP之间的通信，与PC机通信包括与监控调试器和其它器件，如EEPROM通信。代码参考： Ⅰ· UART协议简介​     Ref">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226104024.png/">
-<meta property="og:image" content="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226221039.png/">
-<meta property="og:image" content="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226222428.png/">
-<meta property="og:image" content="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226223109.png/">
-<meta property="article:published_time" content="2019-10-21T14:20:16.000Z">
-<meta property="article:modified_time" content="2020-01-03T05:20:26.000Z">
+<meta property="article:published_time" content="2020-02-21T03:52:56.000Z">
+<meta property="article:modified_time" content="2020-02-21T04:32:22.613Z">
 <meta property="article:author" content="maos520">
 <meta property="article:tag" content="Verilog">
-<meta property="article:tag" content="FSM">
+<meta property="article:tag" content="UART">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226104024.png/">
 
-<link rel="canonical" href="https://maos520.github.io/2019/10/21/FSM%E8%AE%BE%E8%AE%A1/">
+<link rel="canonical" href="https://maos520.github.io/2020/02/21/Basic-Circiut-UART/">
 
 
 <script id="page-configurations">
@@ -100,7 +95,7 @@
   };
 </script>
 
-  <title>FSM设计 | Maos520</title>
+  <title>Basic Circuit -- UART | Maos520</title>
   
 
 
@@ -214,7 +209,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/10/21/FSM%E8%AE%BE%E8%AE%A1/">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/02/21/Basic-Circiut-UART/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/timg.jpg">
@@ -227,7 +222,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          FSM设计
+          Basic Circuit -- UART
         </h1>
 
         <div class="post-meta">
@@ -236,30 +231,24 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2019-10-21 22:20:16" itemprop="dateCreated datePublished" datetime="2019-10-21T22:20:16+08:00">2019-10-21</time>
+              <time title="Created: 2020-02-21 11:52:56 / Modified: 12:32:22" itemprop="dateCreated datePublished" datetime="2020-02-21T11:52:56+08:00">2020-02-21</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-03 13:20:26" itemprop="dateModified" datetime="2020-01-03T13:20:26+08:00">2020-01-03</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Language/" itemprop="url" rel="index">
-                    <span itemprop="name">Language</span>
+                  <a href="/categories/FPGA-IC/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA&IC</span>
                   </a>
                 </span>
                   , 
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Language/Verilog/" itemprop="url" rel="index">
-                    <span itemprop="name">Verilog</span>
+                  <a href="/categories/FPGA-IC/Basic-Circuit/" itemprop="url" rel="index">
+                    <span itemprop="name">Basic Circuit</span>
                   </a>
                 </span>
             </span>
@@ -282,76 +271,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <html><head></head><body></body></html><html><head></head><body><h2 id="一、FSM简介"><a href="#一、FSM简介" class="headerlink" title="一、FSM简介"></a>一、FSM简介</h2><hr>
-<p><strong>有限状态机（Finite State Machine FSM）</strong> 有时也简称为 <strong>状态机</strong>，它是一种数学模型。通常用来设计电脑程序或者时序电路。</p>
-<p><strong>组成元素 ：</strong> </p>
-<ul>
-<li><p><strong>输入：</strong> </p>
-</li>
-<li><p><strong>状态：</strong> 使用状态划分逻辑顺序和时序规律</p>
-</li>
-<li><p><strong>输出：</strong> </p>
-</li>
-</ul>
-<p><strong>描述方式 ：</strong>  </p>
-<ul>
-<li><p>状态转移图</p>
-</li>
-<li><p>状态转移表</p>
-</li>
-<li><p>HDL描述</p>
-</li>
-</ul>
-<p><strong>分类：</strong></p>
-<p>   状态机的框图如下：</p>
-<div align="center"><img src="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226104024.png/"></div>
-<center><strong>Figure 1 - FSM Block Diagram</strong></center>
-   按照输出的方式，可以将状态机分为两类：
-
-<ul>
-<li><p>Moore</p>
-<p>它的输出只取决于当前状态，而与输入无关。Moore 状态机最重要的特点就是将输入与输出信号隔离开来，而且输出与时钟信号同步的。</p>
-</li>
-<li><p>Meely</p>
-<p>不仅和当前状态有关，而且和输入也有关。Mealy 有限状态机对输入的响应发生在当前时钟周期，比 Moore 有限状态机对输入信号的响应要早一个周期。因此，输入信号的噪声可能影响在输出的信号。</p>
-</li>
-</ul>
-<h2 id="二、状态机实现"><a href="#二、状态机实现" class="headerlink" title="二、状态机实现"></a>二、状态机实现</h2><h3 id="coding-goals"><a href="#coding-goals" class="headerlink" title="coding goals"></a>coding goals</h3><p>我们的代码需要达到的目的应该是：</p>
-<blockquote>
-<ol>
-<li>The FSM coding style should be easily modified to change state encodings and FSM styles</li>
-<li>The coding style should be compact</li>
-<li>The coding style should be easy to code and understand</li>
-<li>The coding style should facilitate debugging</li>
-<li>The coding style should yield efficient synthesis results</li>
-</ol>
-</blockquote>
-<h3 id="Always-Block"><a href="#Always-Block" class="headerlink" title="Always Block"></a>Always Block</h3><p>状态机一般有三种写法，他们在速度、面积、代码可维护性等各个方面互有优劣。</p>
-<p><strong>一段式：</strong> 其描述结构图如图2 ， 只有一个always block，把所有的逻辑（输入、输出、状态）都在一个always block中实现</p>
-<ul>
-<li>优点：看起来很简洁</li>
-<li>缺点：代码不清晰，不利于维护，不利于附加约束。</li>
-</ul>
-<p>不推荐这种方法，但是在简单的状态机可以使用。</p>
-<div align="center"><img src="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226221039.png/"></div>
-<center><strong>Figure 2 一段式描述结构图</strong></center>
-**二段式：** 其描述结构图如图3，有两个always block，把时序逻辑和组合逻辑分隔开来。时序逻辑里进行当前状态和下一状态的切换，组合逻辑实现各个输入、输出以及状态判断。
-
-<ul>
-<li>优点：便于阅读、理解、维护，而且利于综合器优化代码，利于用户添加合适的时序约束条件，利于布局布线器实现设计</li>
-<li>缺点：输出是组合逻辑，可能含有毛刺 <div align="center"><img src="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226222428.png/"></div>
-<center><strong>Figure 3 二段式描述结构图</strong></center>
-解决输出毛刺的问题，最简单的方法就是用寄存器打一拍，但很多情况不允许插入寄存器节拍，此时使用三段式描述。其优势在于能够根据状态转移规律，在上一状态根据输入条件判断出当前状态的输出，从而不需要额外插入时钟节拍。
-
-</li>
-</ul>
-<p><strong>三段式：</strong> 其描述结构图如图4 有三个always block，一个时序逻辑采用同步时序的方式描述状态转移，一个采用组合逻辑的方式判断状态转移条件、描述状态转移规律，第三个模块使用同步时序的方式描述每个状态的输出。这 3 个 always block 正好对应图示的 3 个子模块，更加容易理解。</p>
-<ul>
-<li>优点：代码容易维护，时序逻辑的输出解决了两段式组合逻辑的毛刺问题</li>
-<li>缺点： 代码量大、资源消耗多一些，从输入到寄存器状态输出的路径上，要经过两部分组合逻辑，时序相对紧张。</li>
-</ul>
-<div align="center"><img src="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226223109.png/"></div>
-<center><strong>Figure 4 三段式描述结构图</strong></center></body></html>
+        <html><head></head><body></body></html><html><head></head><body><h2 id="Perface"><a href="#Perface" class="headerlink" title="Perface"></a>Perface</h2><p>​    UART是一种通用串行数据总线，用于异步通信。该总线双向通信，可以实现全双工传输和接收。在嵌入式设计中，UART用于主机与辅助设备通信，如汽车音响与外接AP之间的通信，与PC机通信包括与监控调试器和其它器件，如EEPROM通信。代码参考：</p>
+<h2 id="Ⅰ·-UART协议简介"><a href="#Ⅰ·-UART协议简介" class="headerlink" title="Ⅰ· UART协议简介"></a>Ⅰ· UART协议简介</h2><p>​    </p>
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2></body></html>
     </div>
 
 
@@ -366,23 +288,23 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/Verilog/" rel="tag"># Verilog</a>
-              <a href="/tags/FSM/" rel="tag"># FSM</a>
+              <a href="/tags/UART/" rel="tag"># UART</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
-                <a href="/2019/10/21/Hexo%20+%20Github%20%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="next" title="Hexo + Github 个人博客环境搭建">
-                  <i class="fa fa-chevron-left"></i> Hexo + Github 个人博客环境搭建
+                <a href="/2020/02/13/Basic-Circiut-RISC-SPM/" rel="next" title="Basic Circiut —— RISC_SPM">
+                  <i class="fa fa-chevron-left"></i> Basic Circiut —— RISC_SPM
                 </a>
             </div>
 
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-                <a href="/2019/10/22/vim%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" rel="prev" title="vim常用命令">
-                  vim常用命令 <i class="fa fa-chevron-right"></i>
+                <a href="/2020/03/13/Eyeriss-v2-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" rel="prev" title="Eyeriss v2 阅读笔记">
+                  Eyeriss v2 阅读笔记 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -423,7 +345,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、FSM简介"><span class="nav-text">一、FSM简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、状态机实现"><span class="nav-text">二、状态机实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#coding-goals"><span class="nav-text">coding goals</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Always-Block"><span class="nav-text">Always Block</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Perface"><span class="nav-text">Perface</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅰ·-UART协议简介"><span class="nav-text">Ⅰ· UART协议简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ref"><span class="nav-text">Ref</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -439,20 +361,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

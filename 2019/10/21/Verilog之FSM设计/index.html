@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Maos520" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="一、FSM简介 有限状态机（Finite State Machine FSM） 有时也简称为 状态机，它是一种数学模型。通常用来设计电脑程序或者时序电路。 组成元素 ：   输入：   状态： 使用状态划分逻辑顺序和时序规律  输出：    描述方式 ：    状态转移图  状态转移表  HDL描述   分类：    状态机的框图如下：  Figure 1 - FSM Block Diagram">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Verilog之FSM设计">
+<meta property="og:url" content="https://maos520.github.io/2019/10/21/Verilog%E4%B9%8BFSM%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:site_name" content="Maos520">
+<meta property="og:description" content="一、FSM简介 有限状态机（Finite State Machine FSM） 有时也简称为 状态机，它是一种数学模型。通常用来设计电脑程序或者时序电路。 组成元素 ：   输入：   状态： 使用状态划分逻辑顺序和时序规律  输出：    描述方式 ：    状态转移图  状态转移表  HDL描述   分类：    状态机的框图如下：  Figure 1 - FSM Block Diagram">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226104024.png/">
+<meta property="og:image" content="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226221039.png/">
+<meta property="og:image" content="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226222428.png/">
+<meta property="og:image" content="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226223109.png/">
+<meta property="article:published_time" content="2019-10-21T14:20:16.000Z">
+<meta property="article:modified_time" content="2020-04-30T14:02:13.358Z">
+<meta property="article:author" content="maos520">
+<meta property="article:tag" content="Verilog">
+<meta property="article:tag" content="FSM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226104024.png/">
+
+<link rel="canonical" href="https://maos520.github.io/2019/10/21/Verilog%E4%B9%8BFSM%E8%AE%BE%E8%AE%A1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Verilog之FSM设计 | Maos520</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/maos520" target="_blank" rel="noopener"><img width="149" height="149" style = "position: absolute; top: 0; right: 0; border: 0;" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+   
+   <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Maos520</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">不忘初心，方得始终</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/10/21/Verilog%E4%B9%8BFSM%E8%AE%BE%E8%AE%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Verilog之FSM设计
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-10-21 22:20:16" itemprop="dateCreated datePublished" datetime="2019-10-21T22:20:16+08:00">2019-10-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-04-30 22:02:13" itemprop="dateModified" datetime="2020-04-30T22:02:13+08:00">2020-04-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Language/" itemprop="url" rel="index">
+                    <span itemprop="name">Language</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Language/Verilog/" itemprop="url" rel="index">
+                    <span itemprop="name">Verilog</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <html><head></head><body></body></html><html><head></head><body><h2 id="一、FSM简介"><a href="#一、FSM简介" class="headerlink" title="一、FSM简介"></a>一、FSM简介</h2><hr>
+<p><strong>有限状态机（Finite State Machine FSM）</strong> 有时也简称为 <strong>状态机</strong>，它是一种数学模型。通常用来设计电脑程序或者时序电路。</p>
+<p><strong>组成元素 ：</strong> </p>
+<ul>
+<li><p><strong>输入：</strong> </p>
+</li>
+<li><p><strong>状态：</strong> 使用状态划分逻辑顺序和时序规律</p>
+</li>
+<li><p><strong>输出：</strong> </p>
+</li>
+</ul>
+<p><strong>描述方式 ：</strong>  </p>
+<ul>
+<li><p>状态转移图</p>
+</li>
+<li><p>状态转移表</p>
+</li>
+<li><p>HDL描述</p>
+</li>
+</ul>
+<p><strong>分类：</strong></p>
+<p>   状态机的框图如下：</p>
+<div align="center"><img src="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226104024.png/"></div>
+<center><strong>Figure 1 - FSM Block Diagram</strong></center>
+   按照输出的方式，可以将状态机分为两类：
+
+<ul>
+<li><p>Moore</p>
+<p>它的输出只取决于当前状态，而与输入无关。Moore 状态机最重要的特点就是将输入与输出信号隔离开来，而且输出与时钟信号同步的。</p>
+</li>
+<li><p>Meely</p>
+<p>不仅和当前状态有关，而且和输入也有关。Mealy 有限状态机对输入的响应发生在当前时钟周期，比 Moore 有限状态机对输入信号的响应要早一个周期。因此，输入信号的噪声可能影响在输出的信号。</p>
+</li>
+</ul>
+<h2 id="二、状态机实现"><a href="#二、状态机实现" class="headerlink" title="二、状态机实现"></a>二、状态机实现</h2><h3 id="2-1-coding-goals"><a href="#2-1-coding-goals" class="headerlink" title="2.1 coding goals"></a>2.1 coding goals</h3><p>我们的代码需要达到的目的应该是：</p>
+<blockquote>
+<ol>
+<li>The FSM coding style should be easily modified to change state encodings and FSM styles</li>
+<li>The coding style should be compact</li>
+<li>The coding style should be easy to code and understand</li>
+<li>The coding style should facilitate debugging</li>
+<li>The coding style should yield efficient synthesis results</li>
+</ol>
+</blockquote>
+<h3 id="2-2-Always-Block"><a href="#2-2-Always-Block" class="headerlink" title="2.2 Always Block"></a>2.2 Always Block</h3><p>状态机一般有三种写法，他们在速度、面积、代码可维护性等各个方面互有优劣。</p>
+<p><strong>一段式：</strong> 其描述结构图如图2 ， 只有一个always block，把所有的逻辑（输入、输出、状态）都在一个always block中实现</p>
+<ul>
+<li>优点：看起来很简洁</li>
+<li>缺点：代码不清晰，不利于维护，不利于附加约束。</li>
+</ul>
+<p>不推荐这种方法，但是在简单的状态机可以使用。</p>
+<div align="center"><img src="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226221039.png/"></div>
+<center><strong>Figure 2 一段式描述结构图</strong></center>
+**二段式：** 其描述结构图如图3，有两个always block，把时序逻辑和组合逻辑分隔开来。时序逻辑里进行当前状态和下一状态的切换，组合逻辑实现各个输入、输出以及状态判断。
+
+<ul>
+<li>优点：便于阅读、理解、维护，而且利于综合器优化代码，利于用户添加合适的时序约束条件，利于布局布线器实现设计</li>
+<li>缺点：输出是组合逻辑，可能含有毛刺 <div align="center"><img src="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226222428.png/"></div>
+<center><strong>Figure 3 二段式描述结构图</strong></center>
+解决输出毛刺的问题，最简单的方法就是用寄存器打一拍，但很多情况不允许插入寄存器节拍，此时使用三段式描述。其优势在于能够根据状态转移规律，在上一状态根据输入条件判断出当前状态的输出，从而不需要额外插入时钟节拍。
+
+</li>
+</ul>
+<p><strong>三段式：</strong> 其描述结构图如图4 有三个always block，一个时序逻辑采用同步时序的方式描述状态转移，一个采用组合逻辑的方式判断状态转移条件、描述状态转移规律，第三个模块使用同步时序的方式描述每个状态的输出。这 3 个 always block 正好对应图示的 3 个子模块，更加容易理解。</p>
+<ul>
+<li>优点：代码容易维护，时序逻辑的输出解决了两段式组合逻辑的毛刺问题</li>
+<li>缺点： 代码量大、资源消耗多一些，从输入到寄存器状态输出的路径上，要经过两部分组合逻辑，时序相对紧张。</li>
+</ul>
+<div align="center"><img src="https://raw.githubusercontent.com/maos520/PictureBed/master/img20191226223109.png/"></div>
+<center><strong>Figure 4 三段式描述结构图</strong></center>
+### 2.3 State Encode
+
+<p>状态机的状态编码，通常有Binary、One-hot、Gray码等几种。</p>
+<p><strong>Binary码</strong></p>
+<p>二进制编码即采用最简单的递增的方式编码，对于n个状态的状态机，共需要log2（n）个触发器表示所有状态。</p>
+<ul>
+<li><p><strong>优点：</strong>对于状态较多的状态机，可以大大的减少触发器的数量，对设计的面积有积极的影响。</p>
+</li>
+<li><p><strong>缺点：</strong> 状态跳转的过程中，很可能出现多位同时变化的情况，容易在下一状生成逻辑上产生毛刺，同时，输出也是所有状态位的译码，译码电路多数很复杂，往往成为整个设计的关键路径。</p>
+</li>
+</ul>
+<p><strong>Gray码</strong></p>
+<p>类似 Binary，但是采用了格雷码的编码方式，每两个相邻的状态只有一位信号变化。</p>
+<ul>
+<li><p>优点：避免了 next state 上毛刺的产生。同时两个相邻状态的输出译码变得简单了，避免了复杂组合逻辑的产生。</p>
+</li>
+<li><p>缺点；格雷码的这些优点都是建立在状态跳转是顺序执行的基础上的。如果状态机有很多随机跳转和分支，格雷码的实际效果和二进制码相差无几，优势荡然无存。</p>
+</li>
+</ul>
+<p><strong>One-Hot 码</strong></p>
+<p>当前设计中最常用的状态机编码方式。One-Hot 编码在一组 0 中只有一个 1，对一个 n 个状态的 FSM 设计，需要 n 个触发器。</p>
+<ul>
+<li>优点：在任意两个状态之间跳转都只有两位状态位变化，不会产生非常复杂的组合逻辑。各个状态之间的译码也相对简单。</li>
+<li>缺点：对状态编码需要的寄存器比其他方式多，不过这个缺点基本可以忽略吧</li>
+</ul>
+<h3 id="4-Safe-FSM"><a href="#4-Safe-FSM" class="headerlink" title=".4 Safe FSM"></a>.4 Safe FSM</h3><p>所谓的安全的状态机是指，因为一些意外的原因，比如电磁辐射，电路异常导致状态机进入未定的状态，即“跑飞了”，仍然能返回安全正常状态。</p>
+<p><strong>Solution</strong> </p>
+<p>1.如果我们对状态向量的所有取值情况都显式地进行了说明，那么这个状态机就是安全的，否则就是不安全的。书写完备的 <code>case</code> 语句。在代码中对每一种可能的取值对进行描述，对于不使用的状态编码，一定要有 <code>default</code> 分支进行说明。</p>
+<p>2.通过给综合工具设置相应的综合参数来保证case的完备性，但是此种方法会导致前后仿真不一致的问题，通常不用。</p>
+<p><strong>Caution！！！</strong></p>
+<p>完备的状态机可以使状态机回到正常的状态，但是外围电路并没有随着状态机的恢复而恢复，所以仅仅恢复到正常状态还不够，最好增加一个错误状态专门和外围电路进行通信。当FSM进入错误状态时，外围电路会检测这个错误状态，并采取合适的措施（如重启，复位等）。</p>
+<p>可以采用以下两种方式：</p>
+<p>1.显示的定义一个ERROR 状态</p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">parameter</span> [<span class="number">4</span>:<span class="number">0</span>] IDLE = <span class="number">5'd0</span>,</span><br><span class="line">			   S0   = <span class="number">5'd1</span>,</span><br><span class="line">			   S1   = <span class="number">5'd2</span>,</span><br><span class="line">			   S2   = <span class="number">5'd3</span>,</span><br><span class="line">                ERROR = <span class="number">5'd4</span>;</span><br><span class="line"><span class="comment">//在case item中添加如下代码</span></span><br><span class="line">CS[ERROR] : <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(restart) NS[IDLE] = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>2.ZERO 状态</p>
+<p>在状态定义时，不用显示的定义一个ERROR态，用全0表示ERROR：</p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~|CS:<span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(restart) NS[IDLE] = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="2-5-转移条件判断注意问题"><a href="#2-5-转移条件判断注意问题" class="headerlink" title="2.5 转移条件判断注意问题"></a>2.5 转移条件判断注意问题</h3><p><strong>使用 case 的原则：</strong> 尽量不要使用综合指令 full_case 和 parallel_case，而是代码本身满足 full、parallel 的条件（因为综合指令可能导致前后仿真不一致的问题）</p>
+<p>下面根据状态编码方案分类讨论：</p>
+<ol>
+<li><p>如果使用 “非 index one-hot + 非 reverse case” 的方法，那么在第二个 always block 中，在 case 前给 NS 一个默认值（如下）</p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NS = <span class="number">8'bx</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这是个很有用的小技巧，它可以帮助我们在综合前发现状态是否完备：如果状态完备，则在下面的 <code>case</code> 中会给 <code>NS</code> 合适的值；如果状态不完备，则状态机会进入错误状态，输出不定，仿真时可以很快的发现。而且，综合工具对于 <code>x</code> 采取的态度是 <code>don't care</code>，综合时会自动将其忽略，生成的电路最简洁。</p>
+</li>
+<li><p>如果使用 index one-hot + reverse case 的方式：</p>
+<ul>
+<li><p>NS 必须赋值为全 0：</p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NS = <span class="number">8'b0</span>;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>使用 synopsys 综合指令</p>
+<p>一般的原则是尽量不要使用综合指令，这里是个特殊情况。</p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// synopsys full_case parallel_case</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>default 分支</p>
+<p>使用了综合指令，则 default 分支在综合时就没有必要，但是仿真器并不能识别综合指令，所以在行为仿真的时候仍然需要 default 分支，所以可以用下面的方法：</p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// synopsys translate_off</span></span><br><span class="line"><span class="keyword">default</span>: <span class="built_in">$display</span>(<span class="string">"FSM is dead!"</span>);</span><br><span class="line"><span class="comment">// synopsys translate_on</span></span><br></pre></td></tr></tbody></table></figure>
+
+</li>
+</ul>
+<p>采用 index one-hot + reverse case 的方式，这里违背了 case 语句本身满足 full_case、parallel_case 的原则，使用了综合指令、并且省掉了 default 分支，是唯一的例外情况，其他情况下都应该遵守这一原则！</p>
+</li>
+</ol>
+<p>2.6 Output</p>
+<p><strong>避免 Latch</strong></p>
+<ol>
+<li>在第三个 <code>always</code> 中，在 <code>case</code> 前，所有的输出都有默认的值，这样做的好处是可以消除 <code>Latch</code> 的出现，而且，可以减少在后面每种状态下重复相同的赋值，而且强调显示了 case 内哪个输出发生了变化。</li>
+<li>另外一种避免 latch 的方法：书写完备的 <code>if-else</code> 和 <code>case</code> 语句。</li>
+</ol>
+<p><strong>消除输出毛刺</strong></p>
+<p>对于三段式，因为输出是寄存器输出，所以解决了输出毛次。</p>
+<p>讨论一下采用寄存器输出的方式对设计的影响</p>
+<ol>
+<li><p>输出采用寄存器驱动可以优化 FSM 的时序性能</p>
+<p>影响一个时序电路运行速度的主要因素是两个寄存器之间的组合逻辑路径的长度，越长的组合逻辑路径，其时序性能越差。一个电路中的最长组合逻辑路径决定了这个电路最高运行速率，该路径就是这个电路的关键路径（<code>critical path</code>）。所以，切断最长的组合逻辑路径可以提高局部电路的运行速度，切断多个较长的组合逻辑路径可以提高整体电路的运行速度。切断组合逻辑路径的工具就是寄存器。所以，添加寄存器可以提高电路的性能，但是会增加资源的消耗，这也是速度（speed）和面积（area）互为矛盾的原因。</p>
+<p>在考虑 FSM 的时序问题时，不能独立的考虑 FSM 本身，需要综合考虑 FSM 模块和下游模块构成的电路。在 FSM 不采用输出寄存时，在 FSM 模块和下游模块的接口处，是两部分组合逻辑直接相连。关键路径由两部分组合逻辑构成；在 FSM 采用输出寄存时，两个模块的组合逻辑被分隔成两部分，可能的关键路径被切断了。同步寄存器输出和组合逻辑输出就是采用资源优化还是速度优化的问题。组合逻辑表面上会提高电路的速度，看似节省了资源而且提高了速度，其实不然（对 FPGA 结构来说，节省寄存器不等于节省 LE；对同步设计来说，异步输出速度上的优势是可以忽略的）。</p>
+</li>
+<li><p>输出采用寄存器驱动会降低输出队输入信号变化的响应速度？</p>
+<p>到底应不应该采用 FSM 输出寄存器？是否必须在时序性能和响应速度之间做出取舍？在同步设计中，答案是必须牺牲一定的响应速度以换取更佳的时序性能，只考虑响应速度会带来潜在的时序性能损失。</p>
+<p>在考虑 FSM 的响应速度时，不能独立的考虑 FSM 本身，需要综合考虑 FSM 模块和上、下游模块构成的电路。采用输出寄存器的电路可以运行在更高的时钟频率下，所引入的响应时延与更高的运行频率相比是可以牺牲的。</p>
+</li>
+</ol>
+<h2 id="3-FSM模板"><a href="#3-FSM模板" class="headerlink" title="3.FSM模板"></a>3.FSM模板</h2><p>模板采用 index one-hot + reverse case</p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">parameter</span> [<span class="number">3</span>:<span class="number">0</span>] IDLE = <span class="number">0</span>,</span><br><span class="line">			   S1   = <span class="number">1</span>,</span><br><span class="line">                S2   = <span class="number">2</span>,</span><br><span class="line">                S3   = <span class="number">3</span>;</span><br><span class="line"><span class="keyword">reg</span> [<span class="number">3</span>:<span class="number">0</span>] CS,NS;</span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @(<span class="keyword">posedge</span> clk <span class="keyword">or</span> <span class="keyword">negedge</span> rst_n) </span><br><span class="line">    <span class="keyword">if</span>(!rst_n) <span class="keyword">begin</span></span><br><span class="line">    	CS <= <span class="number">4'b0</span>;</span><br><span class="line">        CS[IDLE] <= <span class="number">1'b1</span>;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">        CS <= NS;</span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @* <span class="keyword">begin</span></span><br><span class="line">	NS = <span class="number">4'b0</span>; </span><br><span class="line">    <span class="keyword">case</span>(<span class="number">1'b1</span>)</span><br><span class="line">        CS[IDLE] : <span class="keyword">begin</span></span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="keyword">endcase</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @(<span class="keyword">posedge</span> clk <span class="keyword">or</span> <span class="keyword">negedge</span> rst_n) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(!rst_n)<span class="keyword">begin</span></span><br><span class="line">    <span class="comment">//reset</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">begin</span></span><br><span class="line">    	<span class="comment">//default output</span></span><br><span class="line">        <span class="keyword">case</span>(<span class="number">1'b1</span>)</span><br><span class="line">            NS[IDLE] : <span class="keyword">begin</span></span><br><span class="line">            ...</span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">            ...</span><br><span class="line">        <span class="keyword">endcase</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h2 id="4-REF"><a href="#4-REF" class="headerlink" title="4.REF"></a>4.REF</h2><p><a href="http://www.sunburst-design.com/papers/CummingsSNUG1998SJ_FSM.pdf" target="_blank" rel="noopener">Clifford E. Cumming State Machine Coding Styles for Synthesis</a></p>
+<p><a href="http://www.sunburst-design.com/papers/CummingsICU2002_FSMFundamentals.pdf" target="_blank" rel="noopener">Clifford E. Cumming The Fundamentals of Efficient Synthesizable Finite State Machine Design using NC-Verilog and BuildGates</a></p>
+<p><a href="http://www.trilobyte.com/pdf/golson_snug94.pdf" target="_blank" rel="noopener">Steve Golson State machine design techniques for Verilog and VHDL</a></p>
+<p><a href="http://guqian110.github.io/posts/ic/fsm_design.html#fsm_design" target="_blank" rel="noopener">有限状态机FSM设计</a></p>
+</body></html>
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+ 
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Verilog/" rel="tag"># Verilog</a>
+              <a href="/tags/FSM/" rel="tag"># FSM</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/10/21/Hexo%20+%20Github%20%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="next" title="Hexo + Github 个人博客环境搭建">
+                  <i class="fa fa-chevron-left"></i> Hexo + Github 个人博客环境搭建
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/10/22/vim%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" rel="prev" title="vim常用命令">
+                  vim常用命令 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、FSM简介"><span class="nav-text">一、FSM简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、状态机实现"><span class="nav-text">二、状态机实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-coding-goals"><span class="nav-text">2.1 coding goals</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Always-Block"><span class="nav-text">2.2 Always Block</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Safe-FSM"><span class="nav-text">.4 Safe FSM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-转移条件判断注意问题"><span class="nav-text">2.5 转移条件判断注意问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-FSM模板"><span class="nav-text">3.FSM模板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-REF"><span class="nav-text">4.REF</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="maos520"
+    src="/images/timg.jpg">
+  <p class="site-author-name" itemprop="name">maos520</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/maos520" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;maos520" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/sujingjing@sina.com" title="E-Mail &amp;rarr; sujingjing@sina.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">maos520</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.2
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.4.2.js"></script>
+
+<script src="/js/motion.js?v=7.4.2.js"></script>
+
+
+<script src="/js/schemes/pisces.js?v=7.4.2.js"></script>
+
+
+<script src="/js/next-boot.js?v=7.4.2.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Maos520" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Ⅰ·Preface​    case语句是多路决策语句，与if-else语句以及多if语句类似，后两者带有明显的优先级特点，而case语句可以通过设计判断项目以及综合指令去除优先级。 Ⅱ·case语句执行​    case语句的基本定义以及语法形式，这里不再赘述，主要记录下case的执行过程：  计算 case expression，只计算一次，然后按照代码顺序从上向下和 case item 逐个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Verilog之case语句小结">
+<meta property="og:url" content="https://maos520.github.io/2020/04/28/Verilog%E4%B9%8Bcase%E8%AF%AD%E5%8F%A5%E5%B0%8F%E7%BB%93/index.html">
+<meta property="og:site_name" content="Maos520">
+<meta property="og:description" content="Ⅰ·Preface​    case语句是多路决策语句，与if-else语句以及多if语句类似，后两者带有明显的优先级特点，而case语句可以通过设计判断项目以及综合指令去除优先级。 Ⅱ·case语句执行​    case语句的基本定义以及语法形式，这里不再赘述，主要记录下case的执行过程：  计算 case expression，只计算一次，然后按照代码顺序从上向下和 case item 逐个">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200430212753.png">
+<meta property="article:published_time" content="2020-04-28T11:17:07.000Z">
+<meta property="article:modified_time" content="2020-05-09T13:28:00.064Z">
+<meta property="article:author" content="maos520">
+<meta property="article:tag" content="Verilog">
+<meta property="article:tag" content="FSM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200430212753.png">
+
+<link rel="canonical" href="https://maos520.github.io/2020/04/28/Verilog%E4%B9%8Bcase%E8%AF%AD%E5%8F%A5%E5%B0%8F%E7%BB%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Verilog之case语句小结 | Maos520</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/maos520" target="_blank" rel="noopener"><img width="149" height="149" style = "position: absolute; top: 0; right: 0; border: 0;" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+   
+   <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Maos520</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">不忘初心，方得始终</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/04/28/Verilog%E4%B9%8Bcase%E8%AF%AD%E5%8F%A5%E5%B0%8F%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Verilog之case语句小结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-28 19:17:07" itemprop="dateCreated datePublished" datetime="2020-04-28T19:17:07+08:00">2020-04-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-05-09 21:28:00" itemprop="dateModified" datetime="2020-05-09T21:28:00+08:00">2020-05-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Language/" itemprop="url" rel="index">
+                    <span itemprop="name">Language</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Language/Verilog/" itemprop="url" rel="index">
+                    <span itemprop="name">Verilog</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <html><head></head><body></body></html><html><head></head><body><h2 id="Ⅰ·Preface"><a href="#Ⅰ·Preface" class="headerlink" title="Ⅰ·Preface"></a>Ⅰ·Preface</h2><p>​    case语句是多路决策语句，与if-else语句以及多if语句类似，后两者带有明显的优先级特点，而case语句可以通过设计判断项目以及综合指令去除优先级。</p>
+<h2 id="Ⅱ·case语句执行"><a href="#Ⅱ·case语句执行" class="headerlink" title="Ⅱ·case语句执行"></a>Ⅱ·case语句执行</h2><p>​    case语句的基本定义以及语法形式，这里不再赘述，主要记录下case的执行过程：</p>
+<ol>
+<li>计算 case expression，只计算一次，然后按照代码顺序从上向下和 case item 逐个比较</li>
+<li>比较过程中，如果有 default 分支，则暂时先忽略</li>
+<li>如果有某个 item 和 expression 匹配，则执行此 item 下的语句</li>
+<li>如果匹配失败，有 default 分支，则执行该 default 分支</li>
+<li>如果匹配失败，没有 default 分支，则终止</li>
+</ol>
+<p>这个按照顺序比较的过程就是可能导致 priority encoder 的原因。</p>
+<h2 id="Ⅲ·-Full-case"><a href="#Ⅲ·-Full-case" class="headerlink" title="Ⅲ· Full case"></a>Ⅲ· Full case</h2><p>“full” 的意思就是 expression 的任何取值都有一个 item/default 分支与其对应，否者就不是 “full case”。</p>
+<p>**example1: Non-“full” case</p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> mux3a (y, a, b, c, d, sel);</span><br><span class="line">    <span class="keyword">output</span> y;</span><br><span class="line">    <span class="keyword">input</span> [<span class="number">1</span>:<span class="number">0</span>] sel;</span><br><span class="line">    <span class="keyword">input</span> a, b, c;</span><br><span class="line">    <span class="keyword">reg</span> y;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">always</span> @* <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">case</span> (sel)</span><br><span class="line">            <span class="number">2'b00</span>: y = a;</span><br><span class="line">            <span class="number">2'b01</span>: y = b;</span><br><span class="line">            <span class="number">2'b10</span>: y = c;</span><br><span class="line">        <span class="keyword">endcase</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>在这个例子中，当 sel 的取值是 2’b11 时，由于没有定义输出值 y 为多少，仿真器会保持之前的取值，综合器会综合出一个 latch。</p>
+<p>避免产生latch的方法主要有3种：</p>
+<p>1.综合指令(* full case *)，不同的综合工具指令的形式不同但是作用相同，虽然这些指令有好处，但是一定要谨慎使用，而且使用时需要注意：</p>
+<p>​    + 这些综合指令只对综合工具有用，仿真工具会自动忽略这些指令，所以有可能造成前后仿真不一致的问题</p>
+<p>​    + 有时候使用指令，会适得其反，导致结果面积变大、速度变慢</p>
+<ul>
+<li>一般有迷信的说法：“使用 full case 指令，可以消除 latch。” 这个说法太绝对了，事实上并不总是这样。如果有多个输出需要赋值，而有些分支只忽略了一些赋值，那么即使使用 full_case 指令，也不能避免 latch 的产生。</li>
+</ul>
+<ol start="2">
+<li>添加default分支</li>
+<li>在case语句前，给所有的输出赋一个默认这。<h2 id="Ⅳ·-‘Parallel’-case-statement"><a href="#Ⅳ·-‘Parallel’-case-statement" class="headerlink" title="Ⅳ· ‘Parallel’ case statement"></a>Ⅳ· ‘Parallel’ case statement</h2></li>
+</ol>
+<p>“parallel” 的意思就是 expression 的取值每次有且只有一个 item 与其对应，否则就不是 “parallel” case，而匹配的 items 称为 “overlapping” case items。不满足parallel case条件的语句往往以为着会综合出优先级电路，优先级意味着语句的执行与否不仅仅取决于其对应的case item 还受其之前的case items。下图是带优先级和不带优先级的电路结构示意图。</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200430212753.png"></div>
+<center><strong>Figure 1 - 左边带优先级结构示意图，右边不带优先级结构示意图</strong></center>
+"parallel" 的意思就是 expression 的取值每次有且只有一个 item 与其对应，否则就不是 "parallel" case，而匹配的 items 称为 "overlapping" case items。
+
+<h3 id="1-Non-parallel-case-statements"><a href="#1-Non-parallel-case-statements" class="headerlink" title="1. Non-parallel case statements"></a>1. Non-parallel case statements</h3><figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">always</span> @sel <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">casez</span> (sel)</span><br><span class="line">        <span class="number">3'b1</span>??: y = <span class="number">3'b100</span>;</span><br><span class="line">        <span class="number">3</span>'b?<span class="number">1</span>?: y = <span class="number">3'b010</span>;</span><br><span class="line">        <span class="number">3</span>'b??<span class="number">1</span>: y = <span class="number">3'b001</span>;</span><br><span class="line">    <span class="keyword">endcase</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>当输入是 3’b011, 3’b101, 3’b110, 3’b111 时，会有多个 item 与 expression 对应，所以不是 parallel 的，会综合出一个 priority encoder。</p>
+<h3 id="2-Parallel-case-statements"><a href="#2-Parallel-case-statements" class="headerlink" title="2. Parallel case statements"></a>2. Parallel case statements</h3><p>对上面的例子稍微修改一下，就得到了 parallel case：</p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">always</span> @sel <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">casez</span> (sel)</span><br><span class="line">        <span class="number">3'b1</span>??: y1 = <span class="number">1'b1</span>;</span><br><span class="line">        <span class="number">3'b01</span>?: y2 = <span class="number">1'b1</span>;</span><br><span class="line">        <span class="number">3'b001</span>: y3 = <span class="number">1'b1</span>;</span><br><span class="line">    <span class="keyword">endcase</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="3-XST-parallel-case"><a href="#3-XST-parallel-case" class="headerlink" title="3. XST parallel case"></a>3. XST parallel case</h3><p>语法同 full case，只需要将 full_case 替换为 parallel_case 即可。如果 case 本来就是 parallel 的，那么这个指令就完全不起作用，只是一些额外的代码。</p>
+<p>不要故意使用 Non-parallel case 来推译 priority encoder，这是不好的编程习惯。如果我们的目的就是要生成 priority encoder，应该使用级联的 if-else 语句，这样更能表达意图。</p>
+<h2 id="Ⅴ·-REF"><a href="#Ⅴ·-REF" class="headerlink" title="Ⅴ· REF"></a>Ⅴ· REF</h2><p><a href="http://www.sunburst-design.com/papers/CummingsSNUG1999Boston_FullParallelCase.pdf" target="_blank" rel="noopener">“full_case parallel_case”, the Evil Twins of Verilog Synthesis</a></p>
+<p><a href="http://www.phei.com.cn/module/goods/wssd_content.jsp?bookid=38848" target="_blank" rel="noopener">Verilog 编程艺术</a></p>
+<p><a href="http://guqian110.github.io/posts/ic/summary_of_case_in_verilog.html#summary_of_case_in_verilog" target="_blank" rel="noopener">Verilog 的 case 小结</a></p>
+</body></html>
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+ 
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Verilog/" rel="tag"># Verilog</a>
+              <a href="/tags/FSM/" rel="tag"># FSM</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2020/03/13/Eyeriss-v2-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" rel="next" title="Eyeriss v2 阅读笔记">
+                  <i class="fa fa-chevron-left"></i> Eyeriss v2 阅读笔记
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅰ·Preface"><span class="nav-text">Ⅰ·Preface</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅱ·case语句执行"><span class="nav-text">Ⅱ·case语句执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅲ·-Full-case"><span class="nav-text">Ⅲ· Full case</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅳ·-‘Parallel’-case-statement"><span class="nav-text">Ⅳ· ‘Parallel’ case statement</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Non-parallel-case-statements"><span class="nav-text">1. Non-parallel case statements</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Parallel-case-statements"><span class="nav-text">2. Parallel case statements</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-XST-parallel-case"><span class="nav-text">3. XST parallel case</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅴ·-REF"><span class="nav-text">Ⅴ· REF</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="maos520"
+    src="/images/timg.jpg">
+  <p class="site-author-name" itemprop="name">maos520</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/maos520" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;maos520" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/sujingjing@sina.com" title="E-Mail &amp;rarr; sujingjing@sina.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">maos520</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.2
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.4.2.js"></script>
+
+<script src="/js/motion.js?v=7.4.2.js"></script>
+
+
+<script src="/js/schemes/pisces.js?v=7.4.2.js"></script>
+
+
+<script src="/js/next-boot.js?v=7.4.2.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
