@@ -67,21 +67,28 @@
   };
 </script>
 
-  <meta name="description" content="Perface​    UART是一种通用串行数据总线，用于异步通信。该总线双向通信，可以实现全双工传输和接收。在嵌入式设计中，UART用于主机与辅助设备通信，如汽车音响与外接AP之间的通信，与PC机通信包括与监控调试器和其它器件，如EEPROM通信。代码参考： Ⅰ· UART协议简介​     Ref">
+  <meta name="description" content="Preface​    本系列文章主要梳理回顾面试笔试中常见的数字电路基础知识，主要以数字电路基础和数字集成电路的相关书籍内容为主，结合一些优秀博主总结精华。Fighting~ Ⅰ· 布尔逻辑 化简定理:  $$ab+ab’&#x3D;a \ a+ab&#x3D;a \ ab’+b&#x3D;a+b \ ab+a’c+bc&#x3D;ab+a’c$$  卡诺图 卡诺图的基本规则不在赘述，这里主要记录下5变量卡诺图 5变量卡诺图由4变量卡">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Basic Circuit -- UART">
-<meta property="og:url" content="https://maos520.github.io/2020/02/21/Basic-Circiut-UART/index.html">
+<meta property="og:title" content="数字电路基础知识1">
+<meta property="og:url" content="https://maos520.github.io/2020/05/27/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%861/index.html">
 <meta property="og:site_name" content="Maos520">
-<meta property="og:description" content="Perface​    UART是一种通用串行数据总线，用于异步通信。该总线双向通信，可以实现全双工传输和接收。在嵌入式设计中，UART用于主机与辅助设备通信，如汽车音响与外接AP之间的通信，与PC机通信包括与监控调试器和其它器件，如EEPROM通信。代码参考： Ⅰ· UART协议简介​     Ref">
+<meta property="og:description" content="Preface​    本系列文章主要梳理回顾面试笔试中常见的数字电路基础知识，主要以数字电路基础和数字集成电路的相关书籍内容为主，结合一些优秀博主总结精华。Fighting~ Ⅰ· 布尔逻辑 化简定理:  $$ab+ab’&#x3D;a \ a+ab&#x3D;a \ ab’+b&#x3D;a+b \ ab+a’c+bc&#x3D;ab+a’c$$  卡诺图 卡诺图的基本规则不在赘述，这里主要记录下5变量卡诺图 5变量卡诺图由4变量卡">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-02-21T03:52:56.000Z">
-<meta property="article:modified_time" content="2020-02-21T04:32:22.613Z">
+<meta property="og:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200603100253.png">
+<meta property="og:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200603100152.png">
+<meta property="og:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/11111111.PNG">
+<meta property="og:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/123111.PNG">
+<meta property="og:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/jhul.PNG">
+<meta property="og:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200604220316.png">
+<meta property="og:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200604225804.png">
+<meta property="article:published_time" content="2020-05-27T13:48:55.000Z">
+<meta property="article:modified_time" content="2020-06-11T09:18:29.942Z">
 <meta property="article:author" content="maos520">
-<meta property="article:tag" content="Verilog">
-<meta property="article:tag" content="UART">
+<meta property="article:tag" content="ASIC">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200603100253.png">
 
-<link rel="canonical" href="https://maos520.github.io/2020/02/21/Basic-Circiut-UART/">
+<link rel="canonical" href="https://maos520.github.io/2020/05/27/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%861/">
 
 
 <script id="page-configurations">
@@ -95,7 +102,7 @@
   };
 </script>
 
-  <title>Basic Circuit -- UART | Maos520</title>
+  <title>数字电路基础知识1 | Maos520</title>
   
 
 
@@ -209,7 +216,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/02/21/Basic-Circiut-UART/">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/05/27/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%861/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/timg.jpg">
@@ -222,7 +229,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Basic Circuit -- UART
+          数字电路基础知识1
         </h1>
 
         <div class="post-meta">
@@ -231,10 +238,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-02-21 11:52:56 / Modified: 12:32:22" itemprop="dateCreated datePublished" datetime="2020-02-21T11:52:56+08:00">2020-02-21</time>
+              <time title="Created: 2020-05-27 21:48:55" itemprop="dateCreated datePublished" datetime="2020-05-27T21:48:55+08:00">2020-05-27</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-06-11 17:18:29" itemprop="dateModified" datetime="2020-06-11T17:18:29+08:00">2020-06-11</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -247,8 +260,8 @@
                 </span>
                   , 
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FPGA-IC/Basic-Circuit/" itemprop="url" rel="index">
-                    <span itemprop="name">Basic Circuit</span>
+                  <a href="/categories/FPGA-IC/Basic-Knowledge/" itemprop="url" rel="index">
+                    <span itemprop="name">Basic Knowledge</span>
                   </a>
                 </span>
             </span>
@@ -271,9 +284,57 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <html><head></head><body></body></html><html><head></head><body><h2 id="Perface"><a href="#Perface" class="headerlink" title="Perface"></a>Perface</h2><p>​    UART是一种通用串行数据总线，用于异步通信。该总线双向通信，可以实现全双工传输和接收。在嵌入式设计中，UART用于主机与辅助设备通信，如汽车音响与外接AP之间的通信，与PC机通信包括与监控调试器和其它器件，如EEPROM通信。代码参考：</p>
-<h2 id="Ⅰ·-UART协议简介"><a href="#Ⅰ·-UART协议简介" class="headerlink" title="Ⅰ· UART协议简介"></a>Ⅰ· UART协议简介</h2><p>​    </p>
-<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2></body></html>
+        <html><head></head><body></body></html><html><head></head><body><h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>​    本系列文章主要梳理回顾面试笔试中常见的数字电路基础知识，主要以数字电路基础和数字集成电路的相关书籍内容为主，结合一些优秀博主总结精华。Fighting<del>~</del></p>
+<h2 id="Ⅰ·-布尔逻辑"><a href="#Ⅰ·-布尔逻辑" class="headerlink" title="Ⅰ· 布尔逻辑"></a>Ⅰ· 布尔逻辑</h2><ul>
+<li><strong>化简定理:</strong></li>
+</ul>
+<p>$$<br>ab+ab’=a \ a+ab=a \ ab’+b=a+b \ ab+a’c+bc=ab+a’c<br>$$</p>
+<ul>
+<li><p><strong>卡诺图</strong></p>
+<p>卡诺图的基本规则不在赘述，这里主要记录下5变量卡诺图</p>
+<p>5变量卡诺图由4变量卡诺图构成，将左边的一个四变量卡诺图按轴翻转180度而成，轴左侧对应E=0，右侧对应E=1，这样除了几何位置相邻的小方格满足条件之外，以轴对称的小方格也满足对称条件，示意图如下</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200603100253.png"></div>
+<center><strong>Figure1.1 5变量卡诺图</strong></center>
+**例题如下**
+
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200603100152.png"></div>
+<center><strong>Figure1.2 化简示意图</strong></center>
+
+</li>
+</ul>
+<h2 id="Ⅱ·-MOSFET"><a href="#Ⅱ·-MOSFET" class="headerlink" title="Ⅱ· MOSFET"></a>Ⅱ· MOSFET</h2><ul>
+<li><p><strong>PN结</strong></p>
+<p>​    在介绍MOSFET之前，先回顾下PN结的单向导电性，图2.1为正向偏置，图2.2是反向偏置</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/11111111.PNG"></div>
+<center><strong>Figure2.1 正向偏置</strong></center>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/123111.PNG"></div>
+<center><strong>Figure2.2 反向偏置</strong></center>
+        PN结由于多子的扩散，使得结合处形成内建电场，阻碍多子的扩散，增强少子的漂移达到平衡。当外加电场削弱内    建电场时，将加强多子扩散，形成正向大电流；当加强内建电场时，将进一步抑制多子扩散，加强少子的漂移，但是少    子数量极少，故反向电流也极小。也即表现出正向导电性的特点。</li>
+<li><p><strong>MOSFET</strong></p>
+<p>​    MOS管是一个四端器件,加在栅极的电压决定了源端到漏端之间的电流是多少.体(即衬底)是第四个端口,它的作用是第二位的,它起到调节器件特性和参数的作用.</p>
+</li>
+</ul>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/jhul.PNG"></div>
+<center><strong>Figure2.3 NMOS</strong></center>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200604220316.png"></div>
+<center><strong>Figure2.4 PMOS</strong></center>
+​            以上是NMOS和PMOS的原理图,主要介绍下NMOS的工作原理: 
+​            首先将S、D端接地，在G端加正电压，随着栅极电压的增加，硅表面的某点电势将达到一个临界点，吸引n+掺杂        区的    电子，反型成n型材料（n沟道），这一点标识这一种称为强反型现象的开始，栅极电压的提高并不会使耗尽        层的宽度有所增加，只会吸引更多的电子，在源区和漏区之间的形成连续的n型沟道，它的导电性是由栅源电压调        节。
+
+<p>​            在D端加个正电压，在D、S之间形成电流，随着D端电压的增加，$I_{DS}$也增大，表现出电阻性，之后随着D端的电        压接近G端的电压时，电流不在变化表现出恒流性，此时导电沟道发生夹断，其条件是：<br>$$<br>V_{GS}-V_{DS} \leq V_{T}<br>$$</p>
+<h2 id="Ⅲ·CMOS"><a href="#Ⅲ·CMOS" class="headerlink" title="Ⅲ·CMOS"></a>Ⅲ·CMOS</h2><p>​    静态CMOS是上拉网络（PUN）和下拉网络（PDN）的组合，PUN的作用相当于在逻辑门的输出意味着逻辑1时，提供一条在输出和VDD之间的一条通路，同样当输出意味着逻辑0时，PDN提供一条输出和VSS之间的一条通路。</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200604225804.png"></div>
+<center><strong>Figure3.1 PUN和PDN网络</strong></center>
+​    设计者在构成PUN和PDN时应当记住以下几点：
+
+<ul>
+<li>PDN由NMOS构成，因其产生强“0”，PUN由PMOS构成，因其产生强“1”</li>
+<li>NMOS串联相当于“与”，并联代表高</li>
+<li>上拉网络与下拉网络对偶，下并上串，上串下并</li>
+<li>这些互补门在本质上反相的，只能实现NAND、NOR以及NXOR这样功能</li>
+</ul>
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p><a href>数字集成电路</a></p>
+</body></html>
     </div>
 
 
@@ -287,24 +348,23 @@
  
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Verilog/" rel="tag"># Verilog</a>
-              <a href="/tags/UART/" rel="tag"># UART</a>
+              <a href="/tags/ASIC/" rel="tag"># ASIC</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
-                <a href="/2020/02/13/Basic-Circiut-RISC-SPM/" rel="next" title="Basic Circiut —— RISC_SPM">
-                  <i class="fa fa-chevron-left"></i> Basic Circiut —— RISC_SPM
+                <a href="/2020/05/16/Basic%20Circuit%20-%20Shift%20Register/" rel="next" title="Basic Circuit -- Shift Register">
+                  <i class="fa fa-chevron-left"></i> Basic Circuit -- Shift Register
                 </a>
             </div>
 
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-                <a href="/2020/03/13/Eyeriss-v2-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" rel="prev" title="Eyeriss v2 阅读笔记">
-                  Eyeriss v2 阅读笔记 <i class="fa fa-chevron-right"></i>
+                <a href="/2020/05/28/Basic-Circuit-Sequence-Detector/" rel="prev" title="Basic Circuit--Sequence Detector">
+                  Basic Circuit--Sequence Detector <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -345,7 +405,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Perface"><span class="nav-text">Perface</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅰ·-UART协议简介"><span class="nav-text">Ⅰ· UART协议简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ref"><span class="nav-text">Ref</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Preface"><span class="nav-text">Preface</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅰ·-布尔逻辑"><span class="nav-text">Ⅰ· 布尔逻辑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅱ·-MOSFET"><span class="nav-text">Ⅱ· MOSFET</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅲ·CMOS"><span class="nav-text">Ⅲ·CMOS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ref"><span class="nav-text">Ref</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -361,7 +421,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -374,7 +434,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

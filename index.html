@@ -203,6 +203,649 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/06/11/Basic-Circuit-Arithmetic-Operations/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/06/11/Basic-Circuit-Arithmetic-Operations/" class="post-title-link" itemprop="url">Basic Circuit--Arithmetic Operations</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-06-11 14:50:18 / Modified: 21:41:25" itemprop="dateCreated datePublished" datetime="2020-06-11T14:50:18+08:00">2020-06-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA&IC</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/Basic-Circuit/" itemprop="url" rel="index">
+                    <span itemprop="name">Basic Circuit</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>​    本篇博客主要记录一些基本的算术运算的verilog实现，主要包括：加法、减法、乘法、除法、比较、饱和、截断、最大值、最小值以及绝对值。</p>
+<h2 id="Ⅰ·-算术运算"><a href="#Ⅰ·-算术运算" class="headerlink" title="Ⅰ· 算术运算"></a>Ⅰ· 算术运算</h2><p><strong>1.加减运算</strong></p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//=============================================================</span></span><br><span class="line"><span class="comment">//无符号数</span></span><br><span class="line"><span class="comment">//=============================================================</span></span><br><span class="line"><span class="keyword">localparam</span> A_WIDTH = <span class="number">8</span>;</span><br><span class="line"><span class="keyword">localparam</span> B_WIDTH = <span class="number">16</span>;</span><br><span class="line"><span class="keyword">localparam</span> C_WIDTH =  (A_WIDTH-B_WIDTH)?A_WIDTH+<span class="number">1</span>:B_WIDTH+<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> [A_WIDTH-<span class="number">1</span>:<span class="number">0</span>] a;</span><br><span class="line"><span class="keyword">reg</span> [B_WIDTH-<span class="number">1</span>:<span class="number">0</span>] b;</span><br><span class="line"><span class="keyword">reg</span> [C_WIDTH-<span class="number">1</span>:<span class="number">0</span>] c;</span><br><span class="line"><span class="comment">//手动扩展位宽</span></span><br><span class="line"><span class="keyword">always</span> @*</span><br><span class="line">    c={{C_WIDTH-A_WIDTH{<span class="number">1'b0</span>}},a}+{{C_WIDTH-B_WIDTH{<span class="number">1'b0</span>}},b};</span><br><span class="line"><span class="comment">//Synopsys 推荐写法</span></span><br><span class="line"><span class="keyword">always</span> @*</span><br><span class="line">    c=<span class="built_in">$unsigned</span>(a)+<span class="built_in">$unsigned</span>(b);</span><br><span class="line"><span class="comment">//==============================================================</span></span><br><span class="line"><span class="comment">//有符号数</span></span><br><span class="line"><span class="comment">//==============================================================</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">localparam</span> A_WIDTH = <span class="number">8</span>;</span><br><span class="line"><span class="keyword">localparam</span> B_WIDTH = <span class="number">16</span>;</span><br><span class="line"><span class="keyword">localparam</span> C_WIDTH = (A_WIDTH>B_WIDTH)?A_WIDTH:B_WIDTH;</span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> <span class="keyword">signed</span> [A_WIDTH-<span class="number">1</span>:<span class="number">0</span>] a;</span><br><span class="line"><span class="keyword">reg</span> <span class="keyword">signed</span> [B_WIDTH-<span class="number">1</span>:<span class="number">0</span>] b;</span><br><span class="line"><span class="keyword">reg</span> <span class="keyword">signed</span> [C_WIDTH-<span class="number">1</span>:<span class="number">0</span>] c;</span><br><span class="line"><span class="comment">//手动扩展</span></span><br><span class="line"><span class="keyword">always</span> @*</span><br><span class="line">    c={{C_WIDTH-A_WIDTH{a[A_WIDTH-<span class="number">1</span>]}},a}-{{C_WIDTH-B_WIDTH{b[B_WIDTH-<span class="number">1</span>]}},b};</span><br><span class="line"><span class="comment">//Synopsys 推荐</span></span><br><span class="line"><span class="keyword">always</span> @*</span><br><span class="line">    c=<span class="built_in">$signed</span>(a)+<span class="built_in">$signed</span>(b);</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>编码要点</strong></p>
+<ul>
+<li><p>加法结果需要位宽比加数最大位宽大1</p>
+</li>
+<li><p>加数需要扩展位宽，避免语法检测工具报位宽不匹配警告信号</p>
+</li>
+</ul>
+<p><strong>2.乘法运算</strong></p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//==============================================</span></span><br><span class="line"><span class="comment">//无符号数乘法</span></span><br><span class="line"><span class="comment">//==============================================</span></span><br><span class="line"><span class="keyword">localparam</span> A_WIDTH = <span class="number">8</span>;</span><br><span class="line"><span class="keyword">localparam</span> B_WIDTH = <span class="number">16</span>;</span><br><span class="line"><span class="keyword">localparam</span> [B_WIDTH-<span class="number">1</span>] B = <span class="number">32</span>;</span><br><span class="line"><span class="keyword">localparam</span> C_WIDTH = A_WIDTH+B_WIDTH;</span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> [A_WIDTH-<span class="number">1</span>:<span class="number">0</span>] a;</span><br><span class="line"><span class="keyword">reg</span> [B_WIDTH-<span class="number">1</span>:<span class="number">0</span>] b;</span><br><span class="line"><span class="keyword">reg</span> [C_WIDTH-<span class="number">1</span>:<span class="number">0</span>] c;</span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @* </span><br><span class="line">    c=a*b;   <span class="comment">//无需显示扩位</span></span><br><span class="line"><span class="comment">//与常数相乘</span></span><br><span class="line"><span class="keyword">always</span> @*</span><br><span class="line">    c=a*B;</span><br><span class="line"><span class="comment">//=============================================</span></span><br><span class="line"><span class="comment">//有符号数乘法</span></span><br><span class="line"><span class="comment">//=============================================</span></span><br><span class="line"><span class="keyword">localparam</span> A_WIDTH = <span class="number">8</span>;</span><br><span class="line"><span class="keyword">localparam</span> B_WIDTH = <span class="number">11</span>;</span><br><span class="line"><span class="comment">//localparam [B_WIDTH-1] B = 11'sd1024;</span></span><br><span class="line"><span class="keyword">localparam</span> C_WIDTH = A_WIDTH+B_WIDTH;</span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> <span class="keyword">signed</span> [A_WIDTH-<span class="number">1</span>:<span class="number">0</span>] a;</span><br><span class="line"><span class="keyword">reg</span> <span class="keyword">signed</span> [B_WIDTH-<span class="number">1</span>:<span class="number">0</span>] b;</span><br><span class="line"><span class="keyword">reg</span> <span class="keyword">signed</span> [C_WIDTH-<span class="number">1</span>:<span class="number">0</span>] c;</span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @*</span><br><span class="line">    c=<span class="built_in">$signed</span>(a)*<span class="built_in">$signed</span>(b);</span><br><span class="line"><span class="comment">//与常数相乘</span></span><br><span class="line"><span class="keyword">always</span> @*</span><br><span class="line">    c=<span class="built_in">$signed</span>(a)*<span class="number">11</span>'sd1024</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p><strong>3.比较运算</strong></p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//=====================================================</span></span><br><span class="line"><span class="comment">//无符号比较</span></span><br><span class="line"><span class="comment">//=====================================================</span></span><br><span class="line"><span class="keyword">localparam</span> A_WIDTH = <span class="number">16</span>;</span><br><span class="line"><span class="keyword">localparam</span> B_WIDTH = <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> [A_WIDTH-<span class="number">1</span>:<span class="number">0</span>] a;</span><br><span class="line"><span class="keyword">reg</span> [B_WIDTH-<span class="number">1</span>:<span class="number">0</span>] b;</span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span>               c;</span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @*</span><br><span class="line">    <span class="keyword">if</span>(a>{{A_WIDTH-B_WIDTH{<span class="number">1'b1</span>}},b})</span><br><span class="line">        c=<span class="number">1'b1</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">        c= <span class="number">1'b0</span>;</span><br><span class="line"><span class="comment">//synopsys推荐</span></span><br><span class="line"><span class="keyword">always</span> @*</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">$unsigned</span>(a)><span class="built_in">$unsigned</span>(b))</span><br><span class="line">		c=<span class="number">1'b1</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">    	c=<span class="number">1'b0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//=======================================================</span></span><br><span class="line"><span class="comment">//有符号数比较方法1：有符号转无符号之后比较</span></span><br><span class="line"><span class="comment">//=======================================================</span></span><br><span class="line"><span class="keyword">localparam</span> A_WIDTH = <span class="number">16</span>;</span><br><span class="line"><span class="keyword">localparam</span> B_WIDTH = <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> <span class="keyword">signed</span> [A_WIDTH-<span class="number">1</span>:<span class="number">0</span>] a;</span><br><span class="line"><span class="keyword">reg</span> <span class="keyword">signed</span> [B_WIDTH-<span class="number">1</span>:<span class="number">0</span>] b;</span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> [A_WIDTH-<span class="number">1</span>:<span class="number">0</span>] a_unsigned;</span><br><span class="line"><span class="keyword">reg</span> [B_WIDTH-<span class="number">1</span>:<span class="number">0</span>] b_unsigned;</span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span>               c;</span><br><span class="line"><span class="comment">//有符号数转无符号数 </span></span><br><span class="line"><span class="keyword">always</span> @* <span class="keyword">begin</span></span><br><span class="line">    a_unsigned = {~a[A_WIDTH-<span class="number">1</span>],a[A_WIDTH-<span class="number">2</span>:<span class="number">0</span>]};</span><br><span class="line">    b_unsigned = {~b[B_WIDTH-<span class="number">1</span>],b[B_WIDTH-<span class="number">2</span>:<span class="number">0</span>]};</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">always</span> @* <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(a_unsigned > {{A_WIDTH-B_WIDTH{<span class="number">1'b0</span>}}b_unsigned})</span><br><span class="line">        c=<span class="number">1'b1</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        c=<span class="number">1'b0</span>;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="comment">//============================================================</span></span><br><span class="line"><span class="comment">//有符号数比较方法2：直接比较</span></span><br><span class="line"><span class="comment">//============================================================</span></span><br><span class="line"><span class="keyword">localparam</span> A_WIDTH = <span class="number">16</span>;</span><br><span class="line"><span class="keyword">localparam</span> B_WIDTH = <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> <span class="keyword">signed</span> [A_WIDTH-<span class="number">1</span>:<span class="number">0</span>] a;</span><br><span class="line"><span class="keyword">reg</span> <span class="keyword">signed</span> [B_WIDTH-<span class="number">1</span>:<span class="number">0</span>] b;</span><br><span class="line"><span class="keyword">reg</span>                      c;</span><br><span class="line"><span class="keyword">always</span> @* <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">$signed</span>(a)><span class="built_in">$signed</span>(b))</span><br><span class="line">        c=<span class="number">1'b1</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        c=<span class="number">1'b0</span>;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>有符号数转无符号数</strong></p>
+<p>​    转换一般是通过将有符号数的最高位去反来完成，比如下表对于4bits有符号数，按照从大到小顺序排列，对应的有符号数值和最高位取反后的无符号数，对应的数值大小是不变的。</p>
+<table>
+<thead>
+<tr>
+<th align="center">有符号二进制</th>
+<th align="center">有符号十进制</th>
+<th align="center">无符号数二进制</th>
+<th align="center">无符号十进制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">011</td>
+<td align="center">3</td>
+<td align="center">111</td>
+<td align="center">7</td>
+</tr>
+<tr>
+<td align="center">010</td>
+<td align="center">2</td>
+<td align="center">110</td>
+<td align="center">6</td>
+</tr>
+<tr>
+<td align="center">001</td>
+<td align="center">1</td>
+<td align="center">101</td>
+<td align="center">5</td>
+</tr>
+<tr>
+<td align="center">000</td>
+<td align="center">0</td>
+<td align="center">100</td>
+<td align="center">4</td>
+</tr>
+<tr>
+<td align="center">111</td>
+<td align="center">-1</td>
+<td align="center">011</td>
+<td align="center">3</td>
+</tr>
+<tr>
+<td align="center">110</td>
+<td align="center">-2</td>
+<td align="center">010</td>
+<td align="center">2</td>
+</tr>
+<tr>
+<td align="center">101</td>
+<td align="center">-3</td>
+<td align="center">001</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">100</td>
+<td align="center">-4</td>
+<td align="center">000</td>
+<td align="center">0</td>
+</tr>
+</tbody></table>
+<p>4.绝对值</p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> ABS #(</span><br><span class="line"><span class="keyword">parameter</span> DW = <span class="number">8</span>)</span><br><span class="line">(</span><br><span class="line">    <span class="keyword">input</span> [DW-<span class="number">1</span>:<span class="number">0</span>] din,</span><br><span class="line">    <span class="keyword">output</span> <span class="keyword">reg</span> [DW-<span class="number">1</span>:<span class="number">0</span>] dout</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">always</span> @*</span><br><span class="line">        <span class="keyword">if</span>(din[DW-<span class="number">1</span>]==<span class="number">1'b1</span>)</span><br><span class="line">            <span class="keyword">if</span>(din[DW-<span class="number">2</span>:<span class="number">0</span>]=={(DW-<span class="number">1</span>){<span class="number">1'b0</span>}})</span><br><span class="line">                dout = {<span class="number">1'b0</span>,{(DW-<span class="number">1</span>){<span class="number">1'b1</span>}}};<span class="comment">//最小负数进行饱和处理，饱和到最大正数表示范围</span></span><br><span class="line">    		<span class="keyword">else</span></span><br><span class="line">                dout = {<span class="number">1'b0</span>,((~din[DW-<span class="number">2</span>:<span class="number">0</span>])+<span class="number">1'b1</span>)};</span><br><span class="line">    	<span class="keyword">else</span></span><br><span class="line">            dout = din;</span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>5.最大值&最小值</p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//=====================================================</span></span><br><span class="line"><span class="comment">//案例1：</span></span><br><span class="line"><span class="comment">//=====================================================</span></span><br><span class="line"><span class="keyword">module</span> UNSIGNED_MIN#(</span><br><span class="line"><span class="keyword">parameter</span> DW =<span class="number">8</span>)</span><br><span class="line">(</span><br><span class="line">    <span class="keyword">input</span> clk,</span><br><span class="line">    <span class="keyword">input</span> rst_n,</span><br><span class="line">    <span class="keyword">input</span> [DW-<span class="number">1</span>:<span class="number">0</span>]din,</span><br><span class="line">    <span class="keyword">output</span> <span class="keyword">reg</span> [DW-<span class="number">1</span>:<span class="number">0</span>] min</span><br><span class="line">);</span><br><span class="line">    <span class="keyword">localparam</span> MAX = {DW{<span class="number">1'b1</span>}};</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">always</span> @(<span class="keyword">posedge</span> clk <span class="keyword">or</span> <span class="keyword">negedge</span> rst_n)</span><br><span class="line">        <span class="keyword">if</span>(!rst_n)</span><br><span class="line">            min <= MAX;</span><br><span class="line">    	<span class="keyword">else</span> <span class="keyword">if</span>(din<min)</span><br><span class="line">            min <= din;</span><br><span class="line"><span class="keyword">endmodule</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//===================================================</span></span><br><span class="line"><span class="comment">//案例2：在一个周期内求出最小值，并输出索引</span></span><br><span class="line"><span class="comment">//===================================================</span></span><br><span class="line"><span class="keyword">localparam</span> DW = <span class="number">4</span>;</span><br><span class="line"><span class="keyword">localparam</span> ARRAY_SIZE = <span class="number">4</span>;</span><br><span class="line"><span class="keyword">localparam</span> INDEX_WIDTH = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> [INDEX_WIDTH-<span class="number">1</span>:<span class="number">0</span>] min_index;</span><br><span class="line"><span class="keyword">reg</span> [DW-<span class="number">1</span>:<span class="number">0</span>]          Data [<span class="number">0</span>:ARRAY_SIZE-<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @(<span class="keyword">posedge</span> clk <span class="keyword">or</span> <span class="keyword">negedge</span> rst_n) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">integer</span> i;</span><br><span class="line">    <span class="keyword">if</span>(!rst_n)</span><br><span class="line">        min_index <= <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i<ARRAY_SIZE;i=i+<span class="number">1</span>)</span><br><span class="line">            <span class="keyword">if</span>(data[i]<data[min_index])</span><br><span class="line">                min_index = i;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>Ref</p>
+<p><a href="http://bbs.eetop.cn/forum.php?mod=viewthread&tid=768668&extra=&authorid=758441&page=4" target="_blank" rel="noopener">EETOP论坛</a></p>
+<p><a href>轻松成为设计高手</a></p>
+</body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/05/28/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%862/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/28/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%862/" class="post-title-link" itemprop="url">数字电路基础知识2</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-28 21:39:29" itemprop="dateCreated datePublished" datetime="2020-05-28T21:39:29+08:00">2020-05-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-06-03 10:43:38" itemprop="dateModified" datetime="2020-06-03T10:43:38+08:00">2020-06-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA&IC</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/Basic-Knowledge/" itemprop="url" rel="index">
+                    <span itemprop="name">Basic Knowledge</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><h2 id="Ⅰ·-Preface"><a href="#Ⅰ·-Preface" class="headerlink" title="Ⅰ· Preface"></a>Ⅰ· Preface</h2><p>​    本篇博客主要介绍时序电路设计基础知识，锁存器、触发器以及时序机设计等相关基础知识。</p>
+<h2 id="Ⅱ·-触发器的特性方程"><a href="#Ⅱ·-触发器的特性方程" class="headerlink" title="Ⅱ· 触发器的特性方程"></a>Ⅱ· 触发器的特性方程</h2><p><strong>1.JK触发器:</strong> Q* = JQ’+K’Q<br><strong>2.T触发器：</strong> Q* = TQ’+T’Q<br><strong>3.D触发器：</strong> Q* = D</p>
+<h2 id="Ⅲ·-时序电路逻辑"><a href="#Ⅲ·-时序电路逻辑" class="headerlink" title="Ⅲ· 时序电路逻辑"></a>Ⅲ· 时序电路逻辑</h2><p><strong>1.同步时序电路分析</strong> </p>
+<p>时序电路的框图可以画成Figure1所示的普遍结构，</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/iii.PNG"></div>
+<center><strong>Figure1 时序电路结构图</strong></center>
+这些信号的逻辑关系可以用三个方程表示
+$$
+\begin{cases} y_1=f_1(x_1,x_2,...,x_i,q_1,q_2,...,q_l) \\ y_2=f_2(x_1,x_2,...,x_i,q_1,q_2,...,q_l) \\ \vdots \\ y_j=f_j(x_1,x_2,...,x_i,q_1,q_2,...,q_l)\end{cases}  \quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad (3-1)
+$$
+
+<p>$$<br>\begin{cases} z_1=f_1(x_1,x_2,…,x_i,q_1,q_2,…,q_l) \ z_2=g_2(x_1,x_2,…,x_i,q_1,q_2,…,q_l) \ \vdots \ z_k=g_k(x_1,x_2,…,x_i,q_1,q_2,…,q_l)\end{cases}  \quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad (3-2)<br>$$</p>
+<p>$$<br>\begin{cases} q_1^<em>=f_1(z_1,z_2,…,z_k,q_1,q_2,…,q_l) \ q_2^</em>=g_2(z_1,z_2,…,z_k,q_1,q_2,…,q_l) \ \vdots \ q_l^*=g_k(z_1,z_2,…,z_k,q_1,q_2,…,q_l)\end{cases}  \quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad (3-3)<br>$$</p>
+<p>其中3-1称为输出方程，3-2称为激励方程，3-3称为状态方程</p>
+<ul>
+<li><strong>分析步骤</strong></li>
+</ul>
+<p>a.根据所给逻辑图写出激励方程</p>
+<p>b.将激励方程带入相应的触发器特性方程得到状态方程</p>
+<p>c.根据逻辑图写出电路输出方程</p>
+<ul>
+<li>Example<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200601160035.png"></div>
+<center><strong>Figure2 逻辑方程组</strong></center>
+​    理论上，有了驱动方程、状态方程和输出方程以后，时序电路的功能逻辑已经描述清楚了，然而从一组方程式中还不能获得电路逻辑的完整印象。为此我们需要状态转换表、状态转换表、状态机流程图和时序图来描述电路状态转换的全过程。
+
+</li>
+</ul>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/111.PNG"></div>
+<center><strong>Figure3 状态转换表</strong></center>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200601172152.png"></div>
+<center><strong>Figure4 状态转换图</strong></center>
+**2.同步时序电路设计**
+
+<p>​    在设计时序逻辑电路时，要求设计者根据给出的具体逻辑问题，求出实现这一逻辑功能的逻辑电路。</p>
+<ul>
+<li><strong>设计步骤</strong></li>
+</ul>
+<p>a.逻辑抽象，得出电路的状态转换图或状态转换表</p>
+<p>b.状态化简</p>
+<p>c.状态分配</p>
+<p>d.选定触发器类型，求出电路的状态方程、驱动方程和输出方程</p>
+<p>e.画出电路图</p>
+<p>f.检查自启</p>
+<ul>
+<li><p><strong>Example</strong></p>
+<p>设计一个串行数据检测器，对它的要求是：连续输入3个或3个以上1时输出高，其他情况输出低。</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/222.PNG"></div>
+<center><strong>Figure5 状态转换图</strong></center>
+
+</li>
+</ul>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/333.PNG"></div>
+<center><strong>Figure6 状态方程</strong></center>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200601185041.png"></div>
+<center><strong>Figure7 电路图</strong></center>
+## Ⅳ·Ref
+
+<p><a href>数电阎石第六版</a></p>
+</body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/05/28/Basic-Circuit-Sequence-Detector/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/28/Basic-Circuit-Sequence-Detector/" class="post-title-link" itemprop="url">Basic Circuit--Sequence Detector</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-28 21:16:45" itemprop="dateCreated datePublished" datetime="2020-05-28T21:16:45+08:00">2020-05-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-06-03 09:50:32" itemprop="dateModified" datetime="2020-06-03T09:50:32+08:00">2020-06-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA&IC</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/Basic-Circuit/" itemprop="url" rel="index">
+                    <span itemprop="name">Basic Circuit</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><h2 id="Ⅰ·-Preface"><a href="#Ⅰ·-Preface" class="headerlink" title="Ⅰ· Preface"></a>Ⅰ· Preface</h2><p>​    序列检测就是将一个指定的序列从数字码流中识别出来，是时序数字电路中非常常见的设计之一。</p>
+</body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/05/27/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%861/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/27/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%861/" class="post-title-link" itemprop="url">数字电路基础知识1</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-27 21:48:55" itemprop="dateCreated datePublished" datetime="2020-05-27T21:48:55+08:00">2020-05-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-06-11 17:18:29" itemprop="dateModified" datetime="2020-06-11T17:18:29+08:00">2020-06-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA&IC</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/Basic-Knowledge/" itemprop="url" rel="index">
+                    <span itemprop="name">Basic Knowledge</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>​    本系列文章主要梳理回顾面试笔试中常见的数字电路基础知识，主要以数字电路基础和数字集成电路的相关书籍内容为主，结合一些优秀博主总结精华。Fighting<del>~</del></p>
+<h2 id="Ⅰ·-布尔逻辑"><a href="#Ⅰ·-布尔逻辑" class="headerlink" title="Ⅰ· 布尔逻辑"></a>Ⅰ· 布尔逻辑</h2><ul>
+<li><strong>化简定理:</strong></li>
+</ul>
+<p>$$<br>ab+ab’=a \ a+ab=a \ ab’+b=a+b \ ab+a’c+bc=ab+a’c<br>$$</p>
+<ul>
+<li><p><strong>卡诺图</strong></p>
+<p>卡诺图的基本规则不在赘述，这里主要记录下5变量卡诺图</p>
+<p>5变量卡诺图由4变量卡诺图构成，将左边的一个四变量卡诺图按轴翻转180度而成，轴左侧对应E=0，右侧对应E=1，这样除了几何位置相邻的小方格满足条件之外，以轴对称的小方格也满足对称条件，示意图如下</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200603100253.png"></div>
+<center><strong>Figure1.1 5变量卡诺图</strong></center>
+**例题如下**
+
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200603100152.png"></div>
+<center><strong>Figure1.2 化简示意图</strong></center>
+
+</li>
+</ul>
+<h2 id="Ⅱ·-MOSFET"><a href="#Ⅱ·-MOSFET" class="headerlink" title="Ⅱ· MOSFET"></a>Ⅱ· MOSFET</h2><ul>
+<li><p><strong>PN结</strong></p>
+<p>​    在介绍MOSFET之前，先回顾下PN结的单向导电性，图2.1为正向偏置，图2.2是反向偏置</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/11111111.PNG"></div>
+<center><strong>Figure2.1 正向偏置</strong></center>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/123111.PNG"></div>
+<center><strong>Figure2.2 反向偏置</strong></center>
+        PN结由于多子的扩散，使得结合处形成内建电场，阻碍多子的扩散，增强少子的漂移达到平衡。当外加电场削弱内    建电场时，将加强多子扩散，形成正向大电流；当加强内建电场时，将进一步抑制多子扩散，加强少子的漂移，但是少    子数量极少，故反向电流也极小。也即表现出正向导电性的特点。</li>
+<li><p><strong>MOSFET</strong></p>
+<p>​    MOS管是一个四端器件,加在栅极的电压决定了源端到漏端之间的电流是多少.体(即衬底)是第四个端口,它的作用是第二位的,它起到调节器件特性和参数的作用.</p>
+</li>
+</ul>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/jhul.PNG"></div>
+<center><strong>Figure2.3 NMOS</strong></center>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200604220316.png"></div>
+<center><strong>Figure2.4 PMOS</strong></center>
+​            以上是NMOS和PMOS的原理图,主要介绍下NMOS的工作原理: 
+​            首先将S、D端接地，在G端加正电压，随着栅极电压的增加，硅表面的某点电势将达到一个临界点，吸引n+掺杂        区的    电子，反型成n型材料（n沟道），这一点标识这一种称为强反型现象的开始，栅极电压的提高并不会使耗尽        层的宽度有所增加，只会吸引更多的电子，在源区和漏区之间的形成连续的n型沟道，它的导电性是由栅源电压调        节。
+
+<p>​            在D端加个正电压，在D、S之间形成电流，随着D端电压的增加，$I_{DS}$也增大，表现出电阻性，之后随着D端的电        压接近G端的电压时，电流不在变化表现出恒流性，此时导电沟道发生夹断，其条件是：<br>$$<br>V_{GS}-V_{DS} \leq V_{T}<br>$$</p>
+<h2 id="Ⅲ·CMOS"><a href="#Ⅲ·CMOS" class="headerlink" title="Ⅲ·CMOS"></a>Ⅲ·CMOS</h2><p>​    静态CMOS是上拉网络（PUN）和下拉网络（PDN）的组合，PUN的作用相当于在逻辑门的输出意味着逻辑1时，提供一条在输出和VDD之间的一条通路，同样当输出意味着逻辑0时，PDN提供一条输出和VSS之间的一条通路。</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200604225804.png"></div>
+<center><strong>Figure3.1 PUN和PDN网络</strong></center>
+​    设计者在构成PUN和PDN时应当记住以下几点：
+
+<ul>
+<li>PDN由NMOS构成，因其产生强“0”，PUN由PMOS构成，因其产生强“1”</li>
+<li>NMOS串联相当于“与”，并联代表高</li>
+<li>上拉网络与下拉网络对偶，下并上串，上串下并</li>
+<li>这些互补门在本质上反相的，只能实现NAND、NOR以及NXOR这样功能</li>
+</ul>
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p><a href>数字集成电路</a></p>
+</body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/05/16/Basic%20Circuit%20-%20Shift%20Register/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/16/Basic%20Circuit%20-%20Shift%20Register/" class="post-title-link" itemprop="url">Basic Circuit -- Shift Register</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-16 21:22:47" itemprop="dateCreated datePublished" datetime="2020-05-16T21:22:47+08:00">2020-05-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-05-29 15:16:26" itemprop="dateModified" datetime="2020-05-29T15:16:26+08:00">2020-05-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA&IC</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/Basic-Circuit/" itemprop="url" rel="index">
+                    <span itemprop="name">Basic Circuit</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>​        移位寄存器与计数器，寄存器组等一样是非常重要的数据通路单元，其内的数据可以在移位脉冲（时钟信号）的作用下依次左移或右移。移位寄存器不仅可以存储数据，还可以用来实现数据的串并转换、分频，构成序列码发生器、序列码检测器，进行数值运算以及数据处理等，它也是数字系统中应用非常广泛的时序逻辑部件之一。本篇博客主要介绍LFSR，即线性反馈移位寄存器</p>
+<h2 id="Ⅰ·-基本的移位寄存器"><a href="#Ⅰ·-基本的移位寄存器" class="headerlink" title="Ⅰ· 基本的移位寄存器"></a>Ⅰ· 基本的移位寄存器</h2><p>​    基本的移位寄存器的verilog实现非常的简单，可以使用拼接符也可以使用for循环来实现，对于串并转换，也仅需要增加相应地加载和使能信号，有时需要增加计数器来标志边界情况。</p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">parameter</span> word_size = <span class="number">4</span>;</span><br><span class="line"><span class="keyword">reg</span> [word_size-<span class="number">1</span>:<span class="number">0</span>] data_reg;</span><br><span class="line"><span class="keyword">reg</span> data_in;</span><br><span class="line"><span class="keyword">always</span>@(<span class="keyword">posedge</span> clk <span class="keyword">or</span> <span class="keyword">negedge</span> rst_n)</span><br><span class="line">    <span class="keyword">if</span>(!rst_n) data_reg <= {word_size{<span class="number">1'b0</span>}};</span><br><span class="line">	<span class="keyword">else</span> data_reg <= {data_in,data_reg[word_size-<span class="number">1</span>:<span class="number">1</span>]};</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Ⅱ·线性反馈移位寄存器"><a href="#Ⅱ·线性反馈移位寄存器" class="headerlink" title="Ⅱ·线性反馈移位寄存器"></a>Ⅱ·线性反馈移位寄存器</h2><p>​    LFSR用于产生可重复的伪随机序列PRBS，该电路有n级触发器和一些异或门组成，主要有两种形式<strong>斐波那契LFSR</strong>和<strong>伽罗瓦LFSR</strong>，如下图：</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200516224154.png"></div>
+<center><strong>Figure1 伽罗瓦LFSR</strong></center>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200516224557.png"></div>
+<center><strong>Figure2 斐波那契LFSR</strong></center>
+其中，gn为反馈系数，取值只能为0或1，取为0时表明不存在该反馈之路，取为1时表明存在该反馈之路；这里的反馈系数决定了产生随机数的算法的不同。用反馈函数表示成$y=g_0x^0+g_1x^1+g_2x^2+\cdots$反馈函数为线性的叫线性移位反馈序列，否则叫非线性反馈移位序列。LFSR的初始值被称为伪随机序列的种子，影响下一个状态的比特位叫做抽头。LFSR的触发器编号一般从1开始，抽头取值范围是1到$2^n-1$。抽头序列可以用来描述该LFSR的反馈多项式。由n个触发器构成的LFSR电路可以产生一个周期为$2^n-1$的序列。理论表明，要使**LFSR**得到最长的周期，这个抽头序列构成的多项式加**1**就是其反馈多项式**，**必须是一个**本原多项式**，也就是说这个多项式不可约.
+
+
+
+<p>LSFR特性**</p>
+<p>1.初始状态相同，输出序列相同(也就是说初始状态决定输出序列)<br>2.输出序列看起来是随机序列，但是达到一定位数后会循环<br>3.LFSR可以产生的最长的随机序列是 $2^n-1$ 长度(即m序列)，其中n表示寄存器数目</p>
+<h2 id="REF"><a href="#REF" class="headerlink" title="REF"></a>REF</h2><p><a href="https://www.cnblogs.com/weijianlong/p/11947741.html" target="_blank" rel="noopener">线性反馈移位寄存器（LFSR)</a></p>
+<p><a href="https://blog.csdn.net/qq_44113393/article/details/89852994" target="_blank" rel="noopener">线性反馈移位寄存器(Linear Feedback Shift Register, LFSR)</a></p>
+</body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/04/28/Verilog%E4%B9%8Bcase%E8%AF%AD%E5%8F%A5%E5%B0%8F%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -425,7 +1068,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/02/21/Basic-Circiut-UART/">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/02/21/Basic-Circuit-UART/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/timg.jpg">
@@ -439,7 +1082,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2020/02/21/Basic-Circiut-UART/" class="post-title-link" itemprop="url">Basic Circuit -- UART</a>
+            <a href="/2020/02/21/Basic-Circuit-UART/" class="post-title-link" itemprop="url">Basic Circuit -- UART</a>
         </h1>
 
         <div class="post-meta">
@@ -448,10 +1091,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-02-21 11:52:56 / Modified: 12:32:22" itemprop="dateCreated datePublished" datetime="2020-02-21T11:52:56+08:00">2020-02-21</time>
+              <time title="Created: 2020-02-21 11:52:56" itemprop="dateCreated datePublished" datetime="2020-02-21T11:52:56+08:00">2020-02-21</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-05-16 21:23:26" itemprop="dateModified" datetime="2020-05-16T21:23:26+08:00">2020-05-16</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -508,7 +1157,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/02/13/Basic-Circiut-RISC-SPM/">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/02/13/Basic-Circuit-RISC-SPM/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/timg.jpg">
@@ -522,7 +1171,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2020/02/13/Basic-Circiut-RISC-SPM/" class="post-title-link" itemprop="url">Basic Circiut —— RISC_SPM</a>
+            <a href="/2020/02/13/Basic-Circuit-RISC-SPM/" class="post-title-link" itemprop="url">Basic Circuit —— RISC_SPM</a>
         </h1>
 
         <div class="post-meta">
@@ -539,7 +1188,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-02-21 11:53:02" itemprop="dateModified" datetime="2020-02-21T11:53:02+08:00">2020-02-21</time>
+                <time title="Modified: 2020-06-01 16:03:11" itemprop="dateModified" datetime="2020-06-01T16:03:11+08:00">2020-06-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -580,8 +1229,9 @@
 
 <p>​    此处理器的指令集，分为短指令和长指令，短指令由一个字节构成，高四位为操作码，低四位分为两位源地址寄存器和两位目的地址寄存器；长指令由两字节构成，第一个字节类似短指令，第二个字节用以存放存储器地址。4=6[]</p>
 <center><strong>Table 1 RISC SPM 指令集 </strong></center><div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200213145346.png">
+## Ⅲ· RISC SPM： Controller
 
-<h2 id="Ⅲ·-RISC-SPM：-Controller"><a href="#Ⅲ·-RISC-SPM：-Controller" class="headerlink" title="Ⅲ· RISC SPM： Controller"></a>Ⅲ· RISC SPM： Controller</h2><p>​    </p>
+<p>​    </p>
 </div></body></html>
       
     </div>
@@ -686,758 +1336,11 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/01/02/Perl%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B02--%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/timg.jpg">
-      <meta itemprop="name" content="maos520">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Maos520">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/01/02/Perl%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B02--%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="post-title-link" itemprop="url">Perl学习笔记2--正则表达式</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-01-02 16:57:56" itemprop="dateCreated datePublished" datetime="2020-01-02T16:57:56+08:00">2020-01-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-05 16:51:30" itemprop="dateModified" datetime="2020-01-05T16:51:30+08:00">2020-01-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Language/" itemprop="url" rel="index">
-                    <span itemprop="name">Language</span>
-                  </a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Language/Perl/" itemprop="url" rel="index">
-                    <span itemprop="name">Perl</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <html><head></head><body></body></html><html><head></head><body><h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>​    本篇博客主要记录常见的正则表达式的规则，以备以后查阅和使用。</p>
-<h2 id="一、常见正则字符"><a href="#一、常见正则字符" class="headerlink" title="一、常见正则字符"></a>一、常见正则字符</h2><table>
-<thead>
-<tr>
-<th align="center">character</th>
-<th align="left">description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">\f</td>
-<td align="left">match a page break</td>
-</tr>
-<tr>
-<td align="center">\n</td>
-<td align="left">match a line break</td>
-</tr>
-<tr>
-<td align="center">\r</td>
-<td align="left">match a carriage return</td>
-</tr>
-<tr>
-<td align="center">\s</td>
-<td align="left">match any whitespace characters including space,tabs,page breaks,etc.</td>
-</tr>
-<tr>
-<td align="center">\S</td>
-<td align="left">match ant non-whitespace characters</td>
-</tr>
-<tr>
-<td align="center">\t</td>
-<td align="left">tabs</td>
-</tr>
-<tr>
-<td align="center">\v</td>
-<td align="left">vertical tabs</td>
-</tr>
-<tr>
-<td align="center">$</td>
-<td align="left">match the end of the input string</td>
-</tr>
-<tr>
-<td align="center">^</td>
-<td align="left">match the start of the input string</td>
-</tr>
-<tr>
-<td align="center">\b</td>
-<td align="left">match the word boundary</td>
-</tr>
-<tr>
-<td align="center">\B</td>
-<td align="left">match the word non-boundary</td>
-</tr>
-<tr>
-<td align="center">()</td>
-<td align="left">mark  the start and end of a subexpression</td>
-</tr>
-<tr>
-<td align="center">*</td>
-<td align="left">match the previous subexpression zero or more times</td>
-</tr>
-<tr>
-<td align="center">+</td>
-<td align="left">match the previous subexpression one or more times</td>
-</tr>
-<tr>
-<td align="center">?</td>
-<td align="left">match the previous subexpression zero or one time</td>
-</tr>
-<tr>
-<td align="center">.</td>
-<td align="left">match any single character except the newline \n</td>
-</tr>
-<tr>
-<td align="center">{n}</td>
-<td align="left">match determined n times</td>
-</tr>
-<tr>
-<td align="center">{n,}</td>
-<td align="left">match at least n times</td>
-</tr>
-<tr>
-<td align="center">{n,m}</td>
-<td align="left">match at least n times and up to m times</td>
-</tr>
-<tr>
-<td align="center">[]</td>
-<td align="left">match the any one of characters included</td>
-</tr>
-<tr>
-<td align="center">\</td>
-<td align="left">mark the next character as either the special character or literal character</td>
-</tr>
-<tr>
-<td align="center">|</td>
-<td align="left">spcify a choice between the two</td>
-</tr>
-<tr>
-<td align="center">\d</td>
-<td align="left">equivalent to[0-9]</td>
-</tr>
-<tr>
-<td align="center">\D</td>
-<td align="left">equivalent to [^0-9]</td>
-</tr>
-<tr>
-<td align="center">\w</td>
-<td align="left">equivalent to [a-zA-Z0-9_ ]</td>
-</tr>
-</tbody></table>
-<h2 id="二、匹配regex"><a href="#二、匹配regex" class="headerlink" title="二、匹配regex"></a>二、匹配regex</h2><ul>
-<li><p><strong>模式匹配操作符</strong></p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">m</span>/ <span class="regexp">/   #其返回的是捕获变量的列表</span></span><br><span class="line"><span class="regexp">m{ }</span></span><br><span class="line"><span class="regexp">m( )   #类似qw/</span> /  可任意选择边界 </span><br><span class="line"><span class="keyword">my</span> $text = <span class="string">"Fred dropped a 5 ton granite block on Mr.Slate"</span>;</span><br><span class="line"><span class="keyword">my</span> @word = ($text =~ <span class="regexp">/([a-z]+)/ig</span>;</span><br><span class="line"><span class="keyword">print</span> <span class="string">"Result: @word \n"</span>;</span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><p><strong>模式匹配修饰符</strong></p>
-</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th align="center">Character</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">/i</td>
-<td align="left">大小写无关</td>
-</tr>
-<tr>
-<td align="center">/s</td>
-<td align="left">匹配任意字符</td>
-</tr>
-<tr>
-<td align="center">/m</td>
-<td align="left">跨行匹配</td>
-</tr>
-<tr>
-<td align="center">/g</td>
-<td align="left">全局匹配</td>
-</tr>
-</tbody></table>
-<ul>
-<li><p><strong>模式分组和捕获变量</strong></p>
-<p>可以利用()对模式字符串进行分组，我还可以反向引用圆括号里的字符，并且会把圆括号里匹配的字符自动保存到相应的变量中，$1,$2,$3…,这些变量会保持到下次成功匹配为止，也就是说，匹配失败后不会改变上次成功匹配的结果。</p>
-<p>e.g.</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">  $_ = <span class="string">"abba"</span>;</span><br><span class="line">  <span class="keyword">if</span>(<span class="regexp">/(.)\1/</span>){                     <span class="comment"># match bb</span></span><br><span class="line">  <span class="keyword">print</span> <span class="string">"Matched!"</span>,$1,<span class="string">"\n"</span>;            <span class="comment">#bb    }</span></span><br><span class="line">  <span class="comment">#自定义分组捕获标签</span></span><br><span class="line">  <span class="keyword">my</span> $names = <span class="string">'Fred or Barney'</span>;</span><br><span class="line">  <span class="keyword">if</span>($names =~ <span class="regexp">m/(?<name1>\w+) (?:and|or) (?<name2>\w+)/</span>){ <span class="comment"># (?<label>regex)  存放在变量label里</span></span><br><span class="line">  													<span class="comment"># (?:regex) 表示不存放</span></span><br><span class="line">  ​	<span class="keyword">say</span> <span class="string">"I saw $+{name1} and $+{name2}"</span>;  <span class="comment">#变量访问形式变为 $+{label}</span></span><br><span class="line">  } </span><br><span class="line"><span class="comment">#三个免费变量</span></span><br><span class="line">  $&    $`   $'</span><br></pre></td></tr></tbody></table></figure>
-<h2 id="三、处理文本"><a href="#三、处理文本" class="headerlink" title="三、处理文本"></a>三、处理文本</h2></li>
-<li><p><strong><kbd>s///</kbd>进行替换操作</strong></p>
-<p>e.g.</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$_ = <span class="string">"green scaly dinosaur"</span>;</span><br><span class="line"><span class="keyword">s</span>/(\w+) (\w+)/$2 $1/;   <span class="comment">#需要替换的内容必须事先放在变量里</span></span><br><span class="line"><span class="keyword">s</span>/\A/huge /;  <span class="comment">#实现插入</span></span><br><span class="line"><span class="keyword">s</span>/ .*een//;   <span class="comment">#实现删除</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">s</span>/\<span class="keyword">s</span>+<span class="regexp">/ /g</span>     <span class="comment"># /g实现全局替换，对所有符合条件都进行替换</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-
-</li>
-</ul>
-<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p>Randal L. Schwartz et. Perl语言入门 [M]. 胜春，译.</p>
-</body></html>
-      
-    </div>
-
-
-    
-    
-    
-	
-	<div>
-     
-   </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/01/02/Perl%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01--%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/timg.jpg">
-      <meta itemprop="name" content="maos520">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Maos520">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/01/02/Perl%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01--%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" class="post-title-link" itemprop="url">Perl学习笔记1--基本概念</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-01-02 16:57:56" itemprop="dateCreated datePublished" datetime="2020-01-02T16:57:56+08:00">2020-01-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-05 16:52:02" itemprop="dateModified" datetime="2020-01-05T16:52:02+08:00">2020-01-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Language/" itemprop="url" rel="index">
-                    <span itemprop="name">Language</span>
-                  </a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Language/Perl/" itemprop="url" rel="index">
-                    <span itemprop="name">Perl</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <html><head></head><body></body></html><html><head></head><body><h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>​    本篇博客主要是阅读《Perl语言入门》此本书的学习笔记，记录Perl基础且重要的概念和思想，忽略具体语法细节（与其他很多语言类似）。学习Perl主要是为了方便仿真数据的处理，文本处理，所以仅仅是对其基本的语法学习，对其高阶特性也仅限了解。</p>
-<h2 id="Ⅰ-Basic-conception"><a href="#Ⅰ-Basic-conception" class="headerlink" title="Ⅰ Basic conception"></a>Ⅰ Basic conception</h2><p><strong>1.标量：</strong> 一个标量就是一个独立的东西，对其的处理统一按照标量的去做，对于东西的本身并不关心（<strong>强调整体性和独立性</strong>）。</p>
-<p><strong>2.字符串中的标量变量内插</strong> </p>
-<p>​    如果在内插变量名后面需要紧跟其他合法的变量字符，即字母、数字或下划线时，Perl就无从判断，需要引入避免歧义的写法，e.g. </p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$what = <span class="string">"steak"</span>;</span><br><span class="line">$n    = <span class="number">3</span>;</span><br><span class="line"><span class="keyword">print</span> <span class="string">"Fred ate $n $whats.\n"</span>;  <span class="comment"># 并不是我们想要内插的$what</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">"Fred ate $n <span class="subst">${what}</span>s.\n"</span>; <span class="comment"># ok!</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">"Fred ate $n $what"</span> . <span class="string">"s\n"</span>; <span class="comment"># ok!</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>3.undef值</strong></p>
-<p>​    在首次赋值之前，变量初始值就是特殊的undef，如果把这个‘空无一物’当做数字用，它就会变成零，当成字符串用，他就会表现的像空字符串，但是其本身既不是标量也不是字符串。它完全是一种独立类型的标量。可以利用defined函数来判断是否为undef值，e.g.</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$next_line = <STDIN>;   <span class="comment">#比如在文件末尾就返回undef，如果是undef，defined就会返回假，否则即使是空字符串，那</span></span><br><span class="line">                        <span class="comment">#也是已定义的值。</span></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">defined</span>($next_line)){</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"The input was $next_line"</span>;</span><br><span class="line">} <span class="keyword">else</span> {</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"No input available!\n"</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>4.列表与数组</strong></p>
-<p>​    列表指的是标量的有序集合，而数组则是存储列表的变量。</p>
-<p>​    列表的构建：</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">qw< fred maosan liuzhuansu ></span> <span class="comment"># Perl允许任何标点符号作为定界符</span></span><br><span class="line"><span class="keyword">qw</span>! fred maosan liuzhuansu !</span><br></pre></td></tr></tbody></table></figure>
-
-<p><font color="pink"><strong>5.标量上下文和列表上下文</strong></font></p>
-<p>​    当Perl在解析表达式时，要么希望它返回一个标量，要么希望它返回一个列表。表达式所在位置，Perl期望得到什么，那就是该表达式的上下文。</p>
-<ul>
-<li><strong>在标量上下中使用产生列表的表达式</strong></li>
-</ul>
-<p>​    sort在标量上下文中，会返回undef。reverse在标量上下文中会产生逆序后的字符串。其他一些标量上下文的例子</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$fred    = something</span><br><span class="line">$fred[<span class="number">2</span>] = something</span><br><span class="line"><span class="number">123</span>+something</span><br><span class="line"><span class="keyword">if</span>(something){...}</span><br><span class="line"><span class="keyword">while</span>(something){...}</span><br><span class="line">$fred[something]=something</span><br></pre></td></tr></tbody></table></figure>
-
-<ul>
-<li><strong>在列表上下文中使用产生标量的表达式</strong></li>
-</ul>
-<p>​    一些常见的列表上下文的例子：</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@fred = something</span><br><span class="line">($fred,$barney) = something</span><br><span class="line">($fred) = something;</span><br><span class="line"><span class="keyword">push</span> @fred,something;</span><br><span class="line"><span class="keyword">foreach</span> $fred (something){...}</span><br><span class="line"><span class="keyword">sort</span> something</span><br><span class="line"><span class="keyword">reverse</span> something</span><br><span class="line"><span class="keyword">print</span> something</span><br></pre></td></tr></tbody></table></figure>
-
-<p>​    强制指定标量上下文</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> <span class="string">"I have "</span>,<span class="keyword">scalar</span> @rocks,<span class="string">" rock\n"</span>;</span><br></pre></td></tr></tbody></table></figure>
-
-<p>​    <kbd><stdin></stdin></kbd>在标量上下文中，返回输入的下一行内容，在列表上下文中，返回的则是所有剩下行的内容，一行一个元素直到文件结尾</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@lines = <STDIN>; <span class="comment">#在Linux下可以通过Ctrl+D来终止输入</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>6.钻石操作符</strong></p>
-<p>​    在读取输入可以通过<kbd><文件句柄></kbd>的形式来进行读取，其次也可以通过钻石操作符，即<kbd><></kbd>来实现，其会读取存放在<kbd>@ARGV</kbd>系统变量中的所有文件。</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#！ /usr/bin/perl -w</span></span><br><span class="line"><span class="keyword">open</span> DATA,<span class="string">'>'</span>,<span class="string">'data.txt'</span></span><br><span class="line"><span class="keyword">while</span>(<>){                </span><br><span class="line">	<span class="keyword">chomp</span>;</span><br><span class="line">	<span class="keyword">say</span> DATA $_;</span><br><span class="line">}</span><br><span class="line"><span class="keyword">close</span> DATA;</span><br><span class="line"><span class="comment">#在shell下执行</span></span><br><span class="line">$ ./my_program aa bb - cc; <span class="comment">#调用命令依次处理文件aa bb 标准输入（-代表从标准输入读取数据） cc中的内容</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<p><strong>7.以二进制方式读写文件句柄</strong></p>
-<p>​    利用binmode函数来实现二进制文件的读写</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">binmode</span> STDOUT;    <span class="comment"># 不能用<>对二进制句柄操作，只能使用read函数</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<h2 id="Ⅱ-Common-Functions"><a href="#Ⅱ-Common-Functions" class="headerlink" title="Ⅱ  Common Functions"></a>Ⅱ  Common Functions</h2><p>1.<kbd>chomp</kbd>   去掉字符串末尾换行符</p>
-<p><strong>语法格式：</strong></p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">chomp</span> $string;</span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>参数说明：</strong></p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$string        <span class="comment"># 待处理的标量字符串</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>2.<kbd>splice</kbd> 添加 移除 替换 数组中间值</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@array = <span class="keyword">qw</span>/ pebbles dino fred barey betty /;</span><br><span class="line"><span class="keyword">splice</span> @array,<span class="number">1</span>,<span class="number">2</span>; <span class="comment">#删除起始位置为1，长度为2的两个值</span></span><br><span class="line"><span class="keyword">splice</span> @array,<span class="number">1</span>,<span class="number">2</span>,<span class="keyword">qw</span>/ wilma / <span class="comment">#删除替换为wilma</span></span><br><span class="line"><span class="keyword">splice</span> @array,<span class="number">1</span>,<span class="number">0</span>,<span class="keyword">qw</span>/ wilma / <span class="comment">#插入wilma</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>3.<kbd>each</kbd> 返回数组或哈希中下一个元素所对应得两个值</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@rock = <span class="keyword">qw</span>/ bedrock slate rubble /;</span><br><span class="line"><span class="keyword">while</span> (($index,$value) = <span class="keyword">each</span> @rock){</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"$index : $value\n"</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> @index(<span class="number">0</span>..$#rocks){                <span class="comment"># $#rocks返回数组@rocks最后一个值得索引</span></span><br><span class="line">	<span class="keyword">print</span> <span class="string">"$index : $rocks[$index]\n"</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<p>4.<kbd>read</kbd> 用于从文件句柄中读取指定字节数的数据并写入到一个标量中。如果文件句柄是以Unicode方式打开的，则表示读取指定字符数而非字节数。</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">read</span> FH, $var, len</span><br><span class="line"><span class="keyword">read</span> FH, $var, len, offset  <span class="comment">#注意offset不是控制从文件句柄的哪个位置读，而是控制向变量的哪个位置开始写</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>5.<kbd>syswrite</kbd>用于将标量中的数据写入文件句柄中，参数与read类似。</p>
-<p>6.<kbd>open</kbd>打开文件，获得文件句柄</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> FILEHANDLE,<span class="string">'>'</span>,<span class="string">'文件路径'</span>;</span><br><span class="line"><span class="keyword">close</span> FILEHANDLE;</span><br></pre></td></tr></tbody></table></figure>
-
-<p>7.<kbd>split</kbd>将字符串 EXPR 拆分成字符串列表，列表中的每个元素被称为拆分得到的fields，在列表上下文返回拆分得到的列表，在标量上下文返回拆分得到列表的长度。</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">split</span> <span class="regexp">/PATTERN/</span>, EXPR, LIMIT</span><br><span class="line"><span class="keyword">split</span> <span class="regexp">/PATTERN/</span>, EXPR</span><br><span class="line"><span class="keyword">split</span> <span class="regexp">/PATTERN/</span></span><br><span class="line">@array = <span class="keyword">split</span> <span class="regexp">/:/</span>,$scalar;</span><br></pre></td></tr></tbody></table></figure>
-
-<p>8.<kbd>grep&map</kbd><strong>BLOCK</strong>表示一个code块，通常用{}表示；<strong>EXPR</strong>表示一个表达式，通常是正则表达式。<br><strong>LIST</strong>是要匹配的列表。grep对列表里的每个元素进行BLOCK或EXPR匹配，它遍历列表，并临时设置元素为$_。在列表上下文里，grep返回匹配命中的所有元素，结果也是个列表。在标量上下文里，grep返回匹配命中的元素个数。</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">grep</span> BLOCK LIST</span><br><span class="line"><span class="keyword">grep</span> EXPR, LIST</span><br><span class="line"><span class="comment">#e.g.</span></span><br><span class="line"><span class="keyword">my</span> @odd_numbers = <span class="keyword">grep</span> { $_ % <span class="number">2</span> } <span class="number">1</span>..<span class="number">1000</span>;</span><br><span class="line"><span class="keyword">my</span> @matching_lines = <span class="keyword">grep</span> <span class="regexp">/\bfred\b/i</span> <$fh>; <span class="comment">#返回匹配成功的行</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">map</span> BLOCK LIST</span><br><span class="line"><span class="comment">#map与grep不同之处在于，其最后一个表达式返回的不是逻辑的真假值，而是表达式的实际计算结果，最终返回一系列这样的结果组成的列表，而grep根据逻辑真假值将原始列表中的值选出来组成列表返回。两者够可以改成foreach语句。</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="Ⅲ-NOTICES"><a href="#Ⅲ-NOTICES" class="headerlink" title="Ⅲ  NOTICES"></a>Ⅲ  NOTICES</h2><p>1.函数调用前是否加& ？</p>
-<p>​    建议加，如果不加当自己定义的子函数，与系统已存在的函数重名时将调用系统函数。</p>
-<p>2.调用函数输入参数列表的括号什么时候可以不写？</p>
-<p>​    只要不引起歧义就可以去掉！！</p>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p>Randal L. Schwartz et. Perl语言入门 [M]. 胜春，译.</p>
-</body></html>
-      
-    </div>
-
-
-    
-    
-    
-	
-	<div>
-     
-   </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/12/30/Perl%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B03--%E5%BC%95%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/timg.jpg">
-      <meta itemprop="name" content="maos520">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Maos520">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/12/30/Perl%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B03--%E5%BC%95%E7%94%A8/" class="post-title-link" itemprop="url">Perl学习笔记3——引用</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-12-30 16:38:44" itemprop="dateCreated datePublished" datetime="2019-12-30T16:38:44+08:00">2019-12-30</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-05 10:31:12" itemprop="dateModified" datetime="2020-01-05T10:31:12+08:00">2020-01-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Language/" itemprop="url" rel="index">
-                    <span itemprop="name">Language</span>
-                  </a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Language/Perl/" itemprop="url" rel="index">
-                    <span itemprop="name">Perl</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <html><head></head><body></body></html><html><head></head><body><h2 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h2><p>​    引用就是指针，Perl 引用是一个标量类型可以指向变量、数组、哈希表（也叫关联数组）甚至子程序，可以应用在程序的任何地方。类似C语言的引用，引用本身指向所引用变量的地址，打印一个简单的标量的引用，看一下地址的显示，SCALAR后面一串十六进制，SCALAR说明该地址指向简单变量（即标量），后面的数字是实际存贮值的地址。</p>
-<h2 id="二、创建引用"><a href="#二、创建引用" class="headerlink" title="二、创建引用"></a>二、创建引用</h2><p><strong>规则1：</strong> 使用<kbd> \ </kbd></p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">my</span> $sref = \$scalar; <span class="comment">#标量引用</span></span><br><span class="line"><span class="keyword">my</span> $aref = \@array;  <span class="comment">#数组引用</span></span><br><span class="line"><span class="keyword">my</span> $href = \%hash;   <span class="comment">#哈希引用</span></span><br><span class="line"><span class="keyword">my</span> $fref = \&fun;    <span class="comment">#子过程引用</span></span><br><span class="line"><span class="keyword">my</span> $gref = \*foo;    <span class="comment">#glob句柄引用</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>规则2：</strong> 匿名引用</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">my</span> $sref = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"><span class="keyword">my</span> $sref1=[];</span><br><span class="line"><span class="keyword">my</span> $href = {<span class="string">"perl"</span>=><span class="number">1</span>,<span class="string">"python"</span>=><span class="number">2</span>};</span><br><span class="line"><span class="keyword">my</span> href2 = {};</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="三、使用引用"><a href="#三、使用引用" class="headerlink" title="三、使用引用"></a>三、使用引用</h2><p><strong>规则1：</strong> 与普通变量访问相比，假设原来的变量名为name，则此方法在所有出现name的地方用<kbd>{$name}</kbd></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$scalar                           ${$sref} or $$sref</span><br><span class="line">@array                            @{$aref} or @$aref</span><br><span class="line">@array[1]                         @{$aref}[1]</span><br><span class="line">%hash                             %{$href}</span><br><span class="line">keys %hash                        keys %{%hash}</span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>规则2：</strong>使用<kbd>-></kbd>,简化表示,不适用标量</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">${$aref}[<span class="number">3</span>]                       $aref->[<span class="number">3</span>]</span><br><span class="line">${$href}<span class="string">{red}</span>                     $href->{red}</span><br><span class="line">&{$fref}()                        $fref->()</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="四、引用构建复杂数据结构"><a href="#四、引用构建复杂数据结构" class="headerlink" title="四、引用构建复杂数据结构"></a>四、引用构建复杂数据结构</h2><p><strong>数组的数组</strong></p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@a=([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],</span><br><span class="line">	[<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>],</span><br><span class="line">	[<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>] ); <span class="comment">#@a是一个拥有三个成员的数组，每一个成员是另一个数组的引用</span></span><br><span class="line">$a[<span class="number">1</span>]      </span><br><span class="line">$a[<span class="number">1</span>]->[<span class="number">1</span>]; <span class="comment">#3</span></span><br><span class="line">$a[<span class="number">1</span>][<span class="number">1</span>]; <span class="comment">#简写 </span></span><br><span class="line"></span><br><span class="line">$aref=[<span class="number">1</span>,[<span class="number">2</span>,<span class="number">3</span>],[<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]];</span><br><span class="line">$aref->[<span class="number">0</span>];    <span class="comment"># 1</span></span><br><span class="line">$aref->[<span class="number">1</span>][<span class="number">1</span>]  <span class="comment"># 3</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>哈希的哈希</strong></p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%h=(<span class="string">'xiaoming'</span>=>{<span class="string">'age'</span>=><span class="number">10</span>,<span class="string">'id'</span>=><span class="number">0001</span>},<span class="string">'xiaohong'</span>=>{<span class="string">'age'</span>=><span class="number">12</span>,<span class="string">'id'</span>=><span class="number">0002</span>});</span><br><span class="line">$h{<span class="string">'xiaoming'</span>}->{age};</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="五、其他"><a href="#五、其他" class="headerlink" title="五、其他"></a>五、其他</h2><p><strong>引用的赋值</strong></p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$aref = [@$aref1];</span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>判断是否为引用</strong></p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ref</span> $aref;</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p><a href="https://www.cnblogs.com/softwaretesting/archive/2011/07/26/2117730.html" target="_blank" rel="noopener">https://www.cnblogs.com/softwaretesting/archive/2011/07/26/2117730.html</a></p>
-<p><a href="https://www.cnblogs.com/xianghang123/archive/2011/07/18/2109991.html" target="_blank" rel="noopener">https://www.cnblogs.com/xianghang123/archive/2011/07/18/2109991.html</a></p>
-</body></html>
-      
-    </div>
-
-
-    
-    
-    
-	
-	<div>
-     
-   </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/10/26/%E6%88%91%E7%9A%84vimrc%E9%85%8D%E7%BD%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/timg.jpg">
-      <meta itemprop="name" content="maos520">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Maos520">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/10/26/%E6%88%91%E7%9A%84vimrc%E9%85%8D%E7%BD%AE/" class="post-title-link" itemprop="url">我的vimrc配置</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-10-26 13:23:15" itemprop="dateCreated datePublished" datetime="2019-10-26T13:23:15+08:00">2019-10-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-25 20:32:14" itemprop="dateModified" datetime="2019-12-25T20:32:14+08:00">2019-12-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/vim/" itemprop="url" rel="index">
-                    <span itemprop="name">vim</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <html><head></head><body></body></html><html><head></head><body><h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>​    这是我在最近在学习和使用vim过程中，参考各位大佬的vim配置文件的基础上结合自己的使用对vim的使用习惯，而形成的配置文件。</p>
-<h2 id="二、Gvim配置"><a href="#二、Gvim配置" class="headerlink" title="二、Gvim配置"></a>二、Gvim配置</h2><p>​    后续补充</p>
-<h2 id="三、VIMRC文件"><a href="#三、VIMRC文件" class="headerlink" title="三、VIMRC文件"></a>三、VIMRC文件</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br></pre></td><td class="code"><pre><span class="line">runtime! debian.vim</span><br><span class="line"></span><br><span class="line">if has("syntax")</span><br><span class="line">  syntax on</span><br><span class="line">endif</span><br><span class="line"></span><br><span class="line">set mouse=a		</span><br><span class="line">se relativenumber</span><br><span class="line">"设置自动保存</span><br><span class="line">let g:autosave = 1</span><br><span class="line">let g:autosave_events = ["CursorHold", "CursorHoldI"]</span><br><span class="line">let g:updatetime=10000</span><br><span class="line"></span><br><span class="line">let mapleader = ","</span><br><span class="line">let g:mapleader = ","</span><br><span class="line"></span><br><span class="line">"映射切换buffer的键位</span><br><span class="line">nnoremap <F1> <ESC>:bp<CR></span><br><span class="line">nnoremap <F2> <ESC>:bn<CR></span><br><span class="line">inoremap <F1> <ESC>:bp<CR></span><br><span class="line">inoremap <F2> <ESC>:bn<CR></span><br><span class="line">"映射在normal模式下enter 和 space 按键为增加空行和空格 </span><br><span class="line">nnoremap <space> i <space><esc></span><br><span class="line">nnoremap <Enter> o<esc></span><br><span class="line">"映射<leader>num到num buffer</span><br><span class="line">map <leader>1 :b 1<CR></span><br><span class="line">map <leader>2 :b 2<CR></span><br><span class="line">map <leader>3 :b 3<CR></span><br><span class="line">map <leader>4 :b 4<CR></span><br><span class="line">map <leader>5 :b 5<CR></span><br><span class="line">map <leader>6 :b 6<CR></span><br><span class="line">map <leader>7 :b 7<CR></span><br><span class="line">map <leader>8 :b 8<CR></span><br><span class="line">map <leader>9 :b 9<CR></span><br><span class="line">"映射插件 ctags，Tlist和NERDTree</span><br><span class="line">map <F7> <ESC>:!ctags -R <CR><CR></span><br><span class="line">map <F8> <ESC>:Tlist <CR></span><br><span class="line">map <F3> :NERDTreeMirror<CR></span><br><span class="line">map <F3> :NERDTreeToggle<CR></span><br><span class="line">"映射保存和退出</span><br><span class="line">nmap <leader>w :w!<CR></span><br><span class="line">nmap <leader>q :q!<CR></span><br><span class="line">"映射窗口切换的快捷键</span><br><span class="line">map <C-j> <C-W>j</span><br><span class="line">map <C-k> <C-W>k</span><br><span class="line">map <C-h> <C-W>h</span><br><span class="line">map <C-l> <C-W>l</span><br><span class="line">"映射跨文件复制粘贴</span><br><span class="line">map <leader>y "+y</span><br><span class="line">map <leader>p "+p</span><br><span class="line">"映射行首和行尾</span><br><span class="line">noremap H ^</span><br><span class="line">noremap L $</span><br><span class="line">"全局变量配置</span><br><span class="line">set nocompatible</span><br><span class="line">set noswapfile</span><br><span class="line">set autoread</span><br><span class="line">set smarttab</span><br><span class="line">set cursorline</span><br><span class="line">set incsearch</span><br><span class="line">set hlsearch</span><br><span class="line">set nobackup</span><br><span class="line">set ignorecase</span><br><span class="line">set guioptions-=T           " 隐藏工具栏</span><br><span class="line">set guioptions-=m           " 隐藏菜单栏</span><br><span class="line">set hidden</span><br><span class="line">set textwidth=200</span><br><span class="line">"设置vim打开文件编码方式</span><br><span class="line">set fileencodings=utf-8,chinese,latin-1</span><br><span class="line">set termencoding=utf-8</span><br><span class="line">set encoding=utf-8</span><br><span class="line">"设置tab键</span><br><span class="line">set expandtab | set tabstop=4 | set shiftwidth=4</span><br><span class="line">au FileType c,cpp set expandtab | set tabstop = 2 |set shiftwidth = 2</span><br><span class="line">au FileType make set noexpandtab | set tabstop=8 | shiftwidth=8</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"powerline</span><br><span class="line">set rtp+=~/.vim/bundle/vim-powerline/plugin/Powerline.vim</span><br><span class="line">set laststatus=2</span><br><span class="line">"theme</span><br><span class="line">set bg=dark</span><br><span class="line">set t_Co=256</span><br><span class="line">colorscheme gruvbox</span><br><span class="line">set guifont=Monaco:h17</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"YouComplete</span><br><span class="line">let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py'</span><br><span class="line"></span><br><span class="line">"------------------------------------------</span><br><span class="line">"---Start------ configure the Tlist Plugin------</span><br><span class="line">"-------------------------------------------</span><br><span class="line">let Tlist_Show_One_File=1</span><br><span class="line">let Tlist_Exit_OnlyWindow=1</span><br><span class="line">let Tlist_Ctags_Cmd='/usr/local/bin/ctags'</span><br><span class="line">let Tlist_Use_Right_Window=1</span><br><span class="line">let Tlist_Sort_Type = "name"</span><br><span class="line">let Tlist_Enable_Fold_Column = 1</span><br><span class="line">"set tags = ./tags;,tags</span><br><span class="line">"---------------------------------------------</span><br><span class="line">"---End------ configure the Tlist Plugin------</span><br><span class="line">"---------------------------------------------</span><br><span class="line"></span><br><span class="line">"------------------------------------------</span><br><span class="line">"---Start------ configure the yum  Plugin------</span><br><span class="line">"-------------------------------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">set runtimepath+=~/.vim/bundle/YouCompleteMe</span><br><span class="line">autocmd InsertLeave * if pumvisible() == 0|pclose|endif "离开插入模式后自动关闭预览窗口"</span><br><span class="line">let g:ycm_collect_identifiers_from_tags_files = 1           " 开启 YCM基于标签引擎</span><br><span class="line">let g:ycm_collect_identifiers_from_comments_and_strings = 1 " 注释与字符串中的内容也用于补全</span><br><span class="line">let g:syntastic_ignore_files=[".*\.py$"]</span><br><span class="line">let g:ycm_seed_identifiers_with_syntax = 1                  " 语法关键字补全</span><br><span class="line">let g:ycm_complete_in_comments = 1</span><br><span class="line">let g:ycm_confirm_extra_conf = 0                            " 关闭加载.ycm_extra_conf.py提示</span><br><span class="line">let g:ycm_key_list_select_completion = ['<c-n>', '<Down>']  " 映射按键,没有这个会拦截掉tab, 导致其他插件的tab不能用.</span><br><span class="line">let g:ycm_key_list_previous_completion = ['<c-p>', '<Up>']</span><br><span class="line">let g:ycm_complete_in_comments = 1                          " 在注释输入中也能补全</span><br><span class="line">let g:ycm_complete_in_strings = 1                           " 在字符串输入中也能补全</span><br><span class="line">let g:ycm_collect_identifiers_from_comments_and_strings = 1 " 注释和字符串中的文字也会被收入补全</span><br><span class="line">let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'</span><br><span class="line">let g:ycm_show_diagnostics_ui = 0                           " 禁用语法检查</span><br><span class="line">"inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"             " 回车即选中当前项</span><br><span class="line">"nnoremap <c-j> :YcmCompleter GoToDefinitionElseDeclaration<CR>     " 跳转到定义处</span><br><span class="line">let g:ycm_min_num_of_chars_for_completion=2                 " 从第2个键入字符就开始罗列匹配项</span><br><span class="line"></span><br><span class="line">"-------------------------------------------</span><br><span class="line">"---End------ configure the yum Plugin------</span><br><span class="line">"-------------------------------------------</span><br><span class="line"></span><br><span class="line">"-----------------------------------------------------------------------------</span><br><span class="line">"--------------Start ale.vim---------------------------------------------</span><br><span class="line">"-----------------------------------------------------------------------------</span><br><span class="line">""keep the sign gutter open</span><br><span class="line">let g:ale_sign_column_always = 1</span><br><span class="line">let g:ale_set_highlights = 0</span><br><span class="line">let g:ale_sign_error = '✗'</span><br><span class="line">let g:ale_sign_warning = '⚡'</span><br><span class="line">let g:ale_statusline_format = ['✗ %d', '⚡ %d', '✔ OK']</span><br><span class="line">" show errors or warnings in my statusline</span><br><span class="line">let g:airline#extensions#ale#enabled = 1</span><br><span class="line">nmap sp <Plug>(ale_previous_wrap)</span><br><span class="line">nmap sn <Plug>(ale_next_wrap)</span><br><span class="line">"<Leader>s触发/关闭语法检查</span><br><span class="line">nmap <Leader>s :ALEToggle<CR></span><br><span class="line">"<Leader>d查看错误或警告的详细信息</span><br><span class="line">nmap <Leader>d :ALEDetail<CR></span><br><span class="line">"set statusline=%{LinterStatus()}</span><br><span class="line"></span><br><span class="line">" %s is the error message itself</span><br><span class="line">" %linter% is the linter name</span><br><span class="line">" %severity is the severity type</span><br><span class="line">let g:ale_echo_msg_error_str = 'E'</span><br><span class="line">let g:ale_echo_msg_warning_str = 'W'</span><br><span class="line">let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'</span><br><span class="line"></span><br><span class="line">" use quickfix list instead of the loclist</span><br><span class="line">let g:ale_set_loclist = 0</span><br><span class="line">let g:ale_set_quickfix = 1</span><br><span class="line"></span><br><span class="line">nmap <silent> <C-k> <Plug>(ale_previous_wrap)</span><br><span class="line">nmap <silent> <C-J> <Plug>(ale_next_wrap)</span><br><span class="line"></span><br><span class="line">" run lint only on saving a file</span><br><span class="line">" let g:ale_lint_on_text_changed = 'never'</span><br><span class="line">" dont run lint on opening a file</span><br><span class="line">" let g:ale_lint_on_enter = 0</span><br><span class="line"></span><br><span class="line">"------------------------------------------------------------</span><br><span class="line">"------------------------END ale.vim------------------------</span><br><span class="line">"----------------------------------------------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"-----------------------Start nerdtree--------------------</span><br><span class="line"></span><br><span class="line">map <leader>n :NERDTreeToggle<CR></span><br><span class="line"></span><br><span class="line">"-----------------------End   nerdtree--------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"-----------------------Start indentLine------------------</span><br><span class="line"></span><br><span class="line">let g:indentLine_noConcealCursor = 1</span><br><span class="line">let g:indentLine_color_term = 239</span><br><span class="line">let g:indentLine_char = '|'</span><br><span class="line"></span><br><span class="line">"-----------------------End   indentLine------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"-----------------------Start nerdcommenter---------------</span><br><span class="line"></span><br><span class="line">"<leader>cc 注释选中内容                                                                    </span><br><span class="line">"<leader>cu 取消选中注释  </span><br><span class="line">"<leader>c$ 从当前光标开始到行尾注释掉  </span><br><span class="line">let g:NERDSpaceDelims=1</span><br><span class="line">let g:NERDCompactSexyComs=1</span><br><span class="line">let g:NERDDefaultAlign = 'left'</span><br><span class="line"></span><br><span class="line">"-----------------------End   nerdcommenter---------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"-----------------------Start easymotion------------------</span><br><span class="line"></span><br><span class="line">let g:EasyMotion_smartcase = 1</span><br><span class="line">"let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion </span><br><span class="line">map <Leader><leader>h <Plug>(easymotion-linebackward) </span><br><span class="line">map <Leader><Leader>j <Plug>(easymotion-j)     </span><br><span class="line">map <Leader><Leader>k <Plug>(easymotion-k) </span><br><span class="line">map <Leader><leader>l <Plug>(easymotion-lineforward)                                                </span><br><span class="line">"重复上一次操作, 类似repeat插件, 很强大</span><br><span class="line">map <Leader><leader>. <Plug>(easymotion-repeat) </span><br><span class="line"></span><br><span class="line">"----------------------End   easymotion------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"----------------------Start ctrlp     ------------------</span><br><span class="line"></span><br><span class="line">"<Leader>p搜索当前目录下文件</span><br><span class="line">let g:ctrlp_map = '<c-p>'</span><br><span class="line">let g:ctrlp_cmd = 'CtrlP'</span><br><span class="line">"<Leader>f搜索MRU文件</span><br><span class="line">nmap <Leader>f :CtrlPMRUFiles<CR></span><br><span class="line">"<Leader>b显示缓冲区文件，并可通过序号进行跳转</span><br><span class="line">nmap <Leader>b :CtrlPBuffer<CR></span><br><span class="line">"设置搜索时忽略的文件</span><br><span class="line">let g:ctrlp_custom_ignore = {</span><br><span class="line">    \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',</span><br><span class="line">    \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc)$',</span><br><span class="line">    \ }</span><br><span class="line">let g:ctrlp_working_path_mode = 0</span><br><span class="line">let g:ctrlp_match_window_bottom = 1</span><br><span class="line">"修改QuickFix窗口显示的最大条目数</span><br><span class="line">let g:ctrlp_max_height = 15</span><br><span class="line">let g:ctrlp_match_window_reversed = 0</span><br><span class="line">"设置MRU最大条目数为500</span><br><span class="line">let g:ctrlp_mruf_max = 500</span><br><span class="line">let g:ctrlp_follow_symlinks = 1</span><br><span class="line">"默认使用全路径搜索，置1后按文件名搜索，准确率会有所提高，可以用<C-d>进行切换</span><br><span class="line">let g:ctrlp_by_filename = 1</span><br><span class="line">"默认不使用正则表达式，置1改为默认使用正则表达式，可以用<C-r>进行切换</span><br><span class="line">let g:ctrlp_regexp = 0</span><br><span class="line">"自定义搜索列表的提示符</span><br><span class="line">let g:ctrlp_line_prefix = '♪ '</span><br><span class="line"></span><br><span class="line">"----------------------End   ctrlp     ------------------</span><br><span class="line"></span><br><span class="line">"----------------------Start minibufexpl-----------------</span><br><span class="line"></span><br><span class="line">let g:miniBufExplMapWindowNavVim = 1   </span><br><span class="line">let g:miniBufExplMapWindowNavArrows = 1   </span><br><span class="line">let g:miniBufExplMapCTabSwitchBufs = 1   </span><br><span class="line">let g:miniBufExplModSelTarget = 1  </span><br><span class="line">let g:miniBufExplMoreThanOne=0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"----------------------End   minibufexpl-----------------</span><br><span class="line">"----Start----- configure the Vundle Plugin------</span><br><span class="line"></span><br><span class="line">set nocompatible              " be iMproved, required</span><br><span class="line">filetype off                  " required</span><br><span class="line"></span><br><span class="line">" set the runtime path to include Vundle and initialize</span><br><span class="line">set rtp+=~/.vim/bundle/Vundle.vim</span><br><span class="line">call vundle#begin()</span><br><span class="line"></span><br><span class="line">" let Vundle manage Vundle, required</span><br><span class="line">Plugin 'VundleVim/Vundle.vim'</span><br><span class="line">Plugin 'scrooloose/nerdtree'</span><br><span class="line">Plugin 'Valloric/YouCompleteMe'</span><br><span class="line">Plugin 'Lokaltog/vim-powerline'</span><br><span class="line">Plugin 'Yggdroot/indentLine'</span><br><span class="line">Plugin 'scrooloose/nerdcommenter'</span><br><span class="line">Plugin 'Lokaltog/vim-easymotion'</span><br><span class="line">Plugin 'w0rp/ale'</span><br><span class="line">Plugin 'kien/ctrlp.vim'</span><br><span class="line">Plugin 'fholgado/minibufexpl.vim'</span><br><span class="line">Plugin 'godlygeek/tabular'</span><br><span class="line">" Plugin 'bling/vim-airline'</span><br><span class="line">" All of your Plugins must be added before the following line</span><br><span class="line">call vundle#end()            " required</span><br><span class="line">filetype plugin indent on    " required</span><br><span class="line">" To ignore plugin indent changes, instead use:</span><br><span class="line">"filetype plugin on</span><br><span class="line"></span><br><span class="line">"----------------------------------------------</span><br><span class="line">"----End----- configure the Vundle Plugin------</span><br><span class="line">"----------------------------------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"在创建.v文件时自动插入文件头部</span><br><span class="line">au BufNewFile *.v,*.sv exec ":call SetTitlee()"</span><br><span class="line">func SetTitlee()</span><br><span class="line">	call setline(1,"// *****************************************************************************")</span><br><span class="line">	call append(line("."),"// @Project Name :")</span><br><span class="line">	call append(line(".")+1,"// @Author       : Maos520")</span><br><span class="line">	call append(line(".")+2,"// @Email        : sujingjingabc@sina.com")</span><br><span class="line">	call append(line(".")+3,"// @File Name    : .v")</span><br><span class="line">	call append(line(".")+4,"// @Module Name  :")</span><br><span class="line">	call append(line(".")+5,"// @Created Time : ".strftime("%Y-%m-%d %H:%M"))</span><br><span class="line">	call append(line(".")+6,"//")</span><br><span class="line">	call append(line(".")+7,"// @Abstract     :")</span><br><span class="line">	call append(line(".")+8,"//")</span><br><span class="line">	call append(line(".")+9,"// Modification History")</span><br><span class="line">	call append(line(".")+10,"// ******************************************************************************")</span><br><span class="line">	call append(line(".")+11,"// Date           BY           Version         Change Description")</span><br><span class="line">	call append(line(".")+12,"// -------------------------------------------------------------------------")</span><br><span class="line">	call append(line(".")+13,"// ".strftime("%Y-%m-%d"))</span><br><span class="line">	call append(line(".")+14,"// ")</span><br><span class="line">	call append(line(".")+15,"// ******************************************************************************")</span><br><span class="line">endfunc</span><br><span class="line">"映射快捷键 ,a 自动插入块注释</span><br><span class="line">map <leader>a :call Annotation()<cr>2jA </span><br><span class="line"></span><br><span class="line">function Annotation()</span><br><span class="line">    call append(line("."),"//******************************************************************************")</span><br><span class="line">    call append(line(".")+1,"//")</span><br><span class="line">    call append(line(".")+2,"//******************************************************************************")</span><br><span class="line">endfunction</span><br><span class="line"></span><br><span class="line">"当在插入模式时 输入 anno seq 或 comb  自动插入块注释或always语句块</span><br><span class="line">:ab anno //**************************************************************************<Enter>//<Enter>//**************************************************************************</span><br><span class="line">:ab seq always @(posedge clk or negedge rst_n) begin <Enter>if(!rst_n)<Enter><Tab><Enter><BS><BS>end</span><br><span class="line">:ab comb always @(*) begin <Enter><Enter>end</span><br></pre></td></tr></tbody></table></figure>
-
-</body></html>
-      
-    </div>
-
-
-    
-    
-    
-	
-	<div>
-     
-   </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/10/24/git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/timg.jpg">
-      <meta itemprop="name" content="maos520">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Maos520">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/10/24/git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="post-title-link" itemprop="url">git常用命令</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-10-24 16:14:48" itemprop="dateCreated datePublished" datetime="2019-10-24T16:14:48+08:00">2019-10-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-10-25 19:29:34" itemprop="dateModified" datetime="2019-10-25T19:29:34+08:00">2019-10-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/git/" itemprop="url" rel="index">
-                    <span itemprop="name">git</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <html><head></head><body></body></html><html><head></head><body><h2 id="一、git-基本概念"><a href="#一、git-基本概念" class="headerlink" title="一、git 基本概念"></a>一、git 基本概念</h2><h3 id="1-git文件的三种状态"><a href="#1-git文件的三种状态" class="headerlink" title="1.git文件的三种状态"></a>1.git文件的三种状态</h3><p>​        任何一个文件在Git内部都有三种状态：已提交，已修改和已暂存。 已提交表示该文件已经被安全地保存在本地数据库中了；已修改表示修改了某个文件，但还没有提交保存；已暂存表示把已修改的文件放在下次提交时要保存的清单中。<br>​        由此我们看到 Git 管理项目时，文件流转的三个工作区域：Git 的工作目录，暂存区域，以及本地仓库。 </p>
-<div align="center">
-<img src="https://raw.githubusercontent.com/maos520/PictureBed/master/img/20191024164217.png" width="60%" hieght="60%/">
-</div>
-
-<center><strong>Figure 1 工作目录，暂存区以及本地仓库</strong></center>
-## 二、git常用命令
-
-<h3 id="1-git运行前配置"><a href="#1-git运行前配置" class="headerlink" title="1.git运行前配置"></a>1.git运行前配置</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git config --global user.name <span class="string">"yourname"</span>    <span class="comment">#配置用户信息 每次提交时git都会引用这两条信息</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --global user.email youremail@example.com</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --global core.editor vim          </span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --global merge.tool vimdiff      <span class="comment">#配置默认差异分析工具 </span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --list                           <span class="comment">#查看配置</span></span></span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="2-git常用操作"><a href="#2-git常用操作" class="headerlink" title="2.git常用操作"></a>2.git常用操作</h3><p>​    在进行常用讲解之前让我们来看看git中文件的状态变化周期：</p>
-<div align="center"><img src="https://raw.githubusercontent.com/maos520/PictureBed/master/img/20191024182630.png"></div>
-<center><strong>Figure 2 文件的状态变化周期</strong></center>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git init          <span class="comment">#在需要git管理的项目下运行</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span>  git://github/maos520/PictureBed.git mypicbed  <span class="comment"># http://  user@server:/ </span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git add .         <span class="comment">#将目录下所有文件纳入版本控制，存放在暂存区</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git add *.c       <span class="comment">#所有c文件</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status        <span class="comment">#得到文件项目中文件的状态</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git diff          <span class="comment">#查看工作区文件和暂存区文件的差别</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git diff --cache/--staged <span class="comment">#查看已暂存和上次提交的区别</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git commit -m <span class="string">"本次提交说明"</span> <span class="comment">#将暂存区的内容提交</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git rm   -f   <span class="comment">#删除文件  -f:如果文件已修改暂存  force表示强制删除</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git rm --cache  <span class="comment"># 仅仅是从跟踪列表中删除 文件仍然在目录中</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">log</span>        <span class="comment">#查看提交历史，仅仅显示本次提交之前的记录</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git reflog     <span class="comment">#查看所有提交历史记录，包括删除的提交的记录</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git commit -amend <span class="comment">#撤销上次提交</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git reset -soft HEAD^  <span class="comment">#重置head和branch 保留工作区和暂存区，同时把重置HEAD带来的新差异放在暂存区 </span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git reset -mixed  HEAD   <span class="comment">#重置HEAD和branch,保留工作区，清空暂存区，将暂存区的内容和新的差异全放到工作区 </span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git reset  -hard HEAD^  <span class="comment">#-hard  会重置head到上一次提交 ，并且会重置工作目录和暂存区，未提交内容将被擦除</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git reset -mixed/-soft/-hard  版本号 <span class="comment">#回退到某一版本</span></span></span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="3-远程仓库的使用"><a href="#3-远程仓库的使用" class="headerlink" title="3.远程仓库的使用"></a>3.远程仓库的使用</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git remote -v</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git remote add [reponame] [url] <span class="comment"># 仅仅采用SSH方式传输协议的仓库才能上传 既user@username:/形式</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">以origin仓库为例</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git fetch origin   <span class="comment">#fetch 仅仅取回不会走动合并</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git push origin master <span class="comment">#推送</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git remote rm origin   <span class="comment">#删除远程仓库</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git remote show origin <span class="comment">#查看远程仓库信息</span></span></span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="4-打标签"><a href="#4-打标签" class="headerlink" title="4.打标签"></a>4.打标签</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git tag -a v1.0 -m <span class="string">'版本说明'</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git tag                      <span class="comment">#显示</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git tag -a v1.9 9fceb03      <span class="comment">#后期加标签</span></span></span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="5-分支"><a href="#5-分支" class="headerlink" title="5.分支"></a>5.分支</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git branch [name]   <span class="comment">#创建分支</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git checkout [name] <span class="comment">#切换到某分支</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git checkout -b [name] <span class="comment"># 创建并切换</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git branch -d [name]  <span class="comment">#删除</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git branch -v   <span class="comment"># 查看分支</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git merge [name]   <span class="comment">#分支合并</span></span></span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="三、git-amp-github"><a href="#三、git-amp-github" class="headerlink" title="三、git & github"></a>三、git & github</h2><h3 id="1-SSH密钥验证"><a href="#1-SSH密钥验证" class="headerlink" title="1.SSH密钥验证"></a>1.SSH密钥验证</h3><ul>
-<li><p><strong>生成密钥</strong></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ssh-keygen -t rsa -C <span class="string">"youremail@example.com"</span></span></span><br></pre></td></tr></tbody></table></figure>
-
-</li>
-</ul>
-<p>注：邮箱为在github上的注册邮箱</p>
-<ul>
-<li><p><strong>进入github配置密钥</strong></p>
-<p>进入 ~/.ssh/，目录下打开id_rsa.pub 复制密钥，进入github 的Account => Setting 在左边选择SSH and GPC keys生成，点击New SSH key ，设置标题，粘贴密钥。</p>
-</li>
-<li><p><strong>验证是否成功</strong></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ssh -T git@github.com</span></span><br></pre></td></tr></tbody></table></figure>
-<h3 id="2-创建仓库"><a href="#2-创建仓库" class="headerlink" title="2.创建仓库"></a>2.创建仓库</h3></li>
-</ul>
-<p>​    在github网站上完成，就不在赘述</p>
-<h3 id="3-初始化本地项目"><a href="#3-初始化本地项目" class="headerlink" title="3.初始化本地项目"></a>3.初始化本地项目</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git init</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git add .</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git commit -m <span class="string">""</span></span></span><br></pre></td></tr></tbody></table></figure>
-<h3 id="4-创建远程库，推送本地工程"><a href="#4-创建远程库，推送本地工程" class="headerlink" title="4.创建远程库，推送本地工程"></a>4.创建远程库，推送本地工程</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git remote add origin git@github.com:maos520/repo.git</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git remote -v</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>其他远程库操作见前面一章节</p>
-<h2 id="四、常见错误"><a href="#四、常见错误" class="headerlink" title="四、常见错误"></a>四、常见错误</h2><ul>
-<li><p>! [rejected]        master -> master (fetch first)<br>error: failed to push some refs to ‘git@github.com:maos520/WX306_npu.git’</p>
-<p><strong>解决方法1：</strong>远程库的版本与本地的版本不一致，通过fetch取回远程库合并之后再上传。</p>
-<p><strong>解决方法2：</strong> git提供了一种强制上传的方式：<kbd>git push -f</kbd> ，它会忽略版本不一致等问题，强制将本地库上传的远程库，但是一定要谨慎使用，因为-f会用本地库覆盖掉远程库，如果远程库上有重要更新，或者有其他同伴做的修改，也都会被覆盖，所以一定要在确定无严重后果的前提下使用此操作。 </p>
-</li>
-</ul>
-</body></html>
-      
-    </div>
-
-
-    
-    
-    
-	
-	<div>
-     
-   </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1483,7 +1386,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1496,7 +1399,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

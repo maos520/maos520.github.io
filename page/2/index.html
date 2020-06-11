@@ -203,6 +203,753 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/01/02/Perl%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B02--%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/01/02/Perl%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B02--%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="post-title-link" itemprop="url">Perl学习笔记2--正则表达式</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-01-02 16:57:56" itemprop="dateCreated datePublished" datetime="2020-01-02T16:57:56+08:00">2020-01-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-05 16:51:30" itemprop="dateModified" datetime="2020-01-05T16:51:30+08:00">2020-01-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Language/" itemprop="url" rel="index">
+                    <span itemprop="name">Language</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Language/Perl/" itemprop="url" rel="index">
+                    <span itemprop="name">Perl</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>​    本篇博客主要记录常见的正则表达式的规则，以备以后查阅和使用。</p>
+<h2 id="一、常见正则字符"><a href="#一、常见正则字符" class="headerlink" title="一、常见正则字符"></a>一、常见正则字符</h2><table>
+<thead>
+<tr>
+<th align="center">character</th>
+<th align="left">description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">\f</td>
+<td align="left">match a page break</td>
+</tr>
+<tr>
+<td align="center">\n</td>
+<td align="left">match a line break</td>
+</tr>
+<tr>
+<td align="center">\r</td>
+<td align="left">match a carriage return</td>
+</tr>
+<tr>
+<td align="center">\s</td>
+<td align="left">match any whitespace characters including space,tabs,page breaks,etc.</td>
+</tr>
+<tr>
+<td align="center">\S</td>
+<td align="left">match ant non-whitespace characters</td>
+</tr>
+<tr>
+<td align="center">\t</td>
+<td align="left">tabs</td>
+</tr>
+<tr>
+<td align="center">\v</td>
+<td align="left">vertical tabs</td>
+</tr>
+<tr>
+<td align="center">$</td>
+<td align="left">match the end of the input string</td>
+</tr>
+<tr>
+<td align="center">^</td>
+<td align="left">match the start of the input string</td>
+</tr>
+<tr>
+<td align="center">\b</td>
+<td align="left">match the word boundary</td>
+</tr>
+<tr>
+<td align="center">\B</td>
+<td align="left">match the word non-boundary</td>
+</tr>
+<tr>
+<td align="center">()</td>
+<td align="left">mark  the start and end of a subexpression</td>
+</tr>
+<tr>
+<td align="center">*</td>
+<td align="left">match the previous subexpression zero or more times</td>
+</tr>
+<tr>
+<td align="center">+</td>
+<td align="left">match the previous subexpression one or more times</td>
+</tr>
+<tr>
+<td align="center">?</td>
+<td align="left">match the previous subexpression zero or one time</td>
+</tr>
+<tr>
+<td align="center">.</td>
+<td align="left">match any single character except the newline \n</td>
+</tr>
+<tr>
+<td align="center">{n}</td>
+<td align="left">match determined n times</td>
+</tr>
+<tr>
+<td align="center">{n,}</td>
+<td align="left">match at least n times</td>
+</tr>
+<tr>
+<td align="center">{n,m}</td>
+<td align="left">match at least n times and up to m times</td>
+</tr>
+<tr>
+<td align="center">[]</td>
+<td align="left">match the any one of characters included</td>
+</tr>
+<tr>
+<td align="center">\</td>
+<td align="left">mark the next character as either the special character or literal character</td>
+</tr>
+<tr>
+<td align="center">|</td>
+<td align="left">spcify a choice between the two</td>
+</tr>
+<tr>
+<td align="center">\d</td>
+<td align="left">equivalent to[0-9]</td>
+</tr>
+<tr>
+<td align="center">\D</td>
+<td align="left">equivalent to [^0-9]</td>
+</tr>
+<tr>
+<td align="center">\w</td>
+<td align="left">equivalent to [a-zA-Z0-9_ ]</td>
+</tr>
+</tbody></table>
+<h2 id="二、匹配regex"><a href="#二、匹配regex" class="headerlink" title="二、匹配regex"></a>二、匹配regex</h2><ul>
+<li><p><strong>模式匹配操作符</strong></p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">m</span>/ <span class="regexp">/   #其返回的是捕获变量的列表</span></span><br><span class="line"><span class="regexp">m{ }</span></span><br><span class="line"><span class="regexp">m( )   #类似qw/</span> /  可任意选择边界 </span><br><span class="line"><span class="keyword">my</span> $text = <span class="string">"Fred dropped a 5 ton granite block on Mr.Slate"</span>;</span><br><span class="line"><span class="keyword">my</span> @word = ($text =~ <span class="regexp">/([a-z]+)/ig</span>;</span><br><span class="line"><span class="keyword">print</span> <span class="string">"Result: @word \n"</span>;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p><strong>模式匹配修饰符</strong></p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">Character</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">/i</td>
+<td align="left">大小写无关</td>
+</tr>
+<tr>
+<td align="center">/s</td>
+<td align="left">匹配任意字符</td>
+</tr>
+<tr>
+<td align="center">/m</td>
+<td align="left">跨行匹配</td>
+</tr>
+<tr>
+<td align="center">/g</td>
+<td align="left">全局匹配</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p><strong>模式分组和捕获变量</strong></p>
+<p>可以利用()对模式字符串进行分组，我还可以反向引用圆括号里的字符，并且会把圆括号里匹配的字符自动保存到相应的变量中，$1,$2,$3…,这些变量会保持到下次成功匹配为止，也就是说，匹配失败后不会改变上次成功匹配的结果。</p>
+<p>e.g.</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">  $_ = <span class="string">"abba"</span>;</span><br><span class="line">  <span class="keyword">if</span>(<span class="regexp">/(.)\1/</span>){                     <span class="comment"># match bb</span></span><br><span class="line">  <span class="keyword">print</span> <span class="string">"Matched!"</span>,$1,<span class="string">"\n"</span>;            <span class="comment">#bb    }</span></span><br><span class="line">  <span class="comment">#自定义分组捕获标签</span></span><br><span class="line">  <span class="keyword">my</span> $names = <span class="string">'Fred or Barney'</span>;</span><br><span class="line">  <span class="keyword">if</span>($names =~ <span class="regexp">m/(?<name1>\w+) (?:and|or) (?<name2>\w+)/</span>){ <span class="comment"># (?<label>regex)  存放在变量label里</span></span><br><span class="line">  													<span class="comment"># (?:regex) 表示不存放</span></span><br><span class="line">  ​	<span class="keyword">say</span> <span class="string">"I saw $+{name1} and $+{name2}"</span>;  <span class="comment">#变量访问形式变为 $+{label}</span></span><br><span class="line">  } </span><br><span class="line"><span class="comment">#三个免费变量</span></span><br><span class="line">  $&    $`   $'</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="三、处理文本"><a href="#三、处理文本" class="headerlink" title="三、处理文本"></a>三、处理文本</h2></li>
+<li><p><strong><kbd>s///</kbd>进行替换操作</strong></p>
+<p>e.g.</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$_ = <span class="string">"green scaly dinosaur"</span>;</span><br><span class="line"><span class="keyword">s</span>/(\w+) (\w+)/$2 $1/;   <span class="comment">#需要替换的内容必须事先放在变量里</span></span><br><span class="line"><span class="keyword">s</span>/\A/huge /;  <span class="comment">#实现插入</span></span><br><span class="line"><span class="keyword">s</span>/ .*een//;   <span class="comment">#实现删除</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">s</span>/\<span class="keyword">s</span>+<span class="regexp">/ /g</span>     <span class="comment"># /g实现全局替换，对所有符合条件都进行替换</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+</li>
+</ul>
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p>Randal L. Schwartz et. Perl语言入门 [M]. 胜春，译.</p>
+</body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/01/02/Perl%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01--%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/01/02/Perl%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01--%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" class="post-title-link" itemprop="url">Perl学习笔记1--基本概念</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-01-02 16:57:56" itemprop="dateCreated datePublished" datetime="2020-01-02T16:57:56+08:00">2020-01-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-05 16:52:02" itemprop="dateModified" datetime="2020-01-05T16:52:02+08:00">2020-01-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Language/" itemprop="url" rel="index">
+                    <span itemprop="name">Language</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Language/Perl/" itemprop="url" rel="index">
+                    <span itemprop="name">Perl</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>​    本篇博客主要是阅读《Perl语言入门》此本书的学习笔记，记录Perl基础且重要的概念和思想，忽略具体语法细节（与其他很多语言类似）。学习Perl主要是为了方便仿真数据的处理，文本处理，所以仅仅是对其基本的语法学习，对其高阶特性也仅限了解。</p>
+<h2 id="Ⅰ-Basic-conception"><a href="#Ⅰ-Basic-conception" class="headerlink" title="Ⅰ Basic conception"></a>Ⅰ Basic conception</h2><p><strong>1.标量：</strong> 一个标量就是一个独立的东西，对其的处理统一按照标量的去做，对于东西的本身并不关心（<strong>强调整体性和独立性</strong>）。</p>
+<p><strong>2.字符串中的标量变量内插</strong> </p>
+<p>​    如果在内插变量名后面需要紧跟其他合法的变量字符，即字母、数字或下划线时，Perl就无从判断，需要引入避免歧义的写法，e.g. </p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$what = <span class="string">"steak"</span>;</span><br><span class="line">$n    = <span class="number">3</span>;</span><br><span class="line"><span class="keyword">print</span> <span class="string">"Fred ate $n $whats.\n"</span>;  <span class="comment"># 并不是我们想要内插的$what</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">"Fred ate $n <span class="subst">${what}</span>s.\n"</span>; <span class="comment"># ok!</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">"Fred ate $n $what"</span> . <span class="string">"s\n"</span>; <span class="comment"># ok!</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>3.undef值</strong></p>
+<p>​    在首次赋值之前，变量初始值就是特殊的undef，如果把这个‘空无一物’当做数字用，它就会变成零，当成字符串用，他就会表现的像空字符串，但是其本身既不是标量也不是字符串。它完全是一种独立类型的标量。可以利用defined函数来判断是否为undef值，e.g.</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$next_line = <STDIN>;   <span class="comment">#比如在文件末尾就返回undef，如果是undef，defined就会返回假，否则即使是空字符串，那</span></span><br><span class="line">                        <span class="comment">#也是已定义的值。</span></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">defined</span>($next_line)){</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"The input was $next_line"</span>;</span><br><span class="line">} <span class="keyword">else</span> {</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"No input available!\n"</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>4.列表与数组</strong></p>
+<p>​    列表指的是标量的有序集合，而数组则是存储列表的变量。</p>
+<p>​    列表的构建：</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">qw< fred maosan liuzhuansu ></span> <span class="comment"># Perl允许任何标点符号作为定界符</span></span><br><span class="line"><span class="keyword">qw</span>! fred maosan liuzhuansu !</span><br></pre></td></tr></tbody></table></figure>
+
+<p><font color="pink"><strong>5.标量上下文和列表上下文</strong></font></p>
+<p>​    当Perl在解析表达式时，要么希望它返回一个标量，要么希望它返回一个列表。表达式所在位置，Perl期望得到什么，那就是该表达式的上下文。</p>
+<ul>
+<li><strong>在标量上下中使用产生列表的表达式</strong></li>
+</ul>
+<p>​    sort在标量上下文中，会返回undef。reverse在标量上下文中会产生逆序后的字符串。其他一些标量上下文的例子</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$fred    = something</span><br><span class="line">$fred[<span class="number">2</span>] = something</span><br><span class="line"><span class="number">123</span>+something</span><br><span class="line"><span class="keyword">if</span>(something){...}</span><br><span class="line"><span class="keyword">while</span>(something){...}</span><br><span class="line">$fred[something]=something</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li><strong>在列表上下文中使用产生标量的表达式</strong></li>
+</ul>
+<p>​    一些常见的列表上下文的例子：</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@fred = something</span><br><span class="line">($fred,$barney) = something</span><br><span class="line">($fred) = something;</span><br><span class="line"><span class="keyword">push</span> @fred,something;</span><br><span class="line"><span class="keyword">foreach</span> $fred (something){...}</span><br><span class="line"><span class="keyword">sort</span> something</span><br><span class="line"><span class="keyword">reverse</span> something</span><br><span class="line"><span class="keyword">print</span> something</span><br></pre></td></tr></tbody></table></figure>
+
+<p>​    强制指定标量上下文</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> <span class="string">"I have "</span>,<span class="keyword">scalar</span> @rocks,<span class="string">" rock\n"</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>​    <kbd><stdin></stdin></kbd>在标量上下文中，返回输入的下一行内容，在列表上下文中，返回的则是所有剩下行的内容，一行一个元素直到文件结尾</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@lines = <STDIN>; <span class="comment">#在Linux下可以通过Ctrl+D来终止输入</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>6.钻石操作符</strong></p>
+<p>​    在读取输入可以通过<kbd><文件句柄></kbd>的形式来进行读取，其次也可以通过钻石操作符，即<kbd><></kbd>来实现，其会读取存放在<kbd>@ARGV</kbd>系统变量中的所有文件。</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#！ /usr/bin/perl -w</span></span><br><span class="line"><span class="keyword">open</span> DATA,<span class="string">'>'</span>,<span class="string">'data.txt'</span></span><br><span class="line"><span class="keyword">while</span>(<>){                </span><br><span class="line">	<span class="keyword">chomp</span>;</span><br><span class="line">	<span class="keyword">say</span> DATA $_;</span><br><span class="line">}</span><br><span class="line"><span class="keyword">close</span> DATA;</span><br><span class="line"><span class="comment">#在shell下执行</span></span><br><span class="line">$ ./my_program aa bb - cc; <span class="comment">#调用命令依次处理文件aa bb 标准输入（-代表从标准输入读取数据） cc中的内容</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p><strong>7.以二进制方式读写文件句柄</strong></p>
+<p>​    利用binmode函数来实现二进制文件的读写</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">binmode</span> STDOUT;    <span class="comment"># 不能用<>对二进制句柄操作，只能使用read函数</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="Ⅱ-Common-Functions"><a href="#Ⅱ-Common-Functions" class="headerlink" title="Ⅱ  Common Functions"></a>Ⅱ  Common Functions</h2><p>1.<kbd>chomp</kbd>   去掉字符串末尾换行符</p>
+<p><strong>语法格式：</strong></p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">chomp</span> $string;</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>参数说明：</strong></p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$string        <span class="comment"># 待处理的标量字符串</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>2.<kbd>splice</kbd> 添加 移除 替换 数组中间值</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@array = <span class="keyword">qw</span>/ pebbles dino fred barey betty /;</span><br><span class="line"><span class="keyword">splice</span> @array,<span class="number">1</span>,<span class="number">2</span>; <span class="comment">#删除起始位置为1，长度为2的两个值</span></span><br><span class="line"><span class="keyword">splice</span> @array,<span class="number">1</span>,<span class="number">2</span>,<span class="keyword">qw</span>/ wilma / <span class="comment">#删除替换为wilma</span></span><br><span class="line"><span class="keyword">splice</span> @array,<span class="number">1</span>,<span class="number">0</span>,<span class="keyword">qw</span>/ wilma / <span class="comment">#插入wilma</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>3.<kbd>each</kbd> 返回数组或哈希中下一个元素所对应得两个值</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@rock = <span class="keyword">qw</span>/ bedrock slate rubble /;</span><br><span class="line"><span class="keyword">while</span> (($index,$value) = <span class="keyword">each</span> @rock){</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"$index : $value\n"</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> @index(<span class="number">0</span>..$#rocks){                <span class="comment"># $#rocks返回数组@rocks最后一个值得索引</span></span><br><span class="line">	<span class="keyword">print</span> <span class="string">"$index : $rocks[$index]\n"</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>4.<kbd>read</kbd> 用于从文件句柄中读取指定字节数的数据并写入到一个标量中。如果文件句柄是以Unicode方式打开的，则表示读取指定字符数而非字节数。</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">read</span> FH, $var, len</span><br><span class="line"><span class="keyword">read</span> FH, $var, len, offset  <span class="comment">#注意offset不是控制从文件句柄的哪个位置读，而是控制向变量的哪个位置开始写</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>5.<kbd>syswrite</kbd>用于将标量中的数据写入文件句柄中，参数与read类似。</p>
+<p>6.<kbd>open</kbd>打开文件，获得文件句柄</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> FILEHANDLE,<span class="string">'>'</span>,<span class="string">'文件路径'</span>;</span><br><span class="line"><span class="keyword">close</span> FILEHANDLE;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>7.<kbd>split</kbd>将字符串 EXPR 拆分成字符串列表，列表中的每个元素被称为拆分得到的fields，在列表上下文返回拆分得到的列表，在标量上下文返回拆分得到列表的长度。</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">split</span> <span class="regexp">/PATTERN/</span>, EXPR, LIMIT</span><br><span class="line"><span class="keyword">split</span> <span class="regexp">/PATTERN/</span>, EXPR</span><br><span class="line"><span class="keyword">split</span> <span class="regexp">/PATTERN/</span></span><br><span class="line">@array = <span class="keyword">split</span> <span class="regexp">/:/</span>,$scalar;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>8.<kbd>grep&map</kbd><strong>BLOCK</strong>表示一个code块，通常用{}表示；<strong>EXPR</strong>表示一个表达式，通常是正则表达式。<br><strong>LIST</strong>是要匹配的列表。grep对列表里的每个元素进行BLOCK或EXPR匹配，它遍历列表，并临时设置元素为$_。在列表上下文里，grep返回匹配命中的所有元素，结果也是个列表。在标量上下文里，grep返回匹配命中的元素个数。</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">grep</span> BLOCK LIST</span><br><span class="line"><span class="keyword">grep</span> EXPR, LIST</span><br><span class="line"><span class="comment">#e.g.</span></span><br><span class="line"><span class="keyword">my</span> @odd_numbers = <span class="keyword">grep</span> { $_ % <span class="number">2</span> } <span class="number">1</span>..<span class="number">1000</span>;</span><br><span class="line"><span class="keyword">my</span> @matching_lines = <span class="keyword">grep</span> <span class="regexp">/\bfred\b/i</span> <$fh>; <span class="comment">#返回匹配成功的行</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">map</span> BLOCK LIST</span><br><span class="line"><span class="comment">#map与grep不同之处在于，其最后一个表达式返回的不是逻辑的真假值，而是表达式的实际计算结果，最终返回一系列这样的结果组成的列表，而grep根据逻辑真假值将原始列表中的值选出来组成列表返回。两者够可以改成foreach语句。</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Ⅲ-NOTICES"><a href="#Ⅲ-NOTICES" class="headerlink" title="Ⅲ  NOTICES"></a>Ⅲ  NOTICES</h2><p>1.函数调用前是否加& ？</p>
+<p>​    建议加，如果不加当自己定义的子函数，与系统已存在的函数重名时将调用系统函数。</p>
+<p>2.调用函数输入参数列表的括号什么时候可以不写？</p>
+<p>​    只要不引起歧义就可以去掉！！</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p>Randal L. Schwartz et. Perl语言入门 [M]. 胜春，译.</p>
+</body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/12/30/Perl%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B03--%E5%BC%95%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/30/Perl%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B03--%E5%BC%95%E7%94%A8/" class="post-title-link" itemprop="url">Perl学习笔记3——引用</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-12-30 16:38:44" itemprop="dateCreated datePublished" datetime="2019-12-30T16:38:44+08:00">2019-12-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-05 10:31:12" itemprop="dateModified" datetime="2020-01-05T10:31:12+08:00">2020-01-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Language/" itemprop="url" rel="index">
+                    <span itemprop="name">Language</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Language/Perl/" itemprop="url" rel="index">
+                    <span itemprop="name">Perl</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><h2 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h2><p>​    引用就是指针，Perl 引用是一个标量类型可以指向变量、数组、哈希表（也叫关联数组）甚至子程序，可以应用在程序的任何地方。类似C语言的引用，引用本身指向所引用变量的地址，打印一个简单的标量的引用，看一下地址的显示，SCALAR后面一串十六进制，SCALAR说明该地址指向简单变量（即标量），后面的数字是实际存贮值的地址。</p>
+<h2 id="二、创建引用"><a href="#二、创建引用" class="headerlink" title="二、创建引用"></a>二、创建引用</h2><p><strong>规则1：</strong> 使用<kbd> \ </kbd></p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">my</span> $sref = \$scalar; <span class="comment">#标量引用</span></span><br><span class="line"><span class="keyword">my</span> $aref = \@array;  <span class="comment">#数组引用</span></span><br><span class="line"><span class="keyword">my</span> $href = \%hash;   <span class="comment">#哈希引用</span></span><br><span class="line"><span class="keyword">my</span> $fref = \&fun;    <span class="comment">#子过程引用</span></span><br><span class="line"><span class="keyword">my</span> $gref = \*foo;    <span class="comment">#glob句柄引用</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>规则2：</strong> 匿名引用</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">my</span> $sref = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"><span class="keyword">my</span> $sref1=[];</span><br><span class="line"><span class="keyword">my</span> $href = {<span class="string">"perl"</span>=><span class="number">1</span>,<span class="string">"python"</span>=><span class="number">2</span>};</span><br><span class="line"><span class="keyword">my</span> href2 = {};</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="三、使用引用"><a href="#三、使用引用" class="headerlink" title="三、使用引用"></a>三、使用引用</h2><p><strong>规则1：</strong> 与普通变量访问相比，假设原来的变量名为name，则此方法在所有出现name的地方用<kbd>{$name}</kbd></p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$scalar                           ${$sref} or $$sref</span><br><span class="line">@array                            @{$aref} or @$aref</span><br><span class="line">@array[1]                         @{$aref}[1]</span><br><span class="line">%hash                             %{$href}</span><br><span class="line">keys %hash                        keys %{%hash}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>规则2：</strong>使用<kbd>-></kbd>,简化表示,不适用标量</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">${$aref}[<span class="number">3</span>]                       $aref->[<span class="number">3</span>]</span><br><span class="line">${$href}<span class="string">{red}</span>                     $href->{red}</span><br><span class="line">&{$fref}()                        $fref->()</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="四、引用构建复杂数据结构"><a href="#四、引用构建复杂数据结构" class="headerlink" title="四、引用构建复杂数据结构"></a>四、引用构建复杂数据结构</h2><p><strong>数组的数组</strong></p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@a=([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],</span><br><span class="line">	[<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>],</span><br><span class="line">	[<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>] ); <span class="comment">#@a是一个拥有三个成员的数组，每一个成员是另一个数组的引用</span></span><br><span class="line">$a[<span class="number">1</span>]      </span><br><span class="line">$a[<span class="number">1</span>]->[<span class="number">1</span>]; <span class="comment">#3</span></span><br><span class="line">$a[<span class="number">1</span>][<span class="number">1</span>]; <span class="comment">#简写 </span></span><br><span class="line"></span><br><span class="line">$aref=[<span class="number">1</span>,[<span class="number">2</span>,<span class="number">3</span>],[<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]];</span><br><span class="line">$aref->[<span class="number">0</span>];    <span class="comment"># 1</span></span><br><span class="line">$aref->[<span class="number">1</span>][<span class="number">1</span>]  <span class="comment"># 3</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>哈希的哈希</strong></p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%h=(<span class="string">'xiaoming'</span>=>{<span class="string">'age'</span>=><span class="number">10</span>,<span class="string">'id'</span>=><span class="number">0001</span>},<span class="string">'xiaohong'</span>=>{<span class="string">'age'</span>=><span class="number">12</span>,<span class="string">'id'</span>=><span class="number">0002</span>});</span><br><span class="line">$h{<span class="string">'xiaoming'</span>}->{age};</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="五、其他"><a href="#五、其他" class="headerlink" title="五、其他"></a>五、其他</h2><p><strong>引用的赋值</strong></p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$aref = [@$aref1];</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>判断是否为引用</strong></p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ref</span> $aref;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p><a href="https://www.cnblogs.com/softwaretesting/archive/2011/07/26/2117730.html" target="_blank" rel="noopener">https://www.cnblogs.com/softwaretesting/archive/2011/07/26/2117730.html</a></p>
+<p><a href="https://www.cnblogs.com/xianghang123/archive/2011/07/18/2109991.html" target="_blank" rel="noopener">https://www.cnblogs.com/xianghang123/archive/2011/07/18/2109991.html</a></p>
+</body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/10/26/%E6%88%91%E7%9A%84vimrc%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/26/%E6%88%91%E7%9A%84vimrc%E9%85%8D%E7%BD%AE/" class="post-title-link" itemprop="url">我的vimrc配置</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-10-26 13:23:15" itemprop="dateCreated datePublished" datetime="2019-10-26T13:23:15+08:00">2019-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-12-25 20:32:14" itemprop="dateModified" datetime="2019-12-25T20:32:14+08:00">2019-12-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/vim/" itemprop="url" rel="index">
+                    <span itemprop="name">vim</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>​    这是我在最近在学习和使用vim过程中，参考各位大佬的vim配置文件的基础上结合自己的使用对vim的使用习惯，而形成的配置文件。</p>
+<h2 id="二、Gvim配置"><a href="#二、Gvim配置" class="headerlink" title="二、Gvim配置"></a>二、Gvim配置</h2><p>​    后续补充</p>
+<h2 id="三、VIMRC文件"><a href="#三、VIMRC文件" class="headerlink" title="三、VIMRC文件"></a>三、VIMRC文件</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br></pre></td><td class="code"><pre><span class="line">runtime! debian.vim</span><br><span class="line"></span><br><span class="line">if has("syntax")</span><br><span class="line">  syntax on</span><br><span class="line">endif</span><br><span class="line"></span><br><span class="line">set mouse=a		</span><br><span class="line">se relativenumber</span><br><span class="line">"设置自动保存</span><br><span class="line">let g:autosave = 1</span><br><span class="line">let g:autosave_events = ["CursorHold", "CursorHoldI"]</span><br><span class="line">let g:updatetime=10000</span><br><span class="line"></span><br><span class="line">let mapleader = ","</span><br><span class="line">let g:mapleader = ","</span><br><span class="line"></span><br><span class="line">"映射切换buffer的键位</span><br><span class="line">nnoremap <F1> <ESC>:bp<CR></span><br><span class="line">nnoremap <F2> <ESC>:bn<CR></span><br><span class="line">inoremap <F1> <ESC>:bp<CR></span><br><span class="line">inoremap <F2> <ESC>:bn<CR></span><br><span class="line">"映射在normal模式下enter 和 space 按键为增加空行和空格 </span><br><span class="line">nnoremap <space> i <space><esc></span><br><span class="line">nnoremap <Enter> o<esc></span><br><span class="line">"映射<leader>num到num buffer</span><br><span class="line">map <leader>1 :b 1<CR></span><br><span class="line">map <leader>2 :b 2<CR></span><br><span class="line">map <leader>3 :b 3<CR></span><br><span class="line">map <leader>4 :b 4<CR></span><br><span class="line">map <leader>5 :b 5<CR></span><br><span class="line">map <leader>6 :b 6<CR></span><br><span class="line">map <leader>7 :b 7<CR></span><br><span class="line">map <leader>8 :b 8<CR></span><br><span class="line">map <leader>9 :b 9<CR></span><br><span class="line">"映射插件 ctags，Tlist和NERDTree</span><br><span class="line">map <F7> <ESC>:!ctags -R <CR><CR></span><br><span class="line">map <F8> <ESC>:Tlist <CR></span><br><span class="line">map <F3> :NERDTreeMirror<CR></span><br><span class="line">map <F3> :NERDTreeToggle<CR></span><br><span class="line">"映射保存和退出</span><br><span class="line">nmap <leader>w :w!<CR></span><br><span class="line">nmap <leader>q :q!<CR></span><br><span class="line">"映射窗口切换的快捷键</span><br><span class="line">map <C-j> <C-W>j</span><br><span class="line">map <C-k> <C-W>k</span><br><span class="line">map <C-h> <C-W>h</span><br><span class="line">map <C-l> <C-W>l</span><br><span class="line">"映射跨文件复制粘贴</span><br><span class="line">map <leader>y "+y</span><br><span class="line">map <leader>p "+p</span><br><span class="line">"映射行首和行尾</span><br><span class="line">noremap H ^</span><br><span class="line">noremap L $</span><br><span class="line">"全局变量配置</span><br><span class="line">set nocompatible</span><br><span class="line">set noswapfile</span><br><span class="line">set autoread</span><br><span class="line">set smarttab</span><br><span class="line">set cursorline</span><br><span class="line">set incsearch</span><br><span class="line">set hlsearch</span><br><span class="line">set nobackup</span><br><span class="line">set ignorecase</span><br><span class="line">set guioptions-=T           " 隐藏工具栏</span><br><span class="line">set guioptions-=m           " 隐藏菜单栏</span><br><span class="line">set hidden</span><br><span class="line">set textwidth=200</span><br><span class="line">"设置vim打开文件编码方式</span><br><span class="line">set fileencodings=utf-8,chinese,latin-1</span><br><span class="line">set termencoding=utf-8</span><br><span class="line">set encoding=utf-8</span><br><span class="line">"设置tab键</span><br><span class="line">set expandtab | set tabstop=4 | set shiftwidth=4</span><br><span class="line">au FileType c,cpp set expandtab | set tabstop = 2 |set shiftwidth = 2</span><br><span class="line">au FileType make set noexpandtab | set tabstop=8 | shiftwidth=8</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"powerline</span><br><span class="line">set rtp+=~/.vim/bundle/vim-powerline/plugin/Powerline.vim</span><br><span class="line">set laststatus=2</span><br><span class="line">"theme</span><br><span class="line">set bg=dark</span><br><span class="line">set t_Co=256</span><br><span class="line">colorscheme gruvbox</span><br><span class="line">set guifont=Monaco:h17</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"YouComplete</span><br><span class="line">let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py'</span><br><span class="line"></span><br><span class="line">"------------------------------------------</span><br><span class="line">"---Start------ configure the Tlist Plugin------</span><br><span class="line">"-------------------------------------------</span><br><span class="line">let Tlist_Show_One_File=1</span><br><span class="line">let Tlist_Exit_OnlyWindow=1</span><br><span class="line">let Tlist_Ctags_Cmd='/usr/local/bin/ctags'</span><br><span class="line">let Tlist_Use_Right_Window=1</span><br><span class="line">let Tlist_Sort_Type = "name"</span><br><span class="line">let Tlist_Enable_Fold_Column = 1</span><br><span class="line">"set tags = ./tags;,tags</span><br><span class="line">"---------------------------------------------</span><br><span class="line">"---End------ configure the Tlist Plugin------</span><br><span class="line">"---------------------------------------------</span><br><span class="line"></span><br><span class="line">"------------------------------------------</span><br><span class="line">"---Start------ configure the yum  Plugin------</span><br><span class="line">"-------------------------------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">set runtimepath+=~/.vim/bundle/YouCompleteMe</span><br><span class="line">autocmd InsertLeave * if pumvisible() == 0|pclose|endif "离开插入模式后自动关闭预览窗口"</span><br><span class="line">let g:ycm_collect_identifiers_from_tags_files = 1           " 开启 YCM基于标签引擎</span><br><span class="line">let g:ycm_collect_identifiers_from_comments_and_strings = 1 " 注释与字符串中的内容也用于补全</span><br><span class="line">let g:syntastic_ignore_files=[".*\.py$"]</span><br><span class="line">let g:ycm_seed_identifiers_with_syntax = 1                  " 语法关键字补全</span><br><span class="line">let g:ycm_complete_in_comments = 1</span><br><span class="line">let g:ycm_confirm_extra_conf = 0                            " 关闭加载.ycm_extra_conf.py提示</span><br><span class="line">let g:ycm_key_list_select_completion = ['<c-n>', '<Down>']  " 映射按键,没有这个会拦截掉tab, 导致其他插件的tab不能用.</span><br><span class="line">let g:ycm_key_list_previous_completion = ['<c-p>', '<Up>']</span><br><span class="line">let g:ycm_complete_in_comments = 1                          " 在注释输入中也能补全</span><br><span class="line">let g:ycm_complete_in_strings = 1                           " 在字符串输入中也能补全</span><br><span class="line">let g:ycm_collect_identifiers_from_comments_and_strings = 1 " 注释和字符串中的文字也会被收入补全</span><br><span class="line">let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'</span><br><span class="line">let g:ycm_show_diagnostics_ui = 0                           " 禁用语法检查</span><br><span class="line">"inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"             " 回车即选中当前项</span><br><span class="line">"nnoremap <c-j> :YcmCompleter GoToDefinitionElseDeclaration<CR>     " 跳转到定义处</span><br><span class="line">let g:ycm_min_num_of_chars_for_completion=2                 " 从第2个键入字符就开始罗列匹配项</span><br><span class="line"></span><br><span class="line">"-------------------------------------------</span><br><span class="line">"---End------ configure the yum Plugin------</span><br><span class="line">"-------------------------------------------</span><br><span class="line"></span><br><span class="line">"-----------------------------------------------------------------------------</span><br><span class="line">"--------------Start ale.vim---------------------------------------------</span><br><span class="line">"-----------------------------------------------------------------------------</span><br><span class="line">""keep the sign gutter open</span><br><span class="line">let g:ale_sign_column_always = 1</span><br><span class="line">let g:ale_set_highlights = 0</span><br><span class="line">let g:ale_sign_error = '✗'</span><br><span class="line">let g:ale_sign_warning = '⚡'</span><br><span class="line">let g:ale_statusline_format = ['✗ %d', '⚡ %d', '✔ OK']</span><br><span class="line">" show errors or warnings in my statusline</span><br><span class="line">let g:airline#extensions#ale#enabled = 1</span><br><span class="line">nmap sp <Plug>(ale_previous_wrap)</span><br><span class="line">nmap sn <Plug>(ale_next_wrap)</span><br><span class="line">"<Leader>s触发/关闭语法检查</span><br><span class="line">nmap <Leader>s :ALEToggle<CR></span><br><span class="line">"<Leader>d查看错误或警告的详细信息</span><br><span class="line">nmap <Leader>d :ALEDetail<CR></span><br><span class="line">"set statusline=%{LinterStatus()}</span><br><span class="line"></span><br><span class="line">" %s is the error message itself</span><br><span class="line">" %linter% is the linter name</span><br><span class="line">" %severity is the severity type</span><br><span class="line">let g:ale_echo_msg_error_str = 'E'</span><br><span class="line">let g:ale_echo_msg_warning_str = 'W'</span><br><span class="line">let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'</span><br><span class="line"></span><br><span class="line">" use quickfix list instead of the loclist</span><br><span class="line">let g:ale_set_loclist = 0</span><br><span class="line">let g:ale_set_quickfix = 1</span><br><span class="line"></span><br><span class="line">nmap <silent> <C-k> <Plug>(ale_previous_wrap)</span><br><span class="line">nmap <silent> <C-J> <Plug>(ale_next_wrap)</span><br><span class="line"></span><br><span class="line">" run lint only on saving a file</span><br><span class="line">" let g:ale_lint_on_text_changed = 'never'</span><br><span class="line">" dont run lint on opening a file</span><br><span class="line">" let g:ale_lint_on_enter = 0</span><br><span class="line"></span><br><span class="line">"------------------------------------------------------------</span><br><span class="line">"------------------------END ale.vim------------------------</span><br><span class="line">"----------------------------------------------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"-----------------------Start nerdtree--------------------</span><br><span class="line"></span><br><span class="line">map <leader>n :NERDTreeToggle<CR></span><br><span class="line"></span><br><span class="line">"-----------------------End   nerdtree--------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"-----------------------Start indentLine------------------</span><br><span class="line"></span><br><span class="line">let g:indentLine_noConcealCursor = 1</span><br><span class="line">let g:indentLine_color_term = 239</span><br><span class="line">let g:indentLine_char = '|'</span><br><span class="line"></span><br><span class="line">"-----------------------End   indentLine------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"-----------------------Start nerdcommenter---------------</span><br><span class="line"></span><br><span class="line">"<leader>cc 注释选中内容                                                                    </span><br><span class="line">"<leader>cu 取消选中注释  </span><br><span class="line">"<leader>c$ 从当前光标开始到行尾注释掉  </span><br><span class="line">let g:NERDSpaceDelims=1</span><br><span class="line">let g:NERDCompactSexyComs=1</span><br><span class="line">let g:NERDDefaultAlign = 'left'</span><br><span class="line"></span><br><span class="line">"-----------------------End   nerdcommenter---------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"-----------------------Start easymotion------------------</span><br><span class="line"></span><br><span class="line">let g:EasyMotion_smartcase = 1</span><br><span class="line">"let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion </span><br><span class="line">map <Leader><leader>h <Plug>(easymotion-linebackward) </span><br><span class="line">map <Leader><Leader>j <Plug>(easymotion-j)     </span><br><span class="line">map <Leader><Leader>k <Plug>(easymotion-k) </span><br><span class="line">map <Leader><leader>l <Plug>(easymotion-lineforward)                                                </span><br><span class="line">"重复上一次操作, 类似repeat插件, 很强大</span><br><span class="line">map <Leader><leader>. <Plug>(easymotion-repeat) </span><br><span class="line"></span><br><span class="line">"----------------------End   easymotion------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"----------------------Start ctrlp     ------------------</span><br><span class="line"></span><br><span class="line">"<Leader>p搜索当前目录下文件</span><br><span class="line">let g:ctrlp_map = '<c-p>'</span><br><span class="line">let g:ctrlp_cmd = 'CtrlP'</span><br><span class="line">"<Leader>f搜索MRU文件</span><br><span class="line">nmap <Leader>f :CtrlPMRUFiles<CR></span><br><span class="line">"<Leader>b显示缓冲区文件，并可通过序号进行跳转</span><br><span class="line">nmap <Leader>b :CtrlPBuffer<CR></span><br><span class="line">"设置搜索时忽略的文件</span><br><span class="line">let g:ctrlp_custom_ignore = {</span><br><span class="line">    \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',</span><br><span class="line">    \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc)$',</span><br><span class="line">    \ }</span><br><span class="line">let g:ctrlp_working_path_mode = 0</span><br><span class="line">let g:ctrlp_match_window_bottom = 1</span><br><span class="line">"修改QuickFix窗口显示的最大条目数</span><br><span class="line">let g:ctrlp_max_height = 15</span><br><span class="line">let g:ctrlp_match_window_reversed = 0</span><br><span class="line">"设置MRU最大条目数为500</span><br><span class="line">let g:ctrlp_mruf_max = 500</span><br><span class="line">let g:ctrlp_follow_symlinks = 1</span><br><span class="line">"默认使用全路径搜索，置1后按文件名搜索，准确率会有所提高，可以用<C-d>进行切换</span><br><span class="line">let g:ctrlp_by_filename = 1</span><br><span class="line">"默认不使用正则表达式，置1改为默认使用正则表达式，可以用<C-r>进行切换</span><br><span class="line">let g:ctrlp_regexp = 0</span><br><span class="line">"自定义搜索列表的提示符</span><br><span class="line">let g:ctrlp_line_prefix = '♪ '</span><br><span class="line"></span><br><span class="line">"----------------------End   ctrlp     ------------------</span><br><span class="line"></span><br><span class="line">"----------------------Start minibufexpl-----------------</span><br><span class="line"></span><br><span class="line">let g:miniBufExplMapWindowNavVim = 1   </span><br><span class="line">let g:miniBufExplMapWindowNavArrows = 1   </span><br><span class="line">let g:miniBufExplMapCTabSwitchBufs = 1   </span><br><span class="line">let g:miniBufExplModSelTarget = 1  </span><br><span class="line">let g:miniBufExplMoreThanOne=0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"----------------------End   minibufexpl-----------------</span><br><span class="line">"----Start----- configure the Vundle Plugin------</span><br><span class="line"></span><br><span class="line">set nocompatible              " be iMproved, required</span><br><span class="line">filetype off                  " required</span><br><span class="line"></span><br><span class="line">" set the runtime path to include Vundle and initialize</span><br><span class="line">set rtp+=~/.vim/bundle/Vundle.vim</span><br><span class="line">call vundle#begin()</span><br><span class="line"></span><br><span class="line">" let Vundle manage Vundle, required</span><br><span class="line">Plugin 'VundleVim/Vundle.vim'</span><br><span class="line">Plugin 'scrooloose/nerdtree'</span><br><span class="line">Plugin 'Valloric/YouCompleteMe'</span><br><span class="line">Plugin 'Lokaltog/vim-powerline'</span><br><span class="line">Plugin 'Yggdroot/indentLine'</span><br><span class="line">Plugin 'scrooloose/nerdcommenter'</span><br><span class="line">Plugin 'Lokaltog/vim-easymotion'</span><br><span class="line">Plugin 'w0rp/ale'</span><br><span class="line">Plugin 'kien/ctrlp.vim'</span><br><span class="line">Plugin 'fholgado/minibufexpl.vim'</span><br><span class="line">Plugin 'godlygeek/tabular'</span><br><span class="line">" Plugin 'bling/vim-airline'</span><br><span class="line">" All of your Plugins must be added before the following line</span><br><span class="line">call vundle#end()            " required</span><br><span class="line">filetype plugin indent on    " required</span><br><span class="line">" To ignore plugin indent changes, instead use:</span><br><span class="line">"filetype plugin on</span><br><span class="line"></span><br><span class="line">"----------------------------------------------</span><br><span class="line">"----End----- configure the Vundle Plugin------</span><br><span class="line">"----------------------------------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"在创建.v文件时自动插入文件头部</span><br><span class="line">au BufNewFile *.v,*.sv exec ":call SetTitlee()"</span><br><span class="line">func SetTitlee()</span><br><span class="line">	call setline(1,"// *****************************************************************************")</span><br><span class="line">	call append(line("."),"// @Project Name :")</span><br><span class="line">	call append(line(".")+1,"// @Author       : Maos520")</span><br><span class="line">	call append(line(".")+2,"// @Email        : sujingjingabc@sina.com")</span><br><span class="line">	call append(line(".")+3,"// @File Name    : .v")</span><br><span class="line">	call append(line(".")+4,"// @Module Name  :")</span><br><span class="line">	call append(line(".")+5,"// @Created Time : ".strftime("%Y-%m-%d %H:%M"))</span><br><span class="line">	call append(line(".")+6,"//")</span><br><span class="line">	call append(line(".")+7,"// @Abstract     :")</span><br><span class="line">	call append(line(".")+8,"//")</span><br><span class="line">	call append(line(".")+9,"// Modification History")</span><br><span class="line">	call append(line(".")+10,"// ******************************************************************************")</span><br><span class="line">	call append(line(".")+11,"// Date           BY           Version         Change Description")</span><br><span class="line">	call append(line(".")+12,"// -------------------------------------------------------------------------")</span><br><span class="line">	call append(line(".")+13,"// ".strftime("%Y-%m-%d"))</span><br><span class="line">	call append(line(".")+14,"// ")</span><br><span class="line">	call append(line(".")+15,"// ******************************************************************************")</span><br><span class="line">endfunc</span><br><span class="line">"映射快捷键 ,a 自动插入块注释</span><br><span class="line">map <leader>a :call Annotation()<cr>2jA </span><br><span class="line"></span><br><span class="line">function Annotation()</span><br><span class="line">    call append(line("."),"//******************************************************************************")</span><br><span class="line">    call append(line(".")+1,"//")</span><br><span class="line">    call append(line(".")+2,"//******************************************************************************")</span><br><span class="line">endfunction</span><br><span class="line"></span><br><span class="line">"当在插入模式时 输入 anno seq 或 comb  自动插入块注释或always语句块</span><br><span class="line">:ab anno //**************************************************************************<Enter>//<Enter>//**************************************************************************</span><br><span class="line">:ab seq always @(posedge clk or negedge rst_n) begin <Enter>if(!rst_n)<Enter><Tab><Enter><BS><BS>end</span><br><span class="line">:ab comb always @(*) begin <Enter><Enter>end</span><br></pre></td></tr></tbody></table></figure>
+
+</body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/10/24/git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/24/git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="post-title-link" itemprop="url">git常用命令</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-10-24 16:14:48" itemprop="dateCreated datePublished" datetime="2019-10-24T16:14:48+08:00">2019-10-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-10-25 19:29:34" itemprop="dateModified" datetime="2019-10-25T19:29:34+08:00">2019-10-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/git/" itemprop="url" rel="index">
+                    <span itemprop="name">git</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><h2 id="一、git-基本概念"><a href="#一、git-基本概念" class="headerlink" title="一、git 基本概念"></a>一、git 基本概念</h2><h3 id="1-git文件的三种状态"><a href="#1-git文件的三种状态" class="headerlink" title="1.git文件的三种状态"></a>1.git文件的三种状态</h3><p>​        任何一个文件在Git内部都有三种状态：已提交，已修改和已暂存。 已提交表示该文件已经被安全地保存在本地数据库中了；已修改表示修改了某个文件，但还没有提交保存；已暂存表示把已修改的文件放在下次提交时要保存的清单中。<br>​        由此我们看到 Git 管理项目时，文件流转的三个工作区域：Git 的工作目录，暂存区域，以及本地仓库。 </p>
+<div align="center">
+<img src="https://raw.githubusercontent.com/maos520/PictureBed/master/img/20191024164217.png" width="60%" hieght="60%/">
+</div>
+
+<center><strong>Figure 1 工作目录，暂存区以及本地仓库</strong></center>
+## 二、git常用命令
+
+<h3 id="1-git运行前配置"><a href="#1-git运行前配置" class="headerlink" title="1.git运行前配置"></a>1.git运行前配置</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git config --global user.name <span class="string">"yourname"</span>    <span class="comment">#配置用户信息 每次提交时git都会引用这两条信息</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --global user.email youremail@example.com</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --global core.editor vim          </span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --global merge.tool vimdiff      <span class="comment">#配置默认差异分析工具 </span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --list                           <span class="comment">#查看配置</span></span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="2-git常用操作"><a href="#2-git常用操作" class="headerlink" title="2.git常用操作"></a>2.git常用操作</h3><p>​    在进行常用讲解之前让我们来看看git中文件的状态变化周期：</p>
+<div align="center"><img src="https://raw.githubusercontent.com/maos520/PictureBed/master/img/20191024182630.png"></div>
+<center><strong>Figure 2 文件的状态变化周期</strong></center>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git init          <span class="comment">#在需要git管理的项目下运行</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span>  git://github/maos520/PictureBed.git mypicbed  <span class="comment"># http://  user@server:/ </span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git add .         <span class="comment">#将目录下所有文件纳入版本控制，存放在暂存区</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git add *.c       <span class="comment">#所有c文件</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status        <span class="comment">#得到文件项目中文件的状态</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git diff          <span class="comment">#查看工作区文件和暂存区文件的差别</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git diff --cache/--staged <span class="comment">#查看已暂存和上次提交的区别</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git commit -m <span class="string">"本次提交说明"</span> <span class="comment">#将暂存区的内容提交</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git rm   -f   <span class="comment">#删除文件  -f:如果文件已修改暂存  force表示强制删除</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git rm --cache  <span class="comment"># 仅仅是从跟踪列表中删除 文件仍然在目录中</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">log</span>        <span class="comment">#查看提交历史，仅仅显示本次提交之前的记录</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git reflog     <span class="comment">#查看所有提交历史记录，包括删除的提交的记录</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git commit -amend <span class="comment">#撤销上次提交</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git reset -soft HEAD^  <span class="comment">#重置head和branch 保留工作区和暂存区，同时把重置HEAD带来的新差异放在暂存区 </span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git reset -mixed  HEAD   <span class="comment">#重置HEAD和branch,保留工作区，清空暂存区，将暂存区的内容和新的差异全放到工作区 </span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git reset  -hard HEAD^  <span class="comment">#-hard  会重置head到上一次提交 ，并且会重置工作目录和暂存区，未提交内容将被擦除</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git reset -mixed/-soft/-hard  版本号 <span class="comment">#回退到某一版本</span></span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="3-远程仓库的使用"><a href="#3-远程仓库的使用" class="headerlink" title="3.远程仓库的使用"></a>3.远程仓库的使用</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git remote -v</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git remote add [reponame] [url] <span class="comment"># 仅仅采用SSH方式传输协议的仓库才能上传 既user@username:/形式</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">以origin仓库为例</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git fetch origin   <span class="comment">#fetch 仅仅取回不会走动合并</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git push origin master <span class="comment">#推送</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git remote rm origin   <span class="comment">#删除远程仓库</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git remote show origin <span class="comment">#查看远程仓库信息</span></span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="4-打标签"><a href="#4-打标签" class="headerlink" title="4.打标签"></a>4.打标签</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git tag -a v1.0 -m <span class="string">'版本说明'</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git tag                      <span class="comment">#显示</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git tag -a v1.9 9fceb03      <span class="comment">#后期加标签</span></span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="5-分支"><a href="#5-分支" class="headerlink" title="5.分支"></a>5.分支</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git branch [name]   <span class="comment">#创建分支</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git checkout [name] <span class="comment">#切换到某分支</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git checkout -b [name] <span class="comment"># 创建并切换</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git branch -d [name]  <span class="comment">#删除</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git branch -v   <span class="comment"># 查看分支</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git merge [name]   <span class="comment">#分支合并</span></span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="三、git-amp-github"><a href="#三、git-amp-github" class="headerlink" title="三、git & github"></a>三、git & github</h2><h3 id="1-SSH密钥验证"><a href="#1-SSH密钥验证" class="headerlink" title="1.SSH密钥验证"></a>1.SSH密钥验证</h3><ul>
+<li><p><strong>生成密钥</strong></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ssh-keygen -t rsa -C <span class="string">"youremail@example.com"</span></span></span><br></pre></td></tr></tbody></table></figure>
+
+</li>
+</ul>
+<p>注：邮箱为在github上的注册邮箱</p>
+<ul>
+<li><p><strong>进入github配置密钥</strong></p>
+<p>进入 ~/.ssh/，目录下打开id_rsa.pub 复制密钥，进入github 的Account => Setting 在左边选择SSH and GPC keys生成，点击New SSH key ，设置标题，粘贴密钥。</p>
+</li>
+<li><p><strong>验证是否成功</strong></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ssh -T git@github.com</span></span><br></pre></td></tr></tbody></table></figure>
+<h3 id="2-创建仓库"><a href="#2-创建仓库" class="headerlink" title="2.创建仓库"></a>2.创建仓库</h3></li>
+</ul>
+<p>​    在github网站上完成，就不在赘述</p>
+<h3 id="3-初始化本地项目"><a href="#3-初始化本地项目" class="headerlink" title="3.初始化本地项目"></a>3.初始化本地项目</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git init</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git add .</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git commit -m <span class="string">""</span></span></span><br></pre></td></tr></tbody></table></figure>
+<h3 id="4-创建远程库，推送本地工程"><a href="#4-创建远程库，推送本地工程" class="headerlink" title="4.创建远程库，推送本地工程"></a>4.创建远程库，推送本地工程</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git remote add origin git@github.com:maos520/repo.git</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git remote -v</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>其他远程库操作见前面一章节</p>
+<h2 id="四、常见错误"><a href="#四、常见错误" class="headerlink" title="四、常见错误"></a>四、常见错误</h2><ul>
+<li><p>! [rejected]        master -> master (fetch first)<br>error: failed to push some refs to ‘git@github.com:maos520/WX306_npu.git’</p>
+<p><strong>解决方法1：</strong>远程库的版本与本地的版本不一致，通过fetch取回远程库合并之后再上传。</p>
+<p><strong>解决方法2：</strong> git提供了一种强制上传的方式：<kbd>git push -f</kbd> ，它会忽略版本不一致等问题，强制将本地库上传的远程库，但是一定要谨慎使用，因为-f会用本地库覆盖掉远程库，如果远程库上有重要更新，或者有其他同伴做的修改，也都会被覆盖，所以一定要在确定无严重后果的前提下使用此操作。 </p>
+</li>
+</ul>
+</body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/10/22/vim%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -811,7 +1558,7 @@ hexo generatecp -R public/* .deploy/jiji262.github.iocd .deploy/jiji262.github.i
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-02 21:33:32" itemprop="dateModified" datetime="2020-01-02T21:33:32+08:00">2020-01-02</time>
+                <time title="Modified: 2020-06-11 17:57:12" itemprop="dateModified" datetime="2020-06-11T17:57:12+08:00">2020-06-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -956,7 +1703,7 @@ hexo generatecp -R public/* .deploy/jiji262.github.iocd .deploy/jiji262.github.i
 <figure class="highlight ruby"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">表头<span class="params">|表头|</span>表头</span><br><span class="line">---<span class="params">|:--:|</span>---<span class="symbol">:</span></span><br><span class="line">内容<span class="params">|内容|</span>内容</span><br><span class="line">内容<span class="params">|内容|</span>内容</span><br><span class="line"></span><br><span class="line">第二行分割表头和内容。</span><br><span class="line">- 有一个就行，为了对齐，多加了几个</span><br><span class="line">文字默认居左</span><br><span class="line">-两边加：表示文字居中</span><br><span class="line">-右边加：表示文字居右</span><br><span class="line">注：原生的语法两边都要用 <span class="params">| 包起来。此处省略</span></span><br></pre></td></tr></tbody></table></figure>
 
 <p>示例：</p>
-<figure class="highlight ruby"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">姓名<span class="params">|技能|</span>排行</span><br><span class="line">--<span class="params">|:--:|</span>--<span class="symbol">:</span></span><br><span class="line">刘备<span class="params">|哭|</span>大哥</span><br><span class="line">关羽<span class="params">|打|</span>二哥</span><br><span class="line">张飞<span class="params">|骂|</span>三弟</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight ruby"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="params">|姓名|</span>技能<span class="params">|排行|</span></span><br><span class="line"><span class="params">|--|</span><span class="symbol">:--</span><span class="symbol">:|--</span><span class="symbol">:|</span></span><br><span class="line"><span class="params">|刘备|</span>哭<span class="params">|大哥|</span></span><br><span class="line"><span class="params">|关羽|</span>打<span class="params">|二哥|</span></span><br><span class="line"><span class="params">|张飞|</span>骂<span class="params">|三弟|</span></span><br></pre></td></tr></tbody></table></figure>
 
 <p>效果如下：</p>
 <table>
@@ -1050,7 +1797,7 @@ hexo generatecp -R public/* .deploy/jiji262.github.iocd .deploy/jiji262.github.i
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/04/30/Verilog%E4%B9%8B%E7%BB%84%E5%90%88%E4%B8%8E%E6%97%B6%E5%BA%8F%E9%80%BB%E8%BE%91%E7%9A%84%E7%BB%BC%E5%90%88/">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/06/11/Basic-Circuit-Saturation-Cut/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/timg.jpg">
@@ -1064,7 +1811,7 @@ hexo generatecp -R public/* .deploy/jiji262.github.iocd .deploy/jiji262.github.i
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/04/30/Verilog%E4%B9%8B%E7%BB%84%E5%90%88%E4%B8%8E%E6%97%B6%E5%BA%8F%E9%80%BB%E8%BE%91%E7%9A%84%E7%BB%BC%E5%90%88/" class="post-title-link" itemprop="url">Verilog之组合与时序逻辑的综合</a>
+            <a href="/2019/06/11/Basic-Circuit-Saturation-Cut/" class="post-title-link" itemprop="url">Basic Circuit--Saturation&Cut</a>
         </h1>
 
         <div class="post-meta">
@@ -1074,423 +1821,14 @@ hexo generatecp -R public/* .deploy/jiji262.github.iocd .deploy/jiji262.github.i
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2019-04-30 23:03:37" itemprop="dateCreated datePublished" datetime="2019-04-30T23:03:37+08:00">2019-04-30</time>
+              <time title="Created: 2019-06-11 21:44:27" itemprop="dateCreated datePublished" datetime="2019-06-11T21:44:27+08:00">2019-06-11</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-09 21:23:20" itemprop="dateModified" datetime="2020-05-09T21:23:20+08:00">2020-05-09</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Language/" itemprop="url" rel="index">
-                    <span itemprop="name">Language</span>
-                  </a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Language/Verilog/" itemprop="url" rel="index">
-                    <span itemprop="name">Verilog</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <html><head></head><body></body></html><html><head></head><body><h2 id="Ⅰ·-Preface"><a href="#Ⅰ·-Preface" class="headerlink" title="Ⅰ· Preface"></a>Ⅰ· Preface</h2><p>​    哎，老老实实写笔记。。。。</p>
-<p>​    电路设计是从电路所要完成的指标开始的，并以真正实现能满足特性，成本要求以及功能的物理硬件而结束。电路模型可根据抽象程度和观测级别来分类。有3种常见的抽象级别：架构级、逻辑级和物理级。</p>
-<p>​    逻辑级的模型描述了能由电路实现的一组变量和一组布尔方程。综合的主要任务就是将由HDL描述的布尔方程转为可满足功能的组合门电路和存储寄存器的最优化的网表。</p>
-<h2 id="Ⅱ·组合逻辑综合"><a href="#Ⅱ·组合逻辑综合" class="headerlink" title="Ⅱ·组合逻辑综合"></a>Ⅱ·组合逻辑综合</h2><p>可综合的组合逻辑可由一下方式描述：</p>
-<p>​    （1）结构化的原语网表</p>
-<p>​    （2）一系列的连续赋值语句</p>
-<p>​    （3）电瓶敏感的周期性行为</p>
-<p>对于包含循环结构的电平敏感周期性行为描述，综合工具可以将其转化为正确的组合逻辑电路，例如下面的比较器。</p>
-<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> Comparator #(<span class="keyword">parameter</span> SIZE=<span class="number">2</span>)(</span><br><span class="line">    <span class="keyword">input</span> [SIZE-<span class="number">1</span>:<span class="number">0</span>] a,</span><br><span class="line">    <span class="keyword">input</span> [SIZE-<span class="number">1</span>:<span class="number">0</span>] b,</span><br><span class="line">	<span class="keyword">output</span> <span class="keyword">reg</span> a_gt_b,</span><br><span class="line">	<span class="keyword">output</span> <span class="keyword">reg</span> a_lt_b,</span><br><span class="line">	<span class="keyword">output</span> <span class="keyword">reg</span> a_eq_b);</span><br><span class="line">    <span class="keyword">integer</span> k;</span><br><span class="line">    <span class="keyword">always</span> @* <span class="keyword">begin</span> ：compare_loop</span><br><span class="line">        <span class="keyword">for</span>(k=SIZE-<span class="number">1</span>;k>=<span class="number">0</span>;k=k-<span class="number">1</span>)<span class="keyword">begin</span></span><br><span class="line">            <span class="keyword">if</span> (a[k]!=b[k])<span class="keyword">begin</span></span><br><span class="line">                a_gt_b=a[k];</span><br><span class="line">                a_lt_b=~a[k];</span><br><span class="line">                a_eq_b=<span class="number">0</span>;</span><br><span class="line">                <span class="keyword">disable</span> compare_loop;    <span class="comment">//相当于continue  对于always语句块来说。</span></span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        a_gt_b=<span class="number">0</span>;</span><br><span class="line">        a_lt_b=<span class="number">0</span>;</span><br><span class="line">        a_eq_b=<span class="number">1'b1</span>;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>综合要点</strong></p>
-<p>1.在综合if或case语句时，x的赋值将被处理成无关紧要条件。这样可以产生更加简洁的电路，但也会导致RTL仿真和综合结果不一致</p>
-<p>2.如果一个条件操作将z值放在电平敏感行为中连续赋值语句的RHS中，将会综合出通过组合逻辑驱动的一个三态器件。</p>
-<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">assign</span> alu_out = (enable==<span class="number">1</span>)?alu_reg:<span class="number">4'bz</span>;</span><br></pre></td></tr></tbody></table></figure>
-
-<p>3.一个带反馈的条件操作符的连续赋值语句会综合出一个锁存器</p>
-<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">assign</span> data_out = (CS_b==<span class="number">0</span>)?(WE_b==<span class="number">0</span>)?data_in:data_out:<span class="number">1'bz</span>;<span class="comment">//  SRAM 输出建模</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>4.如果电平敏感周期性行为的敏感列表不完整，将会综合出锁存器。</p>
-<p>5.if或case条件不完备会综合出锁存器。</p>
-<h2 id="Ⅲ·-循环的综合"><a href="#Ⅲ·-循环的综合" class="headerlink" title="Ⅲ· 循环的综合"></a>Ⅲ· 循环的综合</h2><p>​    不带内嵌定制控制的静态循环、带内嵌定时控的静态循环、带内嵌定时控的动态循环是可综合的，而不带内嵌定时控制的非静态循环是不可综合。详细见《Verilog HDL高级数字设计》</p>
-<h2 id="Ⅳ·-REF"><a href="#Ⅳ·-REF" class="headerlink" title="Ⅳ· REF"></a>Ⅳ· REF</h2><p>Verilog HDL高级数字设计</p>
-</body></html>
-      
-    </div>
-
-
-    
-    
-    
-	
-	<div>
-     
-   </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/04/28/Verilog%E4%B9%8B%E8%AF%AD%E6%B3%95%E7%9B%B2%E7%82%B9/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/timg.jpg">
-      <meta itemprop="name" content="maos520">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Maos520">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/04/28/Verilog%E4%B9%8B%E8%AF%AD%E6%B3%95%E7%9B%B2%E7%82%B9/" class="post-title-link" itemprop="url">Verilog之语法盲点</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-04-28 22:01:51" itemprop="dateCreated datePublished" datetime="2019-04-28T22:01:51+08:00">2019-04-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-09 21:23:57" itemprop="dateModified" datetime="2020-05-09T21:23:57+08:00">2020-05-09</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Language/" itemprop="url" rel="index">
-                    <span itemprop="name">Language</span>
-                  </a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Language/Verilog/" itemprop="url" rel="index">
-                    <span itemprop="name">Verilog</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <html><head></head><body></body></html><html><head></head><body><h2 id="Ⅰ·-Preface"><a href="#Ⅰ·-Preface" class="headerlink" title="Ⅰ· Preface"></a>Ⅰ· Preface</h2><p>​    这篇博客主要是在回顾verilog语法过程，记录一些平时不常用，但是比较重要的语法和一些重要的基本概念，以备后续工作面试需要。</p>
-<h2 id="Ⅱ·-Basic-Syntax"><a href="#Ⅱ·-Basic-Syntax" class="headerlink" title="Ⅱ· Basic Syntax"></a>Ⅱ· Basic Syntax</h2><h3 id="2-1数据类型"><a href="#2-1数据类型" class="headerlink" title="2.1数据类型"></a>2.1数据类型</h3><p>​    verilog语法中的数据类型主要有两种：线网和变量，其中线网可综合的主要是wire，变量主要有reg、integer、time、real以及realtime。</p>
-<ul>
-<li><p>integer 等价于reg signed [31:0].</p>
-</li>
-<li><p>多维数组 ： reg [7:0] mem[0:10][0:10];多维数组的不能同时引用超过一个元素.</p>
-</li>
-</ul>
-<h3 id="2-2-表达式"><a href="#2-2-表达式" class="headerlink" title="2.2 表达式"></a>2.2 表达式</h3><p>表达式用操作符把操作数组合起来，并按照操作符的语义计算出结果</p>
-<ul>
-<li><p>==和!==为逻辑比较，操作数中有x、z会导致结果为x；===和!===操作数找那个x和z也要参加比较，所以结果只能为1或0；</p>
-</li>
-<li><p>两个操作数中有一个或两个为无符号数时比较按照无符号数比较</p>
-</li>
-<li><p>操作符>>>为算术左移，如果操作数为有符号数则填充符号位</p>
-</li>
-<li><p>没有size的常数不能在连接符中使用</p>
-</li>
-<li><p>mem[0 +: 8] 表示 mem[7:0]</p>
-</li>
-<li><pre><code class="verilog"><span class="keyword">integer</span> inta;
-inta = -<span class="number">12</span>/<span class="number">3</span>;     <span class="comment">//-4</span>
-inta = -<span class="number">'d12</span>/<span class="number">3</span>;   <span class="comment">//-'d12和-12有相同的补码，但是-'d12失去作为符号负数的特性 结果为1431655761</span>
-                  <span class="comment">//没有s标志的将失去符号负数的特性</span>
-inta = -'sd12/<span class="number">3</span>;  <span class="comment">//-4</span>
-inta = -<span class="number">4</span>'sd12/<span class="number">3</span>; <span class="comment">//1</span>
-
-<!--￼<span class="number">0</span>--></code></pre>
-</li>
-<li><p>符号表达式：$signed()返回有符号数   $unsigned()返回无符号数</p>
-<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">reg</span> [<span class="number">7</span>:<span class="number">0</span>] regA,regB;</span><br><span class="line"><span class="keyword">reg</span> <span class="keyword">signed</span> [<span class="number">7</span>:<span class="number">0</span>] regs;</span><br><span class="line">regA= <span class="built_in">$unsigned</span>(-<span class="number">4</span>) <span class="comment">//regA=8'b11111110;</span></span><br><span class="line">regB= <span class="built_in">$unsigned</span>(-<span class="number">4</span>'sd4);<span class="comment">//regB=8'b00001100;</span></span><br><span class="line">regS=<span class="built_in">$signed</span>(<span class="number">4'b1100</span>);<span class="comment">//regS=-4;</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><p>执行赋值的步骤</p>
-<p>1.根据赋值位确定RHS的位长。</p>
-<p>2.如果需要，就扩展RHS。不管LHS的符号是什么，扩展时都不考虑LHS的符号；只有当RHS是signed，才做符号扩展（sign-）</p>
-</li>
-</ul>
-<h3 id="2-3-行为建模"><a href="#2-3-行为建模" class="headerlink" title="2.3 行为建模"></a>2.3 行为建模</h3><ul>
-<li><p>Disable语句可以在命名块中使用，当Disable执行的时候，命名块被终止执行，所以它可以用来停止块，退出循环</p>
-<p>、任务或函数，相当于C语言中的continue、break和return语句。</p>
-<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> test;</span><br><span class="line">	<span class="keyword">integer</span> i;</span><br><span class="line">    <span class="keyword">initial</span> <span class="keyword">begin</span> : break_block</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>;i<<span class="number">10</span>;i=i+<span class="number">1</span>) <span class="keyword">begin</span> ：continue_block</span><br><span class="line">            <span class="keyword">if</span>(i==<span class="number">5</span>) <span class="keyword">disable</span> contiune_block;</span><br><span class="line">            <span class="keyword">if</span>(i==<span class="number">8</span>) <span class="keyword">disable</span> break_block;</span><br><span class="line">            <span class="built_in">$display</span>(<span class="string">"i=%-d"</span>,i);</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">endmodule</span></span><br><span class="line"><span class="comment">//运行结果：</span></span><br><span class="line"><span class="comment">//i=0  i=1 i=2 i=3 i=4 i=6 i=7</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-</li>
-</ul>
-<h3 id="2-4-Task和Function"><a href="#2-4-Task和Function" class="headerlink" title="2.4 Task和Function"></a>2.4 Task和Function</h3><ul>
-<li><p>task定义<strong>不能出现always和initial语句块</strong>，但是可以出现时序控制语句，时序控制语句会导致task不可以综合，因此task<strong>只能综合成组合逻辑</strong>，主要用在testbench里。</p>
-</li>
-<li><p>**task误用</p>
-<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">task</span> request;</span><br><span class="line">	<span class="keyword">output</span> bus_rq;</span><br><span class="line">    <span class="keyword">input</span> bus_gt;</span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">		bus_rq <= <span class="number">1'b1</span>;    <span class="comment">//改变不会发出</span></span><br><span class="line">        <span class="keyword">wait</span> bus_gt <= <span class="number">1'b1</span>; <span class="comment">//改变不会进入</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">endtask</span></span><br><span class="line"><span class="comment">//task在使能的时候，参数是通过数值传递的，而且只能发生在调用时刻和返回时刻。上面的代码不会工作，因为bus_rq只有在task返回时才能改变。只有bus_gt为1时才返回，但是bus_gt的值根本不会改变，它的值始终是task使能时传进来的值。</span></span><br><span class="line"><span class="comment">//修改：不要将bus_rq和bus_gt设置为端口。</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><p>Function的用途就是返回一个值，然后把它用在表达式里。</p>
-</li>
-<li><p>Function不能调用task，不能包含时序控制语句，至少包含一个input参数，不可以用output和inout参数。</p>
-</li>
-<li><p>function 的误用：function只能综合出组合逻辑，但是如果在function中写表现出latch的代码，仿真时会认为有有latch但是综合时却是组合逻辑。导致仿真和综合不一致。</p>
-</li>
-</ul>
-<h3 id="2-4仿真相关"><a href="#2-4仿真相关" class="headerlink" title="2.4仿真相关"></a>2.4仿真相关</h3><ul>
-<li><p>惯性延迟  把短于门级源语或者连续赋值的传播延迟的脉冲过滤掉。</p>
-</li>
-<li><p>传输延迟 可以传送所有宽度的脉冲，verilog语言通过在非阻塞赋值的RHS加上延迟实现传输延迟</p>
-</li>
-<li><p>真正的硬件即非纯的惯性延迟，也非纯的传输延迟。真正的硬件一般拒绝短脉冲，传输长脉冲。不长不短的脉冲在有的单元通过，有的单元不通过。</p>
-<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">assign</span> #<span class="number">5</span> x = a+b;<span class="comment">//惯性延迟</span></span><br><span class="line"><span class="keyword">always</span> (<span class="keyword">posedge</span> clk) <span class="keyword">begin</span> a<=#<span class="number">5</span>b&c;d<=#<span class="number">10</span>e&f;<span class="keyword">end</span><span class="comment">//传输延迟 延迟5ns赋给a，延迟10ns赋给d</span></span><br><span class="line"><span class="keyword">always</span> (<span class="keyword">posedge</span> clk) <span class="keyword">begin</span> #<span class="number">5</span> a<=b; #<span class="number">10</span> c<=d;<span class="keyword">end</span><span class="comment">//即非惯性也非传输</span></span><br><span class="line"><span class="comment">//相当于 #5；a=b  在posedge clk之后5ns赋值 b为5ns的值</span></span><br><span class="line"><span class="comment">//#10;c=d  在posedge clk 之后15ns赋值，d为15ns的值</span></span><br><span class="line"><span class="keyword">always</span> @(*) <span class="keyword">begin</span> #<span class="number">5</span> a=b; #<span class="number">10</span> c=d; <span class="keyword">end</span> <span class="comment">//同上</span></span><br><span class="line"><span class="keyword">always</span> (<span class="keyword">posedge</span> clk) <span class="keyword">begin</span> a=#<span class="number">5</span>b&c;d=#<span class="number">10</span>e&f;<span class="keyword">end</span></span><br><span class="line"><span class="comment">//相当于 a_tmp=b&c;#5;a=a_tmp;  a_tmp为0ns值，过5ns更新a</span></span><br><span class="line"><span class="comment">//d_tmp=e&f;10ns;d=d_tmp;      d_tmp为5ns的值，再过10ns更新d</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><p>对结构化模型（例如ASIC标准单元）描述延迟的时候，主要两种方式：1.分布式延迟，在实例化逻辑门和做连续赋值时候，使用#描述。2.模块路径延迟，描述事件从源（输入端口）到目的（输出端口）传播所用时间。</p>
-</li>
-<li><p>specify块主要有两个作用，描述模块路径延迟和执行时序检查。</p>
-  <figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">specify</span></span><br><span class="line">    <span class="keyword">specparam</span> tRise=<span class="number">150</span>,tFall=<span class="number">200</span>；</span><br><span class="line">    <span class="keyword">specparam</span> tSetup=<span class="number">70</span>；</span><br><span class="line">    (clk=>q)=(tRise,tFall);</span><br><span class="line">    $setup(d,<span class="keyword">posedge</span> clk,tSetup);</span><br><span class="line"><span class="keyword">endspecify</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-</li>
-</ul>
-<h2 id="Ⅲ·-REF"><a href="#Ⅲ·-REF" class="headerlink" title="Ⅲ· REF"></a>Ⅲ· REF</h2><p>1.Verilog 编程艺术</p>
-</body></html>
-      
-    </div>
-
-
-    
-    
-    
-	
-	<div>
-     
-   </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/03/30/Verilog%E4%B9%8B%E5%8F%82%E6%95%B0%E5%8C%96%E5%BB%BA%E6%A8%A1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/timg.jpg">
-      <meta itemprop="name" content="maos520">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Maos520">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/03/30/Verilog%E4%B9%8B%E5%8F%82%E6%95%B0%E5%8C%96%E5%BB%BA%E6%A8%A1/" class="post-title-link" itemprop="url">Verilog之参数化建模</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-03-30 22:08:47" itemprop="dateCreated datePublished" datetime="2019-03-30T22:08:47+08:00">2019-03-30</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-04-30 23:02:08" itemprop="dateModified" datetime="2020-04-30T23:02:08+08:00">2020-04-30</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Language/" itemprop="url" rel="index">
-                    <span itemprop="name">Language</span>
-                  </a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Language/Verilog/" itemprop="url" rel="index">
-                    <span itemprop="name">Verilog</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <html><head></head><body></body></html><html><head></head><body><h2 id="Ⅰ·Preface"><a href="#Ⅰ·Preface" class="headerlink" title="Ⅰ·Preface"></a>Ⅰ·Preface</h2><p>​    本篇博客主要是对《Verilog 中的参数化建模》一篇博客的精简和补充。参数化建模的主要目的是：提高模块的通用性，只需要修改少量参数，不用修改其他代码就可以完全适用不同的环境中。</p>
-<p>其主要有3种参数化建模的方法：<kbd>parameter</kbd> 模块参数化、<kbd><code>define</kbd> 宏定义 以及<kbd></code>ifdef</kbd>条件编译.</p>
-<h2 id="Ⅱ·宏定义"><a href="#Ⅱ·宏定义" class="headerlink" title="Ⅱ·宏定义"></a>Ⅱ·宏定义</h2><p>​    `define是编译命令，功能是全局宏定义的文本替换。它类似于C语言的#define用法如下：</p>
-<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// define</span></span><br><span class="line"><span class="meta">`<span class="meta-keyword">define</span>     WORD_REG    reg     [31:0]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// using</span></span><br><span class="line"><span class="meta">`WORD_REG   reg32;</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<p><strong>Problem</strong></p>
-<p>`define 定义的宏的作用域是全局的，这种机制会导致两个问题</p>
-<ol>
-<li>可能会有在不同文件中发生重定义的问题</li>
-<li>编译顺序有要求 file-order dependent，必须确保使用前，宏定义有效，所以每个使用到宏定义的源文件必须包含这个头文件，这会导致多重包含的问题。</li>
-</ol>
-<p><strong>Solution</strong></p>
-<ol>
-<li>对于第一个问题，尽可能把所有的宏定义放在同一个头文件中，比如 “global_define.vh”</li>
-<li>对于第二个问题，和 C++ 类似，头文件应该使用头文件保护符。</li>
-</ol>
-<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// global_define.vh head file</span></span><br><span class="line"><span class="meta">`<span class="meta-keyword">ifndef</span> GLOBAL_DEFINE_VH</span></span><br><span class="line">	<span class="meta">`<span class="meta-keyword">define</span> GLOBAL_DEFINE_VH</span></span><br><span class="line">    <span class="meta">`<span class="meta-keyword">define</span>     MAX = 8</span></span><br><span class="line">    <span class="meta">`<span class="meta-keyword">define</span>     SIZE = 4</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"><span class="meta">`enif</span></span><br></pre></td></tr></tbody></table></figure>
-<p><strong>Guideline</strong></p>
-<p>​    1.只有那些要求全局作用域、并且在其他地方不会被修改的常量才用define来定义。</p>
-<p>​    2.对于那些只限模块内使用的常量，不要用define。</p>
-<p>​    3.尽可能的将所有的define放在一个文件里。</p>
-<p>​    4，不要使用`undef</p>
-<h2 id="Ⅲ·-Parameter"><a href="#Ⅲ·-Parameter" class="headerlink" title="Ⅲ· Parameter"></a>Ⅲ· Parameter</h2><p>略。</p>
-<h2 id="Ⅳ·条件编译"><a href="#Ⅳ·条件编译" class="headerlink" title="Ⅳ·条件编译"></a>Ⅳ·条件编译</h2><p>​    Verilog 的条件编译和 C 也十分类似。前面介绍 define 时，已经用到了条件编译中的 ``ifdef`。条件编译一共有 5 个关键字，分别是：</p>
-<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">`<span class="meta-keyword">ifdef</span>  `<span class="meta-keyword">else</span>   `<span class="meta-keyword">elsif</span>  `<span class="meta-keyword">endif</span>  `<span class="meta-keyword">ifndef</span></span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>条件编译一般在以下情况中使用</p>
-<ol>
-<li>选择一个模块的不同部分</li>
-<li>选择不同的时序和结构</li>
-<li>选择不同的仿真激励</li>
-</ol>
-<p><strong>Syntax</strong></p>
-<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// example1</span></span><br><span class="line"><span class="meta">`<span class="meta-keyword">ifdef</span> text_macro</span></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line"><span class="meta">`<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// example2</span></span><br><span class="line"><span class="meta">`<span class="meta-keyword">ifdef</span> text_macro</span></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line"><span class="meta">`<span class="meta-keyword">else</span></span></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line"><span class="meta">`<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// example3</span></span><br><span class="line"><span class="meta">`<span class="meta-keyword">ifdef</span> text_macro</span></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line"><span class="meta">`<span class="meta-keyword">elsif</span></span></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line"><span class="meta">`<span class="meta-keyword">else</span></span></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line"><span class="meta">`<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// example4</span></span><br><span class="line"><span class="meta">`<span class="meta-keyword">ifndef</span> text_macro</span></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line"><span class="meta">`<span class="meta-keyword">else</span></span></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line"><span class="meta">`<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>条件编译是一个非常好的技术，它可以帮助我们更好的管理代码。</p>
-<p>举个栗子，比如我们写了一个程序，在 debug 阶段，在程序中添加了很多显示中间变量的语句，到最后 release 时，当然要去掉这些语句。最差的方法当然是删掉这些代码，但是如果以后我们还想 debug 时，又得手动写，而且时间长了，我们自己都记不清该加哪些语句了。稍微好点的方法是把它们注释起来，但是同样，时间长了，哪些该注释，那些不该注释又混淆了。最好的方法就是用条件编译。我们可以定义一个宏 DEBUG</p>
-<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">`<span class="meta-keyword">define</span> DEBUG</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// conditional compilation</span></span><br><span class="line"><span class="meta">`<span class="meta-keyword">ifdef</span> DEBUG</span></span><br><span class="line">	<span class="comment">//debug</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="comment">//release</span></span><br><span class="line"><span class="meta">`<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<p>这样，我们只需要选择是否注释第一行的宏定义就可快速在 debug 和 release 之间切换。</p>
-<p>再比如在 Verilog 的模块中，针对不同的应用环境，我们要实现不同的模块，这时候也可以使用条件编译选择具体综合哪段代码。</p>
-<h2 id="Ⅴ·REF"><a href="#Ⅴ·REF" class="headerlink" title="Ⅴ·REF"></a>Ⅴ·REF</h2><p><a href="http://www.sunburst-design.com/papers/CummingsHDLCON2002_Parameters_rev1_2.pdf" target="_blank" rel="noopener">New Verilog-2001 Techniques for Creating Parameterized Models</a></p>
-<p><a href="http://www.cnblogs.com/oomusou/archive/2008/07/09/verilog_parameter.html" target="_blank" rel="noopener">(原创) 如何使用参数式模组? (SOC) (Verilog) (C/C++) (template)</a></p>
-<p><a href="http://blog.chinaaet.com/detail/14875" target="_blank" rel="noopener">艾米电子 - 参数与常量，Verilog</a></p>
-<p><a href="http://www.eefocus.com/ilove314/blog/2012-03/231583_52a1d.html" target="_blank" rel="noopener">Verilog代码可移植性设计</a></p>
-</body></html>
-      
-    </div>
-
-
-    
-    
-    
-	
-	<div>
-     
-   </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2018/09/30/ASIC%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/timg.jpg">
-      <meta itemprop="name" content="maos520">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Maos520">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/09/30/ASIC%E8%AE%BE%E8%AE%A1%E6%B5%81%E7%A8%8B/" class="post-title-link" itemprop="url">ASIC设计流程</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-09-30 10:14:09" itemprop="dateCreated datePublished" datetime="2018-09-30T10:14:09+08:00">2018-09-30</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-09 21:21:28" itemprop="dateModified" datetime="2020-05-09T21:21:28+08:00">2020-05-09</time>
+                <time title="Modified: 2020-06-11 22:35:02" itemprop="dateModified" datetime="2020-06-11T22:35:02+08:00">2020-06-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1504,8 +1842,8 @@ inta = -<span class="number">4</span>'sd12/<span class="number">3</span>; <span 
                 </span>
                   , 
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FPGA-IC/Basic-Knowledge/" itemprop="url" rel="index">
-                    <span itemprop="name">Basic Knowledge</span>
+                  <a href="/categories/FPGA-IC/Basic-Circuit/" itemprop="url" rel="index">
+                    <span itemprop="name">Basic Circuit</span>
                   </a>
                 </span>
             </span>
@@ -1521,22 +1859,15 @@ inta = -<span class="number">4</span>'sd12/<span class="number">3</span>; <span 
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="Ⅰ·-Preface"><a href="#Ⅰ·-Preface" class="headerlink" title="Ⅰ· Preface"></a>Ⅰ· Preface</h2><p>​    电路设计的经典设计方法是依赖电路原理图的人工设计方法,而现在的大规模复杂电路广泛采用基于计算机语言的现在设计方法.</p>
-<h2 id="Ⅱ·设计流程"><a href="#Ⅱ·设计流程" class="headerlink" title="Ⅱ·设计流程"></a>Ⅱ·设计流程</h2><p><strong>第一阶段:项目策划</strong></p>
-<p>主要是根据市场的需要,进行调研和可行性分析,形成项目任务书</p>
-<p><strong>第二阶段:总体设计</strong></p>
-<p>确定设计对象和目标,给出功能、时序、面积、功耗、可测性以及其他指导设计的相关准则，系统的整体架构和模型。</p>
-<p><strong>流程：</strong>需求分析–系统方案–系统设计–系统仿真</p>
-<p><strong>第三阶段：详细设计和可测试性设计</strong></p>
-<p>首先进行设计的划分，将复杂系统的设计逐渐划分成规模较小且功能简单的单元电路，确定各单元的算法实现结构，对电路进行设计包括算法的行为描述和RTL级的描述，之后进行功能仿真、综合。当逻辑综合满足时序约束时，设计可插入测试设计：ATPG、BIST以及边界扫描链。</p>
-<p><strong>流程：</strong>子功能分解–逻辑仿真–电路设计–功能仿真–综合–电路网表–网表仿真</p>
-<p><strong>第四阶段：时序验证和版图设计</strong></p>
-<p>静态时序分析从整个电路中提取出所有时序路径，然后通过计算信号沿在路径上的延迟传播，找出违背时序约束的错误(主要是SetupTime 和 HoldTime),与激励无关。在深亚微米工艺中，因为电路连线延迟大于单元延迟，通常预布局布线反复较多，要多次调整布局方案，对布局布线有指导意义。</p>
-<p><strong>流程：</strong>预布局布线–网表仿真–静态时序分析–布局布线–参数提取–后仿真–静态时序仿真–测试向量生成</p>
-<p><strong>第五阶段：加工和完备</strong></p>
-<p><strong>流程：</strong>工艺设计与生产–芯片测试–芯片应用</p>
-<h2 id="Ⅲ·Ref"><a href="#Ⅲ·Ref" class="headerlink" title="Ⅲ·Ref"></a>Ⅲ·Ref</h2><p>1.<a href="http://blog.chinaunix.net/uid-17053077-id-1987974.html" target="_blank" rel="noopener">ASIC设计流程及工具</a></p>
-<p>2.<a href="https://item.jd.com/12512200.html" target="_blank" rel="noopener">Verilog HDL 高级数字设计</a></p>
+          <html><head></head><body></body></html><html><head></head><body><h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>​    本篇博客主要记录和学习数值计算中常见的饱和截断的操作，其主要针对信号处理的位宽做缩减，饱和主要针对位宽的高位进行处理，类似于信号的限幅，截位主要针对低位，效果就是扔掉小数的后几位，也就是精度降低。</p>
+<h2 id="Ⅰ·-Saturation"><a href="#Ⅰ·-Saturation" class="headerlink" title="Ⅰ· Saturation"></a>Ⅰ· Saturation</h2><figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> DATA_SAT#(</span><br><span class="line"><span class="keyword">parameter</span> DIN_DW = <span class="number">16</span>,</span><br><span class="line"><span class="keyword">parameter</span> DOUT_DW = <span class="number">8</span>)</span><br><span class="line">(</span><br><span class="line">    <span class="keyword">input</span> <span class="keyword">signed</span> [DIN_DW-<span class="number">1</span>:<span class="number">0</span>] din,</span><br><span class="line">    <span class="keyword">output</span> <span class="keyword">reg</span> <span class="keyword">signed</span> [DOUT_DW-<span class="number">1</span>:<span class="number">0</span>] dout，</span><br><span class="line">    <span class="keyword">output</span> <span class="keyword">reg</span> sat_int</span><br><span class="line">);</span><br><span class="line">    <span class="keyword">localparam</span> <span class="keyword">signed</span> [DIN_DW-<span class="number">1</span>:<span class="number">0</span>] PMAX = {{(DIN_DW-DOUT_DW+<span class="number">1</span>{<span class="number">1'b0</span>}},{(DOUT_DW-<span class="number">1</span>){<span class="number">1'b1</span>}}};</span><br><span class="line">    <span class="keyword">localparam</span> <span class="keyword">signed</span> [DIN_DW-<span class="number">1</span>:<span class="number">0</span>] NMAX = {{DIN_DW-DOUT_DW+<span class="number">1</span>{<span class="number">1'b1</span>}},{DOUT_DW-<span class="number">1</span>{<span class="number">1'b0</span>}}};</span><br><span class="line">    <span class="keyword">always</span> @*</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">$signed</span>(din)><span class="built_in">$signed</span>(PMAX))<span class="keyword">begin</span></span><br><span class="line">            dout = PMAX[DOUT_DW-<span class="number">1</span>:<span class="number">0</span>];</span><br><span class="line">            sat_int = <span class="number">1'b1</span>;</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="built_in">$signed</span>(din)<<span class="built_in">$signed</span>(NMAX))<span class="keyword">begin</span></span><br><span class="line">            dout = NMAX[DOUT_DW-<span class="number">1</span>:<span class="number">0</span>];</span><br><span class="line">            <span class="comment">//dout = {NMAX[DOUT_DW-1:1],1'b1} //负的最大值和正的最大值对称处理</span></span><br><span class="line">            sat_int = <span class="number">1'b1</span>;</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">begin</span></span><br><span class="line">            dout = din[DOUT_DW-<span class="number">1</span>:<span class="number">0</span>];</span><br><span class="line">            sat_int = <span class="number">1'b1</span>;</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="Ⅱ·-CUT"><a href="#Ⅱ·-CUT" class="headerlink" title="Ⅱ· CUT"></a>Ⅱ· CUT</h2><p>​    截位也要分为两种情况，即截位后的小数是按照最小或者最大取整，还是四舍五入，通常的算法需要做四舍五入，同时如果在按照取整方式，实现相对简单，因此我们以四舍五入的处理方式来示例。需要注意的是，在极值的时候，四舍五入是无法表示极值的范围，需要特殊处理，比如我们把4bits有符号数，截位1位，4bits有符号表示范围是-8~7， 截位1位，相当于除2，剩余的数的范围就是-4~3.5， 按照四舍五入方式，就应该是是-4~4，显然，3bits的数据，能够表示的范围就只有-4~3，因为极值就不能按照五入的方式处理，同时，一般也考虑对称截位，最终结果为-3~3.</p>
+ <figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> DATA_CUT#(</span><br><span class="line"><span class="keyword">parameter</span> DIN_DW = <span class="number">16</span>,</span><br><span class="line"><span class="keyword">parameter</span> DOUT_DW = <span class="number">10</span>)</span><br><span class="line">(</span><br><span class="line">    <span class="keyword">input</span> <span class="keyword">signed</span> [DIN_DW-<span class="number">1</span>:<span class="number">0</span>] din,</span><br><span class="line">    <span class="keyword">input</span> <span class="keyword">reg</span> <span class="keyword">signed</span> [DOUT_DW-<span class="number">1</span>:<span class="number">0</span>] dout</span><br><span class="line">);</span><br><span class="line">    <span class="keyword">localparam</span> CUT_WIDTH = DIN_DW-DOUT_DW;</span><br><span class="line">    <span class="keyword">localparam</span> PMAX = {<span class="number">1'b0</span>,{(DOUT_DW-<span class="number">1</span>){<span class="number">1'b1</span>}};</span><br><span class="line">    <span class="keyword">localparam</span> NMAX = {<span class="number">1'b1</span>,{(DOUT_DW-<span class="number">1</span>){<span class="number">1'b0</span>}}};</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">always</span> @*</span><br><span class="line">        <span class="keyword">if</span>(din[DIN_DW-<span class="number">1</span>:CUT_WIDTH]==PMAX)</span><br><span class="line">            dout = din[DIN_DW-<span class="number">1</span>:CUT_WIDTH];</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(din[DIN_DW-<span class="number">1</span>:CUT_WIDTH]==NMAX)</span><br><span class="line">            dout = {din[DIN_DW-<span class="number">1</span>:CUT_WIDTH+<span class="number">1</span>],<span class="number">1'b1</span>};</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            dout = din[DIN_DW-<span class="number">1</span>:CUT_WIDTH]+{{DOUT_DW-<span class="number">1</span>{<span class="number">1'b0</span>}},din[CUT_WIDTH-<span class="number">1</span>]}；</span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p><a href="http://bbs.eetop.cn/forum.php?mod=viewthread&tid=768668&extra=&authorid=758441&page=4" target="_blank" rel="noopener">EETOP论坛</a></p>
 </body></html>
       
     </div>
@@ -1562,7 +1893,7 @@ inta = -<span class="number">4</span>'sd12/<span class="number">3</span>; <span 
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1608,7 +1939,7 @@ inta = -<span class="number">4</span>'sd12/<span class="number">3</span>; <span 
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1621,7 +1952,7 @@ inta = -<span class="number">4</span>'sd12/<span class="number">3</span>; <span 
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
