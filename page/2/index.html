@@ -203,7 +203,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/01/02/Perl%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01--%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/01/02/Perl%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B02--%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/timg.jpg">
@@ -217,7 +217,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2020/01/02/Perl%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01--%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" class="post-title-link" itemprop="url">Perl学习笔记1--基本概念</a>
+            <a href="/2020/01/02/Perl%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B02--%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="post-title-link" itemprop="url">Perl学习笔记2--正则表达式</a>
         </h1>
 
         <div class="post-meta">
@@ -234,7 +234,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-05 16:52:02" itemprop="dateModified" datetime="2020-01-05T16:52:02+08:00">2020-01-05</time>
+                <time title="Modified: 2020-01-05 16:51:30" itemprop="dateModified" datetime="2020-01-05T16:51:30+08:00">2020-01-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -265,84 +265,162 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>​    本篇博客主要是阅读《Perl语言入门》此本书的学习笔记，记录Perl基础且重要的概念和思想，忽略具体语法细节（与其他很多语言类似）。学习Perl主要是为了方便仿真数据的处理，文本处理，所以仅仅是对其基本的语法学习，对其高阶特性也仅限了解。</p>
-<h2 id="Ⅰ-Basic-conception"><a href="#Ⅰ-Basic-conception" class="headerlink" title="Ⅰ Basic conception"></a>Ⅰ Basic conception</h2><p><strong>1.标量：</strong> 一个标量就是一个独立的东西，对其的处理统一按照标量的去做，对于东西的本身并不关心（<strong>强调整体性和独立性</strong>）。</p>
-<p><strong>2.字符串中的标量变量内插</strong> </p>
-<p>​    如果在内插变量名后面需要紧跟其他合法的变量字符，即字母、数字或下划线时，Perl就无从判断，需要引入避免歧义的写法，e.g. </p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$what = <span class="string">"steak"</span>;</span><br><span class="line">$n    = <span class="number">3</span>;</span><br><span class="line"><span class="keyword">print</span> <span class="string">"Fred ate $n $whats.\n"</span>;  <span class="comment"># 并不是我们想要内插的$what</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">"Fred ate $n <span class="subst">${what}</span>s.\n"</span>; <span class="comment"># ok!</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">"Fred ate $n $what"</span> . <span class="string">"s\n"</span>; <span class="comment"># ok!</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>3.undef值</strong></p>
-<p>​    在首次赋值之前，变量初始值就是特殊的undef，如果把这个‘空无一物’当做数字用，它就会变成零，当成字符串用，他就会表现的像空字符串，但是其本身既不是标量也不是字符串。它完全是一种独立类型的标量。可以利用defined函数来判断是否为undef值，e.g.</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$next_line = <STDIN>;   <span class="comment">#比如在文件末尾就返回undef，如果是undef，defined就会返回假，否则即使是空字符串，那</span></span><br><span class="line">                        <span class="comment">#也是已定义的值。</span></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">defined</span>($next_line)){</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"The input was $next_line"</span>;</span><br><span class="line">} <span class="keyword">else</span> {</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"No input available!\n"</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>4.列表与数组</strong></p>
-<p>​    列表指的是标量的有序集合，而数组则是存储列表的变量。</p>
-<p>​    列表的构建：</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">qw< fred maosan liuzhuansu ></span> <span class="comment"># Perl允许任何标点符号作为定界符</span></span><br><span class="line"><span class="keyword">qw</span>! fred maosan liuzhuansu !</span><br></pre></td></tr></tbody></table></figure>
-
-<p><font color="pink"><strong>5.标量上下文和列表上下文</strong></font></p>
-<p>​    当Perl在解析表达式时，要么希望它返回一个标量，要么希望它返回一个列表。表达式所在位置，Perl期望得到什么，那就是该表达式的上下文。</p>
-<ul>
-<li><strong>在标量上下中使用产生列表的表达式</strong></li>
+          <html><head></head><body></body></html><html><head></head><body><h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>​    本篇博客主要记录常见的正则表达式的规则，以备以后查阅和使用。</p>
+<h2 id="一、常见正则字符"><a href="#一、常见正则字符" class="headerlink" title="一、常见正则字符"></a>一、常见正则字符</h2><table>
+<thead>
+<tr>
+<th align="center">character</th>
+<th align="left">description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">\f</td>
+<td align="left">match a page break</td>
+</tr>
+<tr>
+<td align="center">\n</td>
+<td align="left">match a line break</td>
+</tr>
+<tr>
+<td align="center">\r</td>
+<td align="left">match a carriage return</td>
+</tr>
+<tr>
+<td align="center">\s</td>
+<td align="left">match any whitespace characters including space,tabs,page breaks,etc.</td>
+</tr>
+<tr>
+<td align="center">\S</td>
+<td align="left">match ant non-whitespace characters</td>
+</tr>
+<tr>
+<td align="center">\t</td>
+<td align="left">tabs</td>
+</tr>
+<tr>
+<td align="center">\v</td>
+<td align="left">vertical tabs</td>
+</tr>
+<tr>
+<td align="center">$</td>
+<td align="left">match the end of the input string</td>
+</tr>
+<tr>
+<td align="center">^</td>
+<td align="left">match the start of the input string</td>
+</tr>
+<tr>
+<td align="center">\b</td>
+<td align="left">match the word boundary</td>
+</tr>
+<tr>
+<td align="center">\B</td>
+<td align="left">match the word non-boundary</td>
+</tr>
+<tr>
+<td align="center">()</td>
+<td align="left">mark  the start and end of a subexpression</td>
+</tr>
+<tr>
+<td align="center">*</td>
+<td align="left">match the previous subexpression zero or more times</td>
+</tr>
+<tr>
+<td align="center">+</td>
+<td align="left">match the previous subexpression one or more times</td>
+</tr>
+<tr>
+<td align="center">?</td>
+<td align="left">match the previous subexpression zero or one time</td>
+</tr>
+<tr>
+<td align="center">.</td>
+<td align="left">match any single character except the newline \n</td>
+</tr>
+<tr>
+<td align="center">{n}</td>
+<td align="left">match determined n times</td>
+</tr>
+<tr>
+<td align="center">{n,}</td>
+<td align="left">match at least n times</td>
+</tr>
+<tr>
+<td align="center">{n,m}</td>
+<td align="left">match at least n times and up to m times</td>
+</tr>
+<tr>
+<td align="center">[]</td>
+<td align="left">match the any one of characters included</td>
+</tr>
+<tr>
+<td align="center">\</td>
+<td align="left">mark the next character as either the special character or literal character</td>
+</tr>
+<tr>
+<td align="center">|</td>
+<td align="left">spcify a choice between the two</td>
+</tr>
+<tr>
+<td align="center">\d</td>
+<td align="left">equivalent to[0-9]</td>
+</tr>
+<tr>
+<td align="center">\D</td>
+<td align="left">equivalent to [^0-9]</td>
+</tr>
+<tr>
+<td align="center">\w</td>
+<td align="left">equivalent to [a-zA-Z0-9_ ]</td>
+</tr>
+</tbody></table>
+<h2 id="二、匹配regex"><a href="#二、匹配regex" class="headerlink" title="二、匹配regex"></a>二、匹配regex</h2><ul>
+<li><p><strong>模式匹配操作符</strong></p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">m</span>/ <span class="regexp">/   #其返回的是捕获变量的列表</span></span><br><span class="line"><span class="regexp">m{ }</span></span><br><span class="line"><span class="regexp">m( )   #类似qw/</span> /  可任意选择边界 </span><br><span class="line"><span class="keyword">my</span> $text = <span class="string">"Fred dropped a 5 ton granite block on Mr.Slate"</span>;</span><br><span class="line"><span class="keyword">my</span> @word = ($text =~ <span class="regexp">/([a-z]+)/ig</span>;</span><br><span class="line"><span class="keyword">print</span> <span class="string">"Result: @word \n"</span>;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p><strong>模式匹配修饰符</strong></p>
+</li>
 </ul>
-<p>​    sort在标量上下文中，会返回undef。reverse在标量上下文中会产生逆序后的字符串。其他一些标量上下文的例子</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$fred    = something</span><br><span class="line">$fred[<span class="number">2</span>] = something</span><br><span class="line"><span class="number">123</span>+something</span><br><span class="line"><span class="keyword">if</span>(something){...}</span><br><span class="line"><span class="keyword">while</span>(something){...}</span><br><span class="line">$fred[something]=something</span><br></pre></td></tr></tbody></table></figure>
-
+<table>
+<thead>
+<tr>
+<th align="center">Character</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">/i</td>
+<td align="left">大小写无关</td>
+</tr>
+<tr>
+<td align="center">/s</td>
+<td align="left">匹配任意字符</td>
+</tr>
+<tr>
+<td align="center">/m</td>
+<td align="left">跨行匹配</td>
+</tr>
+<tr>
+<td align="center">/g</td>
+<td align="left">全局匹配</td>
+</tr>
+</tbody></table>
 <ul>
-<li><strong>在列表上下文中使用产生标量的表达式</strong></li>
+<li><p><strong>模式分组和捕获变量</strong></p>
+<p>可以利用()对模式字符串进行分组，我还可以反向引用圆括号里的字符，并且会把圆括号里匹配的字符自动保存到相应的变量中，$1,$2,$3…,这些变量会保持到下次成功匹配为止，也就是说，匹配失败后不会改变上次成功匹配的结果。</p>
+<p>e.g.</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">  $_ = <span class="string">"abba"</span>;</span><br><span class="line">  <span class="keyword">if</span>(<span class="regexp">/(.)\1/</span>){                     <span class="comment"># match bb</span></span><br><span class="line">  <span class="keyword">print</span> <span class="string">"Matched!"</span>,$1,<span class="string">"\n"</span>;            <span class="comment">#bb    }</span></span><br><span class="line">  <span class="comment">#自定义分组捕获标签</span></span><br><span class="line">  <span class="keyword">my</span> $names = <span class="string">'Fred or Barney'</span>;</span><br><span class="line">  <span class="keyword">if</span>($names =~ <span class="regexp">m/(?<name1>\w+) (?:and|or) (?<name2>\w+)/</span>){ <span class="comment"># (?<label>regex)  存放在变量label里</span></span><br><span class="line">  													<span class="comment"># (?:regex) 表示不存放</span></span><br><span class="line">  ​	<span class="keyword">say</span> <span class="string">"I saw $+{name1} and $+{name2}"</span>;  <span class="comment">#变量访问形式变为 $+{label}</span></span><br><span class="line">  } </span><br><span class="line"><span class="comment">#三个免费变量</span></span><br><span class="line">  $&    $`   $'</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="三、处理文本"><a href="#三、处理文本" class="headerlink" title="三、处理文本"></a>三、处理文本</h2></li>
+<li><p><strong><kbd>s///</kbd>进行替换操作</strong></p>
+<p>e.g.</p>
+<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$_ = <span class="string">"green scaly dinosaur"</span>;</span><br><span class="line"><span class="keyword">s</span>/(\w+) (\w+)/$2 $1/;   <span class="comment">#需要替换的内容必须事先放在变量里</span></span><br><span class="line"><span class="keyword">s</span>/\A/huge /;  <span class="comment">#实现插入</span></span><br><span class="line"><span class="keyword">s</span>/ .*een//;   <span class="comment">#实现删除</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">s</span>/\<span class="keyword">s</span>+<span class="regexp">/ /g</span>     <span class="comment"># /g实现全局替换，对所有符合条件都进行替换</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+</li>
 </ul>
-<p>​    一些常见的列表上下文的例子：</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@fred = something</span><br><span class="line">($fred,$barney) = something</span><br><span class="line">($fred) = something;</span><br><span class="line"><span class="keyword">push</span> @fred,something;</span><br><span class="line"><span class="keyword">foreach</span> $fred (something){...}</span><br><span class="line"><span class="keyword">sort</span> something</span><br><span class="line"><span class="keyword">reverse</span> something</span><br><span class="line"><span class="keyword">print</span> something</span><br></pre></td></tr></tbody></table></figure>
-
-<p>​    强制指定标量上下文</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> <span class="string">"I have "</span>,<span class="keyword">scalar</span> @rocks,<span class="string">" rock\n"</span>;</span><br></pre></td></tr></tbody></table></figure>
-
-<p>​    <kbd><stdin></stdin></kbd>在标量上下文中，返回输入的下一行内容，在列表上下文中，返回的则是所有剩下行的内容，一行一个元素直到文件结尾</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@lines = <STDIN>; <span class="comment">#在Linux下可以通过Ctrl+D来终止输入</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>6.钻石操作符</strong></p>
-<p>​    在读取输入可以通过<kbd><文件句柄></kbd>的形式来进行读取，其次也可以通过钻石操作符，即<kbd><></kbd>来实现，其会读取存放在<kbd>@ARGV</kbd>系统变量中的所有文件。</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#！ /usr/bin/perl -w</span></span><br><span class="line"><span class="keyword">open</span> DATA,<span class="string">'>'</span>,<span class="string">'data.txt'</span></span><br><span class="line"><span class="keyword">while</span>(<>){                </span><br><span class="line">	<span class="keyword">chomp</span>;</span><br><span class="line">	<span class="keyword">say</span> DATA $_;</span><br><span class="line">}</span><br><span class="line"><span class="keyword">close</span> DATA;</span><br><span class="line"><span class="comment">#在shell下执行</span></span><br><span class="line">$ ./my_program aa bb - cc; <span class="comment">#调用命令依次处理文件aa bb 标准输入（-代表从标准输入读取数据） cc中的内容</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<p><strong>7.以二进制方式读写文件句柄</strong></p>
-<p>​    利用binmode函数来实现二进制文件的读写</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">binmode</span> STDOUT;    <span class="comment"># 不能用<>对二进制句柄操作，只能使用read函数</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<h2 id="Ⅱ-Common-Functions"><a href="#Ⅱ-Common-Functions" class="headerlink" title="Ⅱ  Common Functions"></a>Ⅱ  Common Functions</h2><p>1.<kbd>chomp</kbd>   去掉字符串末尾换行符</p>
-<p><strong>语法格式：</strong></p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">chomp</span> $string;</span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>参数说明：</strong></p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$string        <span class="comment"># 待处理的标量字符串</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>2.<kbd>splice</kbd> 添加 移除 替换 数组中间值</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@array = <span class="keyword">qw</span>/ pebbles dino fred barey betty /;</span><br><span class="line"><span class="keyword">splice</span> @array,<span class="number">1</span>,<span class="number">2</span>; <span class="comment">#删除起始位置为1，长度为2的两个值</span></span><br><span class="line"><span class="keyword">splice</span> @array,<span class="number">1</span>,<span class="number">2</span>,<span class="keyword">qw</span>/ wilma / <span class="comment">#删除替换为wilma</span></span><br><span class="line"><span class="keyword">splice</span> @array,<span class="number">1</span>,<span class="number">0</span>,<span class="keyword">qw</span>/ wilma / <span class="comment">#插入wilma</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>3.<kbd>each</kbd> 返回数组或哈希中下一个元素所对应得两个值</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@rock = <span class="keyword">qw</span>/ bedrock slate rubble /;</span><br><span class="line"><span class="keyword">while</span> (($index,$value) = <span class="keyword">each</span> @rock){</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"$index : $value\n"</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> @index(<span class="number">0</span>..$#rocks){                <span class="comment"># $#rocks返回数组@rocks最后一个值得索引</span></span><br><span class="line">	<span class="keyword">print</span> <span class="string">"$index : $rocks[$index]\n"</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<p>4.<kbd>read</kbd> 用于从文件句柄中读取指定字节数的数据并写入到一个标量中。如果文件句柄是以Unicode方式打开的，则表示读取指定字符数而非字节数。</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">read</span> FH, $var, len</span><br><span class="line"><span class="keyword">read</span> FH, $var, len, offset  <span class="comment">#注意offset不是控制从文件句柄的哪个位置读，而是控制向变量的哪个位置开始写</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>5.<kbd>syswrite</kbd>用于将标量中的数据写入文件句柄中，参数与read类似。</p>
-<p>6.<kbd>open</kbd>打开文件，获得文件句柄</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> FILEHANDLE,<span class="string">'>'</span>,<span class="string">'文件路径'</span>;</span><br><span class="line"><span class="keyword">close</span> FILEHANDLE;</span><br></pre></td></tr></tbody></table></figure>
-
-<p>7.<kbd>split</kbd>将字符串 EXPR 拆分成字符串列表，列表中的每个元素被称为拆分得到的fields，在列表上下文返回拆分得到的列表，在标量上下文返回拆分得到列表的长度。</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">split</span> <span class="regexp">/PATTERN/</span>, EXPR, LIMIT</span><br><span class="line"><span class="keyword">split</span> <span class="regexp">/PATTERN/</span>, EXPR</span><br><span class="line"><span class="keyword">split</span> <span class="regexp">/PATTERN/</span></span><br><span class="line">@array = <span class="keyword">split</span> <span class="regexp">/:/</span>,$scalar;</span><br></pre></td></tr></tbody></table></figure>
-
-<p>8.<kbd>grep&map</kbd><strong>BLOCK</strong>表示一个code块，通常用{}表示；<strong>EXPR</strong>表示一个表达式，通常是正则表达式。<br><strong>LIST</strong>是要匹配的列表。grep对列表里的每个元素进行BLOCK或EXPR匹配，它遍历列表，并临时设置元素为$_。在列表上下文里，grep返回匹配命中的所有元素，结果也是个列表。在标量上下文里，grep返回匹配命中的元素个数。</p>
-<figure class="highlight perl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">grep</span> BLOCK LIST</span><br><span class="line"><span class="keyword">grep</span> EXPR, LIST</span><br><span class="line"><span class="comment">#e.g.</span></span><br><span class="line"><span class="keyword">my</span> @odd_numbers = <span class="keyword">grep</span> { $_ % <span class="number">2</span> } <span class="number">1</span>..<span class="number">1000</span>;</span><br><span class="line"><span class="keyword">my</span> @matching_lines = <span class="keyword">grep</span> <span class="regexp">/\bfred\b/i</span> <$fh>; <span class="comment">#返回匹配成功的行</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">map</span> BLOCK LIST</span><br><span class="line"><span class="comment">#map与grep不同之处在于，其最后一个表达式返回的不是逻辑的真假值，而是表达式的实际计算结果，最终返回一系列这样的结果组成的列表，而grep根据逻辑真假值将原始列表中的值选出来组成列表返回。两者够可以改成foreach语句。</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="Ⅲ-NOTICES"><a href="#Ⅲ-NOTICES" class="headerlink" title="Ⅲ  NOTICES"></a>Ⅲ  NOTICES</h2><p>1.函数调用前是否加& ？</p>
-<p>​    建议加，如果不加当自己定义的子函数，与系统已存在的函数重名时将调用系统函数。</p>
-<p>2.调用函数输入参数列表的括号什么时候可以不写？</p>
-<p>​    只要不引起歧义就可以去掉！！</p>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p>Randal L. Schwartz et. Perl语言入门 [M]. 胜春，译.</p>
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p>Randal L. Schwartz et. Perl语言入门 [M]. 胜春，译.</p>
 </body></html>
       
     </div>
