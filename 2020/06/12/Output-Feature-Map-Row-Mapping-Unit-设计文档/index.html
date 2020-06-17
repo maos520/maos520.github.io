@@ -67,20 +67,25 @@
   };
 </script>
 
-  <meta name="description" content="Preface​    本篇博客主要记录和学习数值计算中常见的饱和截断的操作，其主要针对信号处理的位宽做缩减，饱和主要针对位宽的高位进行处理，类似于信号的限幅，截位主要针对低位，效果就是扔掉小数的后几位，也就是精度降低。 Ⅰ· Saturation12345678910111213141516171819202122232425module DATA_SAT#(parameter DIN_DW &#x3D;">
+  <meta name="description" content="Revision History    日期 描述 版本 修订人    20200612 初稿 v1.0a 苏晶晶               Ⅰ· 功能特性 支持传统卷积和通道分离卷积的输出特征图的行计算 支持全连接和逐点计算 接受来自其他RMU单元的值累加 支持通道剪枝 算术精度：8bits 定点  Ⅱ· 架构框图​    图2.1为本单元的架构框图，其主要实现每行输出特征值的计算，其中Iac">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Basic Circuit--Saturation&amp;Cut">
-<meta property="og:url" content="https://maos520.github.io/2019/06/11/Basic-Circuit-Saturation-Cut/index.html">
+<meta property="og:title" content="Output Feature Map Row Mapping Unit 设计文档">
+<meta property="og:url" content="https://maos520.github.io/2020/06/12/Output-Feature-Map-Row-Mapping-Unit-%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3/index.html">
 <meta property="og:site_name" content="Maos520">
-<meta property="og:description" content="Preface​    本篇博客主要记录和学习数值计算中常见的饱和截断的操作，其主要针对信号处理的位宽做缩减，饱和主要针对位宽的高位进行处理，类似于信号的限幅，截位主要针对低位，效果就是扔掉小数的后几位，也就是精度降低。 Ⅰ· Saturation12345678910111213141516171819202122232425module DATA_SAT#(parameter DIN_DW &#x3D;">
+<meta property="og:description" content="Revision History    日期 描述 版本 修订人    20200612 初稿 v1.0a 苏晶晶               Ⅰ· 功能特性 支持传统卷积和通道分离卷积的输出特征图的行计算 支持全连接和逐点计算 接受来自其他RMU单元的值累加 支持通道剪枝 算术精度：8bits 定点  Ⅱ· 架构框图​    图2.1为本单元的架构框图，其主要实现每行输出特征值的计算，其中Iac">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2019-06-11T13:44:27.000Z">
-<meta property="article:modified_time" content="2020-06-11T14:35:02.653Z">
+<meta property="og:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200612220929.png">
+<meta property="og:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200615092641.png">
+<meta property="og:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200615120425.png">
+<meta property="article:published_time" content="2020-06-12T04:21:26.000Z">
+<meta property="article:modified_time" content="2020-06-15T07:01:13.151Z">
 <meta property="article:author" content="maos520">
-<meta property="article:tag" content="Verilog">
+<meta property="article:tag" content="CNN">
+<meta property="article:tag" content="Depth-Wise">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200612220929.png">
 
-<link rel="canonical" href="https://maos520.github.io/2019/06/11/Basic-Circuit-Saturation-Cut/">
+<link rel="canonical" href="https://maos520.github.io/2020/06/12/Output-Feature-Map-Row-Mapping-Unit-%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3/">
 
 
 <script id="page-configurations">
@@ -94,7 +99,7 @@
   };
 </script>
 
-  <title>Basic Circuit--Saturation&Cut | Maos520</title>
+  <title>Output Feature Map Row Mapping Unit 设计文档 | Maos520</title>
   
 
 
@@ -208,7 +213,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2019/06/11/Basic-Circuit-Saturation-Cut/">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/06/12/Output-Feature-Map-Row-Mapping-Unit-%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/timg.jpg">
@@ -221,7 +226,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Basic Circuit--Saturation&Cut
+          Output Feature Map Row Mapping Unit 设计文档
         </h1>
 
         <div class="post-meta">
@@ -231,14 +236,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2019-06-11 21:44:27" itemprop="dateCreated datePublished" datetime="2019-06-11T21:44:27+08:00">2019-06-11</time>
+              <time title="Created: 2020-06-12 12:21:26" itemprop="dateCreated datePublished" datetime="2020-06-12T12:21:26+08:00">2020-06-12</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-06-11 22:35:02" itemprop="dateModified" datetime="2020-06-11T22:35:02+08:00">2020-06-11</time>
+                <time title="Modified: 2020-06-15 15:01:13" itemprop="dateModified" datetime="2020-06-15T15:01:13+08:00">2020-06-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -246,14 +251,14 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FPGA-IC/" itemprop="url" rel="index">
-                    <span itemprop="name">FPGA&IC</span>
+                  <a href="/categories/%E6%AF%95%E8%AE%BE/" itemprop="url" rel="index">
+                    <span itemprop="name">毕设</span>
                   </a>
                 </span>
                   , 
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FPGA-IC/Basic-Circuit/" itemprop="url" rel="index">
-                    <span itemprop="name">Basic Circuit</span>
+                  <a href="/categories/%E6%AF%95%E8%AE%BE/CNN-Design-Specification/" itemprop="url" rel="index">
+                    <span itemprop="name">CNN Design Specification</span>
                   </a>
                 </span>
             </span>
@@ -276,15 +281,236 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <html><head></head><body></body></html><html><head></head><body><h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>​    本篇博客主要记录和学习数值计算中常见的饱和截断的操作，其主要针对信号处理的位宽做缩减，饱和主要针对位宽的高位进行处理，类似于信号的限幅，截位主要针对低位，效果就是扔掉小数的后几位，也就是精度降低。</p>
-<h2 id="Ⅰ·-Saturation"><a href="#Ⅰ·-Saturation" class="headerlink" title="Ⅰ· Saturation"></a>Ⅰ· Saturation</h2><figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> DATA_SAT#(</span><br><span class="line"><span class="keyword">parameter</span> DIN_DW = <span class="number">16</span>,</span><br><span class="line"><span class="keyword">parameter</span> DOUT_DW = <span class="number">8</span>)</span><br><span class="line">(</span><br><span class="line">    <span class="keyword">input</span> <span class="keyword">signed</span> [DIN_DW-<span class="number">1</span>:<span class="number">0</span>] din,</span><br><span class="line">    <span class="keyword">output</span> <span class="keyword">reg</span> <span class="keyword">signed</span> [DOUT_DW-<span class="number">1</span>:<span class="number">0</span>] dout，</span><br><span class="line">    <span class="keyword">output</span> <span class="keyword">reg</span> sat_int</span><br><span class="line">);</span><br><span class="line">    <span class="keyword">localparam</span> <span class="keyword">signed</span> [DIN_DW-<span class="number">1</span>:<span class="number">0</span>] PMAX = {{(DIN_DW-DOUT_DW+<span class="number">1</span>{<span class="number">1'b0</span>}},{(DOUT_DW-<span class="number">1</span>){<span class="number">1'b1</span>}}};</span><br><span class="line">    <span class="keyword">localparam</span> <span class="keyword">signed</span> [DIN_DW-<span class="number">1</span>:<span class="number">0</span>] NMAX = {{DIN_DW-DOUT_DW+<span class="number">1</span>{<span class="number">1'b1</span>}},{DOUT_DW-<span class="number">1</span>{<span class="number">1'b0</span>}}};</span><br><span class="line">    <span class="keyword">always</span> @*</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">$signed</span>(din)><span class="built_in">$signed</span>(PMAX))<span class="keyword">begin</span></span><br><span class="line">            dout = PMAX[DOUT_DW-<span class="number">1</span>:<span class="number">0</span>];</span><br><span class="line">            sat_int = <span class="number">1'b1</span>;</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="built_in">$signed</span>(din)<<span class="built_in">$signed</span>(NMAX))<span class="keyword">begin</span></span><br><span class="line">            dout = NMAX[DOUT_DW-<span class="number">1</span>:<span class="number">0</span>];</span><br><span class="line">            <span class="comment">//dout = {NMAX[DOUT_DW-1:1],1'b1} //负的最大值和正的最大值对称处理</span></span><br><span class="line">            sat_int = <span class="number">1'b1</span>;</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">begin</span></span><br><span class="line">            dout = din[DOUT_DW-<span class="number">1</span>:<span class="number">0</span>];</span><br><span class="line">            sat_int = <span class="number">1'b1</span>;</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></tbody></table></figure>
+        <html><head></head><body></body></html><html><head></head><body><p><strong>Revision History</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">日期</th>
+<th align="center">描述</th>
+<th align="center">版本</th>
+<th align="center">修订人</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">20200612</td>
+<td align="center">初稿</td>
+<td align="center">v1.0a</td>
+<td align="center">苏晶晶</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<h2 id="Ⅰ·-功能特性"><a href="#Ⅰ·-功能特性" class="headerlink" title="Ⅰ· 功能特性"></a>Ⅰ· 功能特性</h2><ul>
+<li>支持传统卷积和通道分离卷积的输出特征图的行计算</li>
+<li>支持全连接和逐点计算</li>
+<li>接受来自其他RMU单元的值累加</li>
+<li>支持通道剪枝</li>
+<li>算术精度：8bits 定点</li>
+</ul>
+<h2 id="Ⅱ·-架构框图"><a href="#Ⅱ·-架构框图" class="headerlink" title="Ⅱ· 架构框图"></a>Ⅱ· 架构框图</h2><p>​    图2.1为本单元的架构框图，其主要实现每行输出特征值的计算，其中Iact由寄存器构成用以缓存输入特征值，实现对卷积复用的探索，Weight用以缓存权重，实现对输入特征值复用的探索，同时通过一个8通道的输入特征值选择器，实现对通道剪枝的支持，三个乘法器分别计算不同行的权重与输入特征值的乘法运算，并通过加法器相加得到输出特征的部分和。</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200612220929.png"></div>
+<center><strong>Figure2.1 整体架构</strong></center>
+## Ⅲ·接口描述
 
+<p>​    RMU单元接口描述如表3.1所示</p>
+<table>
+<tbody><tr>
+<th bgcolor="#8A8A8A" align="center">信号名</th>
+<th bgcolor="#8A8A8A" align="center">位宽</th>
+<th bgcolor="#8A8A8A" align="center">IO</th>
+<th bgcolor="#8A8A8A" align="left">描述</th>
+</tr>
+<tr>
+<td colspan="4" bgcolor="#C2C2C2"><center>复位时钟</center></td>
+</tr>
+<tr>
+<td align="center">rst_n</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">RMU异步复位信号，低有效</td>
+</tr>
+<tr>
+<td align="center">clk_core</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">RMU工作时钟，200MHz</td>
+</tr>
+<tr>
+<td colspan="4" bgcolor="#C2C2C2"><center>RMU控制&状态信号</center></td>
+</tr> 
+<tr>
+<td align="center">calculate_en</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">RMU计算开始使能信号</td>
+</tr> 
+    <tr>
+<td align="center">calculate_cmplt</td>
+<td align="center">1</td>
+<td align="center">O</td>
+<td align="left">RMU计算完成信号</td>
+</tr> 
+<tr>
+<td colspan="4" bgcolor="#C2C2C2"><center>CNN相关参数</center></td>
+</tr> 
+ <tr>
+<td align="center">model_type</td>
+<td align="center">2</td>
+<td align="center">I</td>
+<td align="left">神经网络模型类型指示信号:
+    <br> 2'b00:传统卷积 
+    <br> 2'b01:通道分离卷积
+    <br> 2'b10:全连接
+    <br> 2'b11:点卷积
+</td>
+</tr>  
+ <tr>
+<td align="center">chan_prun</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">指示是否通道剪枝</td>
+</tr>    
+    <tr>
+<td align="center">k_size</td>
+<td align="center">3</td>
+<td align="center">I</td>
+<td align="left">指示kernel的大小</td>
+</tr> 
+    <tr>
+<td align="center">strd_size</td>
+<td align="center">3</td>
+<td align="center">I</td>
+<td align="left">指示stride的大小</td>
+</tr> 
+    <tr>
+<td align="center">ichan_size</td>
+<td align="center">6</td>
+<td align="center">I</td>
+<td align="left">指示输入通道的大小</td>
+</tr> 
+<tr>
+<td align="center">ochan_size</td>
+<td align="center">5</td>
+<td align="center">I</td>
+<td align="left">指示输出通道的大小</td>
+</tr>
+<tr>
+<td colspan="4" bgcolor="#C2C2C2"><center>FIFO相关信号</center></td>
+</tr>   
+<tr>
+<td align="center">iact_wr0~iact_wr2</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">用于缓存iact的FIFO0~FIFO2写使能信号</td>
+</tr>
+<tr>
+<td align="center">iact_strb0~iact_strb2</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">用于缓存iact的FIFO0~FIFO2有效字节通道选择信号</td>
+</tr>
+<tr>
+<td align="center">iact_data0~iact_data2</td>
+<td align="center">8</td>
+<td align="center">I</td>
+<td align="left">iact数据</td>
+</tr>
+<tr>
+<td align="center">wght_wr0~wght_wr2</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">用于缓存wght的FIFO0~FIFO2的写使能信号</td>
+</tr>
+<tr>
+<td align="center">wght_strb0~wght_strb2</td>
+<td align="center">3</td>
+<td align="center">I</td>
+<td align="left">用于缓存iact的FIFO1的有效字节通道选择信号</td>
+</tr>
+<tr>
+<td align="center">wght_data0~wght_data2</td>
+<td align="center">64</td>
+<td align="center">I</td>
+<td align="left">weight数据</td>
+</tr>
+<tr>
+<td align="center">ipsum_wr</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">指示缓存ipsum的FIFO的写使能信号</td>
+</tr><tr>
+</tr><tr>
+<td align="center">ipsum_strb</td>
+<td align="center">3</td>
+<td align="center">I</td>
+<td align="left">指示缓存ipsum的FIFO的有效字节通道选择信号</td>
+</tr><tr>
+</tr><tr>
+<td align="center">ipsum_data</td>
+<td align="center">64</td>
+<td align="center">I</td>
+<td align="left">ipsum数据</td>
+</tr><tr>
+<td align="center">oact_rd</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">指示缓存oact的FIFO的读使能信号</td>
+</tr>
+<tr>
+<td align="center">oact_strb0</td>
+<td align="center">3</td>
+<td align="center">O</td>
+<td align="left">指示缓存oact的FIFO的有效字节通道选择信号</td>
+</tr>
+<tr>
+<td align="center">oact_exist</td>
+<td align="center">3</td>
+<td align="center">O</td>
+<td align="left">指示缓存oact的FIFO非空的信号</td>
+</tr>
+<tr>
+<td align="center">oact_data</td>
+<td align="center">64</td>
+<td align="center">O</td>
+<td align="left">opsum数据</td>
+</tr>
+</tbody></table>
 
+<h2 id="Ⅳ·接口时序"><a href="#Ⅳ·接口时序" class="headerlink" title="Ⅳ·接口时序"></a>Ⅳ·接口时序</h2><h2 id="Ⅴ·-模块详细电路设计"><a href="#Ⅴ·-模块详细电路设计" class="headerlink" title="Ⅴ· 模块详细电路设计"></a>Ⅴ· 模块详细电路设计</h2><p><strong>1.RMU控制逻辑设计</strong></p>
+<p>​    主要功能是数据调度和计算过程控制，完成输出特征图行的计算映射。整个控制过程主要分四个阶段，加载数据，累加计算，累加下方部分和，输出部分和，其中，重复2-4阶段以完成输出特征图整个行的计算。</p>
+<ul>
+<li><strong>FSM</strong><div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200615092641.png"></div>
+<center><strong>Figure5.1 RMU控制状态机</strong></center></li>
+<li></li>
+</ul>
+<p><strong>2.FIFO设计</strong></p>
+<p>​    在数据进出RMU单元上增加的FIFO主要有两个作用：</p>
+<p>​        1）平衡数据带宽，充分利用SRAM带宽</p>
+<p>​        2）数据位宽转换</p>
+<p>​    RMU和外部SRAM属于同一时钟域，所以本单元所用到的FIFO均为同步FIFO，其详细电路结构图如图5.2所示。</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200615120425.png"></div>
+<center><strong>Figure5.2 FIFO结构图</strong></center>
+**3.片上缓存设计**
 
-<h2 id="Ⅱ·-CUT"><a href="#Ⅱ·-CUT" class="headerlink" title="Ⅱ· CUT"></a>Ⅱ· CUT</h2><p>​    截位也要分为两种情况，即截位后的小数是按照最小或者最大取整，还是四舍五入，通常的算法需要做四舍五入，同时如果在按照取整方式，实现相对简单，因此我们以四舍五入的处理方式来示例。需要注意的是，在极值的时候，四舍五入是无法表示极值的范围，需要特殊处理，比如我们把4bits有符号数，截位1位，4bits有符号表示范围是-8~7， 截位1位，相当于除2，剩余的数的范围就是-4~3.5， 按照四舍五入方式，就应该是是-4~4，显然，3bits的数据，能够表示的范围就只有-4~3，因为极值就不能按照五入的方式处理，同时，一般也考虑对称截位，最终结果为-3~3.</p>
- <figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> DATA_CUT#(</span><br><span class="line"><span class="keyword">parameter</span> DIN_DW = <span class="number">16</span>,</span><br><span class="line"><span class="keyword">parameter</span> DOUT_DW = <span class="number">10</span>)</span><br><span class="line">(</span><br><span class="line">    <span class="keyword">input</span> <span class="keyword">signed</span> [DIN_DW-<span class="number">1</span>:<span class="number">0</span>] din,</span><br><span class="line">    <span class="keyword">input</span> <span class="keyword">reg</span> <span class="keyword">signed</span> [DOUT_DW-<span class="number">1</span>:<span class="number">0</span>] dout</span><br><span class="line">);</span><br><span class="line">    <span class="keyword">localparam</span> CUT_WIDTH = DIN_DW-DOUT_DW;</span><br><span class="line">    <span class="keyword">localparam</span> PMAX = {<span class="number">1'b0</span>,{(DOUT_DW-<span class="number">1</span>){<span class="number">1'b1</span>}};</span><br><span class="line">    <span class="keyword">localparam</span> NMAX = {<span class="number">1'b1</span>,{(DOUT_DW-<span class="number">1</span>){<span class="number">1'b0</span>}}};</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">always</span> @*</span><br><span class="line">        <span class="keyword">if</span>(din[DIN_DW-<span class="number">1</span>:CUT_WIDTH]==PMAX)</span><br><span class="line">            dout = din[DIN_DW-<span class="number">1</span>:CUT_WIDTH];</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(din[DIN_DW-<span class="number">1</span>:CUT_WIDTH]==NMAX)</span><br><span class="line">            dout = {din[DIN_DW-<span class="number">1</span>:CUT_WIDTH+<span class="number">1</span>],<span class="number">1'b1</span>};</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            dout = din[DIN_DW-<span class="number">1</span>:CUT_WIDTH]+{{DOUT_DW-<span class="number">1</span>{<span class="number">1'b0</span>}},din[CUT_WIDTH-<span class="number">1</span>]}；</span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p><a href="http://bbs.eetop.cn/forum.php?mod=viewthread&tid=768668&extra=&authorid=758441&page=4" target="_blank" rel="noopener">EETOP论坛</a></p>
+<ul>
+<li><p><strong>输入缓存</strong><br>输入缓存用以缓存输入特征值，其大小为24<em>8b，对卷积为3\</em>3传统卷积，最多可以缓存8通道的输入特征值</p>
+</li>
+<li><p><strong>部分和缓存</strong></p>
+<p>部分和缓存用以缓存部分和的中间结果，大小为20*20b，最多可以缓存20个通道的输出缓冲</p>
+</li>
+<li><p><strong>权重缓存</strong><br>权重缓存用以缓存不同输入通道的以及不同输出通道的权重，其大小为480*8b。</p>
+</li>
+</ul>
 </body></html>
     </div>
 
@@ -299,24 +525,22 @@
  
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Verilog/" rel="tag"># Verilog</a>
+              <a href="/tags/CNN/" rel="tag"># CNN</a>
+              <a href="/tags/Depth-Wise/" rel="tag"># Depth-Wise</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
-                <a href="/2019/05/11/Basic-Circuit-Arithmetic-Operations/" rel="next" title="Basic Circuit--Arithmetic Operations">
-                  <i class="fa fa-chevron-left"></i> Basic Circuit--Arithmetic Operations
+                <a href="/2020/05/28/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%862/" rel="next" title="数字电路基础知识2">
+                  <i class="fa fa-chevron-left"></i> 数字电路基础知识2
                 </a>
             </div>
 
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-                <a href="/2019/10/21/Hexo%20+%20Github%20%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="prev" title="Hexo + Github 个人博客环境搭建">
-                  Hexo + Github 个人博客环境搭建 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
       </footer>
@@ -356,7 +580,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Preface"><span class="nav-text">Preface</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅰ·-Saturation"><span class="nav-text">Ⅰ· Saturation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅱ·-CUT"><span class="nav-text">Ⅱ· CUT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ref"><span class="nav-text">Ref</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅰ·-功能特性"><span class="nav-text">Ⅰ· 功能特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅱ·-架构框图"><span class="nav-text">Ⅱ· 架构框图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅳ·接口时序"><span class="nav-text">Ⅳ·接口时序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅴ·-模块详细电路设计"><span class="nav-text">Ⅴ· 模块详细电路设计</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
