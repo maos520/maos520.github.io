@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Maos520" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Revision History    日期 描述 版本 修订人    20200620 初稿 v1.0a 苏晶晶               Ⅰ· 功能特性 支持BN计算  支持Relu激活函数  支持2*2、3*3 Pooling   Ⅱ· 架构框图​    图2.1为本单元的系统架构图，功能单元主要实现BN、Relu以及Pooling操作，对于每片不同的可配置PE阵列对应不同的功能单元，以提">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Function Unit--设计文档">
+<meta property="og:url" content="https://maos520.github.io/2020/06/29/Function-Unit-%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3/index.html">
+<meta property="og:site_name" content="Maos520">
+<meta property="og:description" content="Revision History    日期 描述 版本 修订人    20200620 初稿 v1.0a 苏晶晶               Ⅰ· 功能特性 支持BN计算  支持Relu激活函数  支持2*2、3*3 Pooling   Ⅱ· 架构框图​    图2.1为本单元的系统架构图，功能单元主要实现BN、Relu以及Pooling操作，对于每片不同的可配置PE阵列对应不同的功能单元，以提">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200629111056.png">
+<meta property="og:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200629140716.png">
+<meta property="og:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200629140643.png">
+<meta property="og:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200629141842.png">
+<meta property="article:published_time" content="2020-06-29T01:29:49.000Z">
+<meta property="article:modified_time" content="2020-06-29T06:19:42.823Z">
+<meta property="article:author" content="maos520">
+<meta property="article:tag" content="CNN">
+<meta property="article:tag" content="Depth-Wise">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200629111056.png">
+
+<link rel="canonical" href="https://maos520.github.io/2020/06/29/Function-Unit-%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Function Unit--设计文档 | Maos520</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/maos520" target="_blank" rel="noopener"><img width="149" height="149" style = "position: absolute; top: 0; right: 0; border: 0;" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+   
+   <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Maos520</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">不忘初心，方得始终</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/06/29/Function-Unit-%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Function Unit--设计文档
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-06-29 09:29:49 / Modified: 14:19:42" itemprop="dateCreated datePublished" datetime="2020-06-29T09:29:49+08:00">2020-06-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%AF%95%E8%AE%BE/" itemprop="url" rel="index">
+                    <span itemprop="name">毕设</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%AF%95%E8%AE%BE/CNN-Design-Specification/" itemprop="url" rel="index">
+                    <span itemprop="name">CNN Design Specification</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <html><head></head><body></body></html><html><head></head><body><p><strong>Revision History</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">日期</th>
+<th align="center">描述</th>
+<th align="center">版本</th>
+<th align="center">修订人</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">20200620</td>
+<td align="center">初稿</td>
+<td align="center">v1.0a</td>
+<td align="center">苏晶晶</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<h2 id="Ⅰ·-功能特性"><a href="#Ⅰ·-功能特性" class="headerlink" title="Ⅰ· 功能特性"></a>Ⅰ· 功能特性</h2><ul>
+<li><p>支持BN计算</p>
+</li>
+<li><p>支持Relu激活函数</p>
+</li>
+<li><p>支持2*2、3*3 Pooling</p>
+</li>
+</ul>
+<h2 id="Ⅱ·-架构框图"><a href="#Ⅱ·-架构框图" class="headerlink" title="Ⅱ· 架构框图"></a>Ⅱ· 架构框图</h2><p>​    图2.1为本单元的系统架构图，功能单元主要实现BN、Relu以及Pooling操作，对于每片不同的可配置PE阵列对应不同的功能单元，以提高输出数据的吞吐率，避免因等待功能单元的计算，而导致效率的降低。</p>
+<p>​    对于3*3Pooling计算，功能单元会接受来自输出缓存区的连续3行数据（数据传输控制由外部主控逻辑实现），根据参数配置，选择相应的功能进行处理。</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200629111056.png"></div>
+<center><strong>Figure2.1 整体架构</strong></center>
+## Ⅲ·接口描述
+
+<p>​    FU单元接口描述如表3.1所示</p>
+<center><strong>Table3.1 整体架构</strong></center>
+<table>
+<tbody><tr>
+<th bgcolor="#8A8A8A" align="center">信号名</th>
+<th bgcolor="#8A8A8A" align="center">位宽</th>
+<th bgcolor="#8A8A8A" align="center">IO</th>
+<th bgcolor="#8A8A8A" align="left">描述</th>
+</tr>
+<tr>
+<td colspan="4" bgcolor="#C2C2C2"><center>复位时钟</center></td>
+</tr>
+<tr>
+<td align="center">rst_n</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">FU异步复位信号，低有效</td>
+</tr>
+<tr>
+<td align="center">clk_core</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">FU工作时钟，200MHz</td>
+</tr>
+<tr>
+<td colspan="4" bgcolor="#C2C2C2"><center>FU控制信号</center></td>
+</tr> 
+<tr>
+<td align="center">fu_en</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">FU计算开始使能信号</td>
+</tr> 
+    <tr>
+<td align="center">fu_chan_slct</td>
+<td align="center">10</td>
+<td align="center">I</td>
+<td align="left">BN参数选择信号</td>
+</tr> 
+ <tr>
+<td align="center">fu_pooling</td>
+<td align="center">2</td>
+<td align="center">I</td>
+<td align="left">pooling相关信号：
+<br> 00 : 不进行pooling操作
+<br> 01 : 2*2 pooling
+<br> 10 : 3*3 pooling
+<br> 11 : 未使用
+</td>
+</tr>  
+     <tr>
+<td align="center">fu_pooling_stride</td>
+<td align="center">2</td>
+<td align="center">I</td>
+<td align="left">pooling步长指示信号</td>
+</tr>  
+ <tr>
+<td align="center">fu_bn_flg</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">指示是否进行BN操作</td>
+</tr>    
+ <tr>
+<td colspan="4" bgcolor="#C2C2C2"><center>数据相关信号</center></td>
+</tr>   
+<tr>
+<td align="center">fu_idata0</td>
+<td align="center">8</td>
+<td align="center">I</td>
+<td align="left">FU行输入数据通道0</td>
+</tr> 
+    <tr>
+<td align="center">fu_idata1</td>
+<td align="center">8</td>
+<td align="center">I</td>
+<td align="left">FU行输入数据通道1</td>
+</tr> 
+    <tr>
+<td align="center">fu_idata2</td>
+<td align="center">8</td>
+<td align="center">I</td>
+<td align="left">FU行输入数据通道2</td>
+</tr> 
+<tr>
+<td align="center">fu_in_vld0</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">FU行输入数据通道0有效指示信号</td>
+</tr>
+<tr>
+<td align="center">fu_in_vld1</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">FU行输入数据通道1有效指示信号</td>
+</tr>
+    <tr>
+<td align="center">fu_in_vld2</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">FU行输入数据通道2数据有效指示信号</td>
+</tr>
+    <tr>
+<td align="center">fu_in_rdy0</td>
+<td align="center">1</td>
+<td align="center">O</td>
+<td align="left">FU行输入数据通道0可以接受数据有效指示信号</td>
+</tr>
+    <tr>
+<td align="center">fu_in_rdy1</td>
+<td align="center">1</td>
+<td align="center">O</td>
+<td align="left">FU行输入数据通道1可以接受数据指示信号</td>
+</tr>
+        <tr>
+<td align="center">fu_in_rdy2</td>
+<td align="center">1</td>
+<td align="center">O</td>
+<td align="left">FU行输入数据通道2可以接受数据指示信号</td>
+</tr>
+        <tr>
+<td align="center">fu_odata</td>
+<td align="center">8</td>
+<td align="center">O</td>
+<td align="left">FU输出数据</td>
+</tr>
+        <tr>
+<td align="center">fu_out_vld</td>
+<td align="center">1</td>
+<td align="center">O</td>
+<td align="left">FU输出数据通道数据有效指示信号</td>
+</tr>
+        <tr>
+<td align="center">fu_fifo_rdy</td>
+<td align="center">1</td>
+<td align="center">O</td>
+<td align="left">fifo非满指示信号</td>
+</tr>
+</tbody></table>
+
+<h2 id="Ⅳ·接口时序"><a href="#Ⅳ·接口时序" class="headerlink" title="Ⅳ·接口时序"></a>Ⅳ·接口时序</h2><h2 id="Ⅴ·-模块详细电路设计"><a href="#Ⅴ·-模块详细电路设计" class="headerlink" title="Ⅴ· 模块详细电路设计"></a>Ⅴ· 模块详细电路设计</h2><p><strong>1.Pooling模块详细设计</strong></p>
+<p>​    pooling包括两个部分max和avg</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200629140716.png"></div>
+
+<center><strong>Figure5.1 avg pooling结构图</strong></center>
+
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200629140643.png"></div>
+
+<center><strong>Figure5.2 max pooling结构图</strong></center>
+
+<p><strong>2.Relu模块详细设计</strong></p>
+<p>​    Relu模块较为见，通过简单的判别最高位即可实现Relu函数</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200629141842.png"></div>
+
+<center><strong>Figure5.3 Relu结构图</strong></center>
+
+</body></html>
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+ 
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CNN/" rel="tag"># CNN</a>
+              <a href="/tags/Depth-Wise/" rel="tag"># Depth-Wise</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2020/06/19/Basic-Circuit-Frequency-Divider/" rel="next" title="Basic Circuit--Frequency Divider">
+                  <i class="fa fa-chevron-left"></i> Basic Circuit--Frequency Divider
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅰ·-功能特性"><span class="nav-text">Ⅰ· 功能特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅱ·-架构框图"><span class="nav-text">Ⅱ· 架构框图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅳ·接口时序"><span class="nav-text">Ⅳ·接口时序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ⅴ·-模块详细电路设计"><span class="nav-text">Ⅴ· 模块详细电路设计</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="maos520"
+    src="/images/timg.jpg">
+  <p class="site-author-name" itemprop="name">maos520</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/maos520" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;maos520" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/sujingjing@sina.com" title="E-Mail &amp;rarr; sujingjing@sina.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">maos520</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.2
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.4.2.js"></script>
+
+<script src="/js/motion.js?v=7.4.2.js"></script>
+
+
+<script src="/js/schemes/pisces.js?v=7.4.2.js"></script>
+
+
+<script src="/js/next-boot.js?v=7.4.2.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

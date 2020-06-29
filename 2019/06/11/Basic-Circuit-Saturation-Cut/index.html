@@ -75,7 +75,7 @@
 <meta property="og:description" content="Preface​    本篇博客主要记录和学习数值计算中常见的饱和截断的操作，其主要针对信号处理的位宽做缩减，饱和主要针对位宽的高位进行处理，类似于信号的限幅，截位主要针对低位，效果就是扔掉小数的后几位，也就是精度降低。 Ⅰ· Saturation12345678910111213141516171819202122232425module DATA_SAT#(parameter DIN_DW &#x3D;">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-06-11T13:44:27.000Z">
-<meta property="article:modified_time" content="2020-06-11T14:35:02.653Z">
+<meta property="article:modified_time" content="2020-06-20T02:09:58.848Z">
 <meta property="article:author" content="maos520">
 <meta property="article:tag" content="Verilog">
 <meta name="twitter:card" content="summary">
@@ -238,7 +238,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-06-11 22:35:02" itemprop="dateModified" datetime="2020-06-11T22:35:02+08:00">2020-06-11</time>
+                <time title="Modified: 2020-06-20 10:09:58" itemprop="dateModified" datetime="2020-06-20T10:09:58+08:00">2020-06-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -282,7 +282,7 @@
 
 
 <h2 id="Ⅱ·-CUT"><a href="#Ⅱ·-CUT" class="headerlink" title="Ⅱ· CUT"></a>Ⅱ· CUT</h2><p>​    截位也要分为两种情况，即截位后的小数是按照最小或者最大取整，还是四舍五入，通常的算法需要做四舍五入，同时如果在按照取整方式，实现相对简单，因此我们以四舍五入的处理方式来示例。需要注意的是，在极值的时候，四舍五入是无法表示极值的范围，需要特殊处理，比如我们把4bits有符号数，截位1位，4bits有符号表示范围是-8~7， 截位1位，相当于除2，剩余的数的范围就是-4~3.5， 按照四舍五入方式，就应该是是-4~4，显然，3bits的数据，能够表示的范围就只有-4~3，因为极值就不能按照五入的方式处理，同时，一般也考虑对称截位，最终结果为-3~3.</p>
- <figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> DATA_CUT#(</span><br><span class="line"><span class="keyword">parameter</span> DIN_DW = <span class="number">16</span>,</span><br><span class="line"><span class="keyword">parameter</span> DOUT_DW = <span class="number">10</span>)</span><br><span class="line">(</span><br><span class="line">    <span class="keyword">input</span> <span class="keyword">signed</span> [DIN_DW-<span class="number">1</span>:<span class="number">0</span>] din,</span><br><span class="line">    <span class="keyword">input</span> <span class="keyword">reg</span> <span class="keyword">signed</span> [DOUT_DW-<span class="number">1</span>:<span class="number">0</span>] dout</span><br><span class="line">);</span><br><span class="line">    <span class="keyword">localparam</span> CUT_WIDTH = DIN_DW-DOUT_DW;</span><br><span class="line">    <span class="keyword">localparam</span> PMAX = {<span class="number">1'b0</span>,{(DOUT_DW-<span class="number">1</span>){<span class="number">1'b1</span>}};</span><br><span class="line">    <span class="keyword">localparam</span> NMAX = {<span class="number">1'b1</span>,{(DOUT_DW-<span class="number">1</span>){<span class="number">1'b0</span>}}};</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">always</span> @*</span><br><span class="line">        <span class="keyword">if</span>(din[DIN_DW-<span class="number">1</span>:CUT_WIDTH]==PMAX)</span><br><span class="line">            dout = din[DIN_DW-<span class="number">1</span>:CUT_WIDTH];</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(din[DIN_DW-<span class="number">1</span>:CUT_WIDTH]==NMAX)</span><br><span class="line">            dout = {din[DIN_DW-<span class="number">1</span>:CUT_WIDTH+<span class="number">1</span>],<span class="number">1'b1</span>};</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            dout = din[DIN_DW-<span class="number">1</span>:CUT_WIDTH]+{{DOUT_DW-<span class="number">1</span>{<span class="number">1'b0</span>}},din[CUT_WIDTH-<span class="number">1</span>]}；</span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></tbody></table></figure>
+ <figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> DATA_CUT#(</span><br><span class="line"><span class="keyword">parameter</span> DIN_DW = <span class="number">16</span>,</span><br><span class="line"><span class="keyword">parameter</span> DOUT_DW = <span class="number">10</span>)</span><br><span class="line">(</span><br><span class="line">    <span class="keyword">input</span> <span class="keyword">signed</span> [DIN_DW-<span class="number">1</span>:<span class="number">0</span>] din,</span><br><span class="line">    <span class="keyword">output</span> <span class="keyword">reg</span> <span class="keyword">signed</span> [DOUT_DW-<span class="number">1</span>:<span class="number">0</span>] dout</span><br><span class="line">);</span><br><span class="line">    <span class="keyword">localparam</span> CUT_WIDTH = DIN_DW-DOUT_DW;</span><br><span class="line">    <span class="keyword">localparam</span> PMAX = {<span class="number">1'b0</span>,{(DOUT_DW-<span class="number">1</span>){<span class="number">1'b1</span>}};</span><br><span class="line">    <span class="keyword">localparam</span> NMAX = {<span class="number">1'b1</span>,{(DOUT_DW-<span class="number">1</span>){<span class="number">1'b0</span>}}};</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">always</span> @*</span><br><span class="line">        <span class="keyword">if</span>(din[DIN_DW-<span class="number">1</span>:CUT_WIDTH]==PMAX)</span><br><span class="line">            dout = din[DIN_DW-<span class="number">1</span>:CUT_WIDTH];</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(din[DIN_DW-<span class="number">1</span>:CUT_WIDTH]==NMAX)</span><br><span class="line">            dout = {din[DIN_DW-<span class="number">1</span>:CUT_WIDTH+<span class="number">1</span>],<span class="number">1'b1</span>};</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            dout = din[DIN_DW-<span class="number">1</span>:CUT_WIDTH]+{{DOUT_DW-<span class="number">1</span>{<span class="number">1'b0</span>}},din[CUT_WIDTH-<span class="number">1</span>]}；</span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></tbody></table></figure>
 
 <h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p><a href="http://bbs.eetop.cn/forum.php?mod=viewthread&tid=768668&extra=&authorid=758441&page=4" target="_blank" rel="noopener">EETOP论坛</a></p>
 </body></html>
@@ -314,8 +314,8 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-                <a href="/2019/10/21/Hexo%20+%20Github%20%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="prev" title="Hexo + Github 个人博客环境搭建">
-                  Hexo + Github 个人博客环境搭建 <i class="fa fa-chevron-right"></i>
+                <a href="/2019/06/18/%E3%80%90%E8%BD%AC%E3%80%91%E7%94%B5%E6%BA%90%E5%AE%8C%E6%95%B4%E6%80%A7%E6%A6%82%E8%BF%B0/" rel="prev" title="【转】电源完整性概述">
+                  【转】电源完整性概述 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -372,7 +372,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -385,7 +385,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

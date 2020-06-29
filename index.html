@@ -203,6 +203,717 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/06/29/Function-Unit-%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/06/29/Function-Unit-%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3/" class="post-title-link" itemprop="url">Function Unit--设计文档</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-06-29 09:29:49 / Modified: 14:19:42" itemprop="dateCreated datePublished" datetime="2020-06-29T09:29:49+08:00">2020-06-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%AF%95%E8%AE%BE/" itemprop="url" rel="index">
+                    <span itemprop="name">毕设</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%AF%95%E8%AE%BE/CNN-Design-Specification/" itemprop="url" rel="index">
+                    <span itemprop="name">CNN Design Specification</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><p><strong>Revision History</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">日期</th>
+<th align="center">描述</th>
+<th align="center">版本</th>
+<th align="center">修订人</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">20200620</td>
+<td align="center">初稿</td>
+<td align="center">v1.0a</td>
+<td align="center">苏晶晶</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<h2 id="Ⅰ·-功能特性"><a href="#Ⅰ·-功能特性" class="headerlink" title="Ⅰ· 功能特性"></a>Ⅰ· 功能特性</h2><ul>
+<li><p>支持BN计算</p>
+</li>
+<li><p>支持Relu激活函数</p>
+</li>
+<li><p>支持2*2、3*3 Pooling</p>
+</li>
+</ul>
+<h2 id="Ⅱ·-架构框图"><a href="#Ⅱ·-架构框图" class="headerlink" title="Ⅱ· 架构框图"></a>Ⅱ· 架构框图</h2><p>​    图2.1为本单元的系统架构图，功能单元主要实现BN、Relu以及Pooling操作，对于每片不同的可配置PE阵列对应不同的功能单元，以提高输出数据的吞吐率，避免因等待功能单元的计算，而导致效率的降低。</p>
+<p>​    对于3*3Pooling计算，功能单元会接受来自输出缓存区的连续3行数据（数据传输控制由外部主控逻辑实现），根据参数配置，选择相应的功能进行处理。</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200629111056.png"></div>
+<center><strong>Figure2.1 整体架构</strong></center>
+## Ⅲ·接口描述
+
+<p>​    FU单元接口描述如表3.1所示</p>
+<center><strong>Table3.1 整体架构</strong></center>
+<table>
+<tbody><tr>
+<th bgcolor="#8A8A8A" align="center">信号名</th>
+<th bgcolor="#8A8A8A" align="center">位宽</th>
+<th bgcolor="#8A8A8A" align="center">IO</th>
+<th bgcolor="#8A8A8A" align="left">描述</th>
+</tr>
+<tr>
+<td colspan="4" bgcolor="#C2C2C2"><center>复位时钟</center></td>
+</tr>
+<tr>
+<td align="center">rst_n</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">FU异步复位信号，低有效</td>
+</tr>
+<tr>
+<td align="center">clk_core</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">FU工作时钟，200MHz</td>
+</tr>
+<tr>
+<td colspan="4" bgcolor="#C2C2C2"><center>FU控制信号</center></td>
+</tr> 
+<tr>
+<td align="center">fu_en</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">FU计算开始使能信号</td>
+</tr> 
+    <tr>
+<td align="center">fu_chan_slct</td>
+<td align="center">10</td>
+<td align="center">I</td>
+<td align="left">BN参数选择信号</td>
+</tr> 
+ <tr>
+<td align="center">fu_pooling</td>
+<td align="center">2</td>
+<td align="center">I</td>
+<td align="left">pooling相关信号：
+<br> 00 : 不进行pooling操作
+<br> 01 : 2*2 pooling
+<br> 10 : 3*3 pooling
+<br> 11 : 未使用
+</td>
+</tr>  
+     <tr>
+<td align="center">fu_pooling_stride</td>
+<td align="center">2</td>
+<td align="center">I</td>
+<td align="left">pooling步长指示信号</td>
+</tr>  
+ <tr>
+<td align="center">fu_bn_flg</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">指示是否进行BN操作</td>
+</tr>    
+ <tr>
+<td colspan="4" bgcolor="#C2C2C2"><center>数据相关信号</center></td>
+</tr>   
+<tr>
+<td align="center">fu_idata0</td>
+<td align="center">8</td>
+<td align="center">I</td>
+<td align="left">FU行输入数据通道0</td>
+</tr> 
+    <tr>
+<td align="center">fu_idata1</td>
+<td align="center">8</td>
+<td align="center">I</td>
+<td align="left">FU行输入数据通道1</td>
+</tr> 
+    <tr>
+<td align="center">fu_idata2</td>
+<td align="center">8</td>
+<td align="center">I</td>
+<td align="left">FU行输入数据通道2</td>
+</tr> 
+<tr>
+<td align="center">fu_in_vld0</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">FU行输入数据通道0有效指示信号</td>
+</tr>
+<tr>
+<td align="center">fu_in_vld1</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">FU行输入数据通道1有效指示信号</td>
+</tr>
+    <tr>
+<td align="center">fu_in_vld2</td>
+<td align="center">1</td>
+<td align="center">I</td>
+<td align="left">FU行输入数据通道2数据有效指示信号</td>
+</tr>
+    <tr>
+<td align="center">fu_in_rdy0</td>
+<td align="center">1</td>
+<td align="center">O</td>
+<td align="left">FU行输入数据通道0可以接受数据有效指示信号</td>
+</tr>
+    <tr>
+<td align="center">fu_in_rdy1</td>
+<td align="center">1</td>
+<td align="center">O</td>
+<td align="left">FU行输入数据通道1可以接受数据指示信号</td>
+</tr>
+        <tr>
+<td align="center">fu_in_rdy2</td>
+<td align="center">1</td>
+<td align="center">O</td>
+<td align="left">FU行输入数据通道2可以接受数据指示信号</td>
+</tr>
+        <tr>
+<td align="center">fu_odata</td>
+<td align="center">8</td>
+<td align="center">O</td>
+<td align="left">FU输出数据</td>
+</tr>
+        <tr>
+<td align="center">fu_out_vld</td>
+<td align="center">1</td>
+<td align="center">O</td>
+<td align="left">FU输出数据通道数据有效指示信号</td>
+</tr>
+        <tr>
+<td align="center">fu_fifo_rdy</td>
+<td align="center">1</td>
+<td align="center">O</td>
+<td align="left">fifo非满指示信号</td>
+</tr>
+</tbody></table>
+
+<h2 id="Ⅳ·接口时序"><a href="#Ⅳ·接口时序" class="headerlink" title="Ⅳ·接口时序"></a>Ⅳ·接口时序</h2><h2 id="Ⅴ·-模块详细电路设计"><a href="#Ⅴ·-模块详细电路设计" class="headerlink" title="Ⅴ· 模块详细电路设计"></a>Ⅴ· 模块详细电路设计</h2><p><strong>1.Pooling模块详细设计</strong></p>
+<p>​    pooling包括两个部分max和avg</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200629140716.png"></div>
+
+<center><strong>Figure5.1 avg pooling结构图</strong></center>
+
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200629140643.png"></div>
+
+<center><strong>Figure5.2 max pooling结构图</strong></center>
+
+<p><strong>2.Relu模块详细设计</strong></p>
+<p>​    Relu模块较为见，通过简单的判别最高位即可实现Relu函数</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200629141842.png"></div>
+
+<center><strong>Figure5.3 Relu结构图</strong></center>
+
+</body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/06/19/Basic-Circuit-Frequency-Divider/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/06/19/Basic-Circuit-Frequency-Divider/" class="post-title-link" itemprop="url">Basic Circuit--Frequency Divider</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-06-19 21:17:42" itemprop="dateCreated datePublished" datetime="2020-06-19T21:17:42+08:00">2020-06-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-06-20 12:43:03" itemprop="dateModified" datetime="2020-06-20T12:43:03+08:00">2020-06-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA&IC</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/Basic-Circuit/" itemprop="url" rel="index">
+                    <span itemprop="name">Basic Circuit</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>​    时钟电路时PLD设计的核心，本篇博客介绍如何处理一些常用时钟电路设计。对于PLD设计而言，一般都内嵌有专门的PLL/DLL模块，可以灵活实现分频/倍频。然而一般输出频率不能太低，对于较低的时钟频率或者没有内嵌上述PLL，需要用到一般时钟分频的建模方法。</p>
+<h2 id="Ⅰ·-偶数分频"><a href="#Ⅰ·-偶数分频" class="headerlink" title="Ⅰ· 偶数分频"></a>Ⅰ· 偶数分频</h2><p>​    对于偶数分频，方法较为简单，只需用高速时钟做一个同步计数器，在相应的位做抽头即可。</p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> Div#(</span><br><span class="line"><span class="keyword">parameter</span> CNT_W=<span class="number">3</span></span><br><span class="line">)</span><br><span class="line">(</span><br><span class="line">	<span class="keyword">input</span> clk,</span><br><span class="line">    <span class="keyword">input</span> rst_n,</span><br><span class="line">    <span class="keyword">output</span> div_2,</span><br><span class="line">    <span class="keyword">output</span> div_4,</span><br><span class="line">    <span class="keyword">output</span> div_8</span><br><span class="line">);</span><br><span class="line">    <span class="keyword">reg</span> [CNT_W-<span class="number">1</span>:<span class="number">0</span>] cnt;</span><br><span class="line">    <span class="keyword">always</span> @(<span class="keyword">posedge</span> clk <span class="keyword">or</span> <span class="keyword">negedge</span> rst_n)</span><br><span class="line">        <span class="keyword">if</span>(!rst_n)</span><br><span class="line">            cnt <= {CNT_W'{<span class="number">1'b0</span>}};</span><br><span class="line">    	<span class="keyword">else</span> </span><br><span class="line">            cnt <= cnt+<span class="number">1'b1</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">assign</span> div_2 = ~cnt[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">assign</span> div_4 = ~cnt[<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">assign</span> div_8 = ~cnt[<span class="number">2</span>];</span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Ⅱ·-奇数分频"><a href="#Ⅱ·-奇数分频" class="headerlink" title="Ⅱ· 奇数分频"></a>Ⅱ· 奇数分频</h2><p>​    在概念上，产生具有50%占空比的奇数频，最简单的方法是，以期望输出的频率的一半，生成两个正交相位的时钟，然后通过将两个波形异或得到输出时钟。</p>
+<p>​    具体步骤如下：</p>
+<p>​    a) 创建由时钟上升沿触发的0到（N-1）的计数器。</p>
+<p>​    b) 使用两个开关触发器，按以下方式产生其使能信号：tff1_en:在计数器为0使能，tff2_en:在计数器为（N+1）/2时使能。</p>
+<p>​    c) 通过两个使能信号分别控制TFF1和TFF2触发器。</p>
+<p>​    b) 将两个T触发器的输出异或，得到输出信号</p>
+<figure class="highlight verilog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> Div_odd#(</span><br><span class="line">    <span class="keyword">parameter</span> N=<span class="number">3</span>,</span><br><span class="line">    <span class="keyword">parameter</span> CNT_W=<span class="number">2</span></span><br><span class="line">)</span><br><span class="line">(</span><br><span class="line">    <span class="keyword">input</span> clk_in,</span><br><span class="line">    <span class="keyword">input</span> rst_n,</span><br><span class="line">    <span class="keyword">output</span> clk_out</span><br><span class="line">);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">reg</span> [CNT_W-<span class="number">1</span>:<span class="number">0</span>] cnt;</span><br><span class="line">    <span class="keyword">reg</span> tff1;</span><br><span class="line">    <span class="keyword">reg</span> tff2;</span><br><span class="line">    <span class="keyword">wire</span> tff1_en;</span><br><span class="line">    <span class="keyword">wire</span> tff2_en;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">always</span> @(<span class="keyword">posedge</span> clk_in <span class="keyword">or</span> <span class="keyword">negedge</span> rst_n)</span><br><span class="line">        <span class="keyword">if</span>(!rst_n)</span><br><span class="line">            cnt <= {CNT_W'{<span class="number">1'b0</span>}};</span><br><span class="line">    	<span class="keyword">else</span> <span class="keyword">if</span>(cnt==N-<span class="number">1</span>)</span><br><span class="line">            cnt <= {CNT_W'{<span class="number">1'b0</span>}};</span><br><span class="line">    	<span class="keyword">else</span></span><br><span class="line">            cnt <= cnt+<span class="number">1'b1</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">assign</span> tff1_en = (cnt==<span class="number">0</span>)?<span class="number">1'b1</span>:<span class="number">1'b0</span>';</span><br><span class="line">    <span class="keyword">assign</span> tff2_en =(cnt==(N+<span class="number">1</span>)/<span class="number">2</span>)?<span class="number">1'b1</span>:<span class="number">1'b0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">always</span> @(<span class="keyword">posedge</span> clk_in <span class="keyword">or</span> <span class="keyword">negedge</span> rst_n)</span><br><span class="line">        <span class="keyword">if</span>(!rst_n)</span><br><span class="line">            tff1 <= <span class="number">1'b0</span>;</span><br><span class="line">    	<span class="keyword">else</span> <span class="keyword">if</span>(tff1_en)</span><br><span class="line">            tff1 <= ~tff1;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">always</span> @(<span class="keyword">posedge</span> clk_in <span class="keyword">or</span> <span class="keyword">negedge</span> rst_n)</span><br><span class="line">        <span class="keyword">if</span>(!rst_n)</span><br><span class="line">            tff2 <= <span class="number">1'b0</span>;</span><br><span class="line">    	<span class="keyword">else</span> <span class="keyword">if</span> (tff2_en)</span><br><span class="line">            tff2 <= ~tff2;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">assign</span> clk_out <= tff1^tff2;</span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p><a href>轻松成为设计高手</a></p>
+<p><a href>硬件架构的艺术</a></p>
+</body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/06/19/Basic-Circuit-FIFO/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/06/19/Basic-Circuit-FIFO/" class="post-title-link" itemprop="url">Basic Circuit--FIFO</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-06-19 21:14:53" itemprop="dateCreated datePublished" datetime="2020-06-19T21:14:53+08:00">2020-06-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body></body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/06/18/%E6%A8%A1%E6%8B%9F%E7%94%B5%E8%B7%AF%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%981/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/timg.jpg">
+      <meta itemprop="name" content="maos520">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Maos520">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/06/18/%E6%A8%A1%E6%8B%9F%E7%94%B5%E8%B7%AF%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%981/" class="post-title-link" itemprop="url">模拟电路基础知识1</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-06-18 10:20:42" itemprop="dateCreated datePublished" datetime="2020-06-18T10:20:42+08:00">2020-06-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-06-24 12:59:34" itemprop="dateModified" datetime="2020-06-24T12:59:34+08:00">2020-06-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA&IC</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA-IC/Basic-Knowledge/" itemprop="url" rel="index">
+                    <span itemprop="name">Basic Knowledge</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <html><head></head><body></body></html><html><head></head><body><h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>​    本篇博客主要记录模电的基础知识，结束工作到现在也有3年，工作时基础知识，忘的也差不多了，为此回顾下工作时的相关知识。</p>
+<h2 id="Ⅰ·常见问题"><a href="#Ⅰ·常见问题" class="headerlink" title="Ⅰ·常见问题"></a>Ⅰ·常见问题</h2><p><strong>1.三极管和MOS管的应用的区别</strong></p>
+<p>表1.1列出了MOS和BJT在特性上的一些差别</p>
+<center><strong>Table1.1 BJT和MOS的区别</strong></center>
+<table>
+<tbody><tr>
+<th bgcolor="#8A8A8A" align="center">项目</th>
+<th bgcolor="#8A8A8A" align="center">BJT</th>
+<th bgcolor="#8A8A8A" align="center">MOS</th>
+</tr>
+    <tr>
+<td align="center">导电方式</td>
+<td align="center">多子和少子</td>
+<td align="center">只有多子</td>
+</tr>
+        <tr>
+<td align="center">控制方式</td>
+<td align="center">电流控制</td>
+<td align="center">电压控制</td>
+</tr>
+        <tr>
+<td align="center">输入阻抗</td>
+<td align="center">输入阻抗相对较低</td>
+<td align="center">输入阻抗很大</td>
+</tr>
+        <tr>
+<td align="center">抗辐射能力</td>
+<td align="center">差</td>
+<td align="center">在宇宙射线下仍能正常工作</td>
+</tr>
+        <tr>
+<td align="center">热稳定性</td>
+<td align="center">差</td>
+<td align="center">好</td>
+</tr>
+        <tr>
+<td align="center">噪声</td>
+<td align="center">较大</td>
+<td align="center">小</td>
+</tr>
+        <tr>
+<td align="center">制造工艺</td>
+<td align="center">较复杂</td>
+<td align="center">简单，成本低，便于集成</td>
+</tr>
+</tbody></table>
+
+<p><strong>MOS管应用场景</strong></p>
+<ul>
+<li><p>电源开关</p>
+<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/1q.PNG"></div>
+​    如上图为常见的mos作为电源开关的电路，其中C1和R1构成软启动（限制电源启动时的浪涌电流，因其会使电源不堪重负而掉电，导致系统不稳定），BJT用来控制MOS管的开断，控制端一般为1.5v或1.8v，其无法直接控制PMOS，会使其无法关断，故用BJT电平转换。
+
+<p><strong>原因</strong></p>
+<p>​    1.导通电阻相较BJT也小很多，所以损耗小</p>
+<p>​    2.电压控制，驱动功率小，只需要一个驱动电压即可，而BJT需要多级电路，将控制电流加大（达林顿管）</p>
+<p>​    3.BJT存在少子，其受温度，辐射影响较大，故MOS管的温度特性，稳定性较好</p>
+</li>
+<li><p>高频开关</p>
+<p>BJT由饱和状态到截止状态，需要恢复时间，而MOS没有这个恢复时间，较适用于高速开关</p>
+</li>
+<li><p>集成电路制造</p>
+<p>1.可在低电压,微电流下工作</p>
+<p>2.漏电流小,功耗低.</p>
+<p>3.生产工艺简单,易于集成化生产</p>
+<p>4.抗辐射,热稳定性好</p>
+</li>
+</ul>
+<p><strong>BJT应用场景</strong></p>
+<ul>
+<li>开关电路（成本低）</li>
+<li>小功率超高频微波领域</li>
+<li>信号放大电路</li>
+</ul>
+<p><strong>2.放大电路三种组态比较</strong></p>
+<p>​    放大电路在放大信号时，总有两个电极作为信号的输入端，同时也应有两个电极作为输出端。根据半导体三极管三个电极与输入、输出端子的连接方式，可归纳为三种：共发射极电路、共基极电路以及共集电极电路。下表列出了三种组态电路的特性比较。</p>
+<center><strong>Table1.2 三种组态特性比较</strong></center>
+<table>
+<tbody><tr>
+<th bgcolor="#8A8A8A" align="center">电路性能</th>
+<th bgcolor="#8A8A8A" align="center">共射极电路</th>
+<th bgcolor="#8A8A8A" align="center">共集电极电路</th>
+<th bgcolor="#8A8A8A" align="center">共基极电路</th>
+</tr>
+<tr>
+<td align="center">输入输出电压相位</td>
+<td align="center">反相</td>
+<td align="center">同相</td>
+<td align="center">同相</td>
+</tr>
+   <tr>
+<td align="center">输入阻抗</td>
+<td align="center">较小（几百欧）</td>
+<td align="center">大（几十万欧）</td>
+<td align="center">小（约几十欧）</td>
+</tr>
+    <tr>
+<td align="center">输出阻抗</td>
+<td align="center">较大（几万欧）</td>
+<td align="center">小（几十欧）</td>
+<td align="center">大（约几十万欧）</td>
+</tr>
+    <tr>
+<td align="center">电流放大倍数</td>
+<td align="center">大</td>
+<td align="center">大</td>
+<td align="center">1</td>
+</tr>
+    <tr>
+<td align="center">电压放大倍数</td>
+<td align="center">大</td>
+<td align="center">1</td>
+<td align="center">较大（几百倍）</td>
+</tr>
+    <tr>
+<td align="center">频率特性</td>
+<td align="center">较差</td>
+<td align="center">好</td>
+<td align="center">好</td>
+</tr>
+    <tr>
+<td align="center">稳定性</td>
+<td align="center">差</td>
+<td align="center">较好</td>
+<td align="center">较好</td>
+</tr>
+    <tr>
+<td align="center">应用范围</td>
+<td align="center">低频放大、开关电路</td>
+<td align="center">阻抗变换电路，输入输出级</td>
+<td align="center">高频放大、震荡电路</td>
+</tr>
+</tbody></table>
+
+<p>​    <strong>三种组态的特点及用途</strong></p>
+<p>　　<strong>共射极放大电路：</strong></p>
+<p>　　电压和电流增益都大于1，输入电阻在三种组态中居中，输出电阻与集电极电阻有很大关系。适用于低频情况    下，作多级放大电路的中间级。</p>
+<p>　　<strong>共集电极放大电路：</strong></p>
+<p>　　只有电流放大作用，没有电压放大，有电压跟随作用。在三种组态中，输入电阻最高，输出电阻最小，频率特    性好。可用于输入级、输出级或缓冲级。</p>
+<p>　　<strong>共基极放大电路：</strong></p>
+<p>　　只有电压放大作用，没有电流放大，有电流跟随作用，输入电阻小，输出电阻与集电极电阻有关。高频特性较    好，常用于高频或宽频带低输入阻抗的场合，模拟集成电路中亦兼有电位移动的功能。</p>
+<p><strong>3.电容的作用</strong></p>
+<ul>
+<li><p>隔直流与耦合</p>
+<p>隔直电容不是独立存在的，而是和R构成一阶RC高通滤波器，共同完成隔直通交的功能</p>
+<p>隔直电容的容值选取根据ƒ=1/(2<em>pi</em>RC)确定。</p>
+<p>应用场景：音频的输入输出端加隔直电容，交流小信号的前后级耦合</p>
+</li>
+<li><p>退耦</p>
+<p>一般用在IC的电源输入端口，提高瞬态电流的响应速度，避免相互间的耦合干扰，同时降低电源分配网络的阻抗，为噪声提供低阻抗回路。</p>
+</li>
+<li><p>滤波</p>
+<p>滤波电容用在电源整流电路中，用来滤除交流成分。使输出的直流更平滑，比如DCDC输出端</p>
+</li>
+<li><p>构建振荡器</p>
+<p>用在各种谐振电路，晶振电路中。</p>
+</li>
+<li><p>自举电路</p>
+<p>DCDC 升压电路</p>
+</li>
+<li><p>储能</p>
+<p>存储电能，用于必要时候的释放</p>
+</li>
+</ul>
+<p><strong>4.电感选型</strong></p>
+<p>​    <strong>功率电感常用参数</strong></p>
+<ul>
+<li><p><strong>电感值</strong></p>
+</li>
+<li><p><strong>Isat饱和电流</strong></p>
+<p>饱和电流是在电感上加一特定量的直流偏压电流， 使电感的电感值相对未加电流时的电感值下降10%-30% （一般都是按30%来算），这个直流偏压电流就叫该电感的饱和电流，饱和电流是越大越好。</p>
+</li>
+<li><p><strong>Irms温升电流</strong></p>
+</li>
+<li><p><strong>DCR直流电阻</strong></p>
+<p>直流电阻就是电感导体的本身阻值，也就是直流状态下测量出来的电阻，从理想状态来讲，电感的直流电阻越小越好。</p>
+</li>
+<li><p><strong>SRF自谐频率</strong></p>
+<p>一旦超过此指标，电感就不会表现出电感特性，反而是电容特性了。</p>
+</li>
+</ul>
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2></body></html>
+      
+    </div>
+
+
+    
+    
+    
+	
+	<div>
+     
+   </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/06/12/Output-Feature-Map-Row-Mapping-Unit-%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -784,7 +1495,7 @@ $$
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-06-11 17:18:29" itemprop="dateModified" datetime="2020-06-11T17:18:29+08:00">2020-06-11</time>
+                <time title="Modified: 2020-06-23 15:55:47" itemprop="dateModified" datetime="2020-06-23T15:55:47+08:00">2020-06-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -860,11 +1571,11 @@ $$
 
 <ul>
 <li>PDN由NMOS构成，因其产生强“0”，PUN由PMOS构成，因其产生强“1”</li>
-<li>NMOS串联相当于“与”，并联代表高</li>
+<li>NMOS串联相当于“与”，所有输入全部为1时，才导通，并联代表或，有一个为1就导通。</li>
 <li>上拉网络与下拉网络对偶，下并上串，上串下并</li>
 <li>这些互补门在本质上反相的，只能实现NAND、NOR以及NXOR这样功能</li>
 </ul>
-<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p><a href>数字集成电路</a></p>
+<h2 id="Ⅳ·-全加器"><a href="#Ⅳ·-全加器" class="headerlink" title="Ⅳ· 全加器"></a>Ⅳ· 全加器</h2><h2 id="Ⅴ·竞争与冒险"><a href="#Ⅴ·竞争与冒险" class="headerlink" title="Ⅴ·竞争与冒险"></a>Ⅴ·竞争与冒险</h2><h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p><a href>数字集成电路</a></p>
 </body></html>
       
     </div>
@@ -1119,376 +1830,11 @@ $$
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/03/13/Eyeriss-v2-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/timg.jpg">
-      <meta itemprop="name" content="maos520">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Maos520">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/13/Eyeriss-v2-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">Eyeriss v2 阅读笔记</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-03-13 15:44:33" itemprop="dateCreated datePublished" datetime="2020-03-13T15:44:33+08:00">2020-03-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-15 13:24:22" itemprop="dateModified" datetime="2020-03-15T13:24:22+08:00">2020-03-15</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Papers/" itemprop="url" rel="index">
-                    <span itemprop="name">Papers</span>
-                  </a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Papers/Notes/" itemprop="url" rel="index">
-                    <span itemprop="name">Notes</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <html><head></head><body></body></html><html><head></head><body><h2 id="Prefer"><a href="#Prefer" class="headerlink" title="Prefer"></a>Prefer</h2><p>​    此篇论文是MIT的研究团队eyeriss系列的第三篇文章，也是第二代eyeriss神经网络加速器，    其可以很好的支持现如今结构紧凑和数据稀疏的CNN网络。其主要贡献有两点，一是提出了一种创新的片上网络，以满足不同的数据带宽需求的神经网络。二是其PE单元可以感知权重和特征值稀疏性，从而提高吞吐量和能效。</p>
-<h2 id="Ⅰ·-Introduction"><a href="#Ⅰ·-Introduction" class="headerlink" title="Ⅰ· Introduction"></a>Ⅰ· Introduction</h2><p>​    在介绍部分作者分析了现有神经网络为了减少复杂的计算量，所做的优化–数据稀疏和结构紧凑，对现有加速器构成的挑战。主要分为两个介绍：</p>
-<p>a ) Challenges for Compact DNNs</p>
-<p>​    神经网络结构的各种数据维度可能会随之消失，作者概括如下：</p>
-<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200315114539.png"></div>
-
-</body></html>
-      
-    </div>
-
-
-    
-    
-    
-	
-	<div>
-     
-   </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/02/21/Basic-Circuit-UART/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/timg.jpg">
-      <meta itemprop="name" content="maos520">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Maos520">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/21/Basic-Circuit-UART/" class="post-title-link" itemprop="url">Basic Circuit -- UART</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-02-21 11:52:56" itemprop="dateCreated datePublished" datetime="2020-02-21T11:52:56+08:00">2020-02-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-16 21:23:26" itemprop="dateModified" datetime="2020-05-16T21:23:26+08:00">2020-05-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FPGA-IC/" itemprop="url" rel="index">
-                    <span itemprop="name">FPGA&IC</span>
-                  </a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FPGA-IC/Basic-Circuit/" itemprop="url" rel="index">
-                    <span itemprop="name">Basic Circuit</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <html><head></head><body></body></html><html><head></head><body><h2 id="Perface"><a href="#Perface" class="headerlink" title="Perface"></a>Perface</h2><p>​    UART是一种通用串行数据总线，用于异步通信。该总线双向通信，可以实现全双工传输和接收。在嵌入式设计中，UART用于主机与辅助设备通信，如汽车音响与外接AP之间的通信，与PC机通信包括与监控调试器和其它器件，如EEPROM通信。代码参考：</p>
-<h2 id="Ⅰ·-UART协议简介"><a href="#Ⅰ·-UART协议简介" class="headerlink" title="Ⅰ· UART协议简介"></a>Ⅰ· UART协议简介</h2><p>​    </p>
-<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2></body></html>
-      
-    </div>
-
-
-    
-    
-    
-	
-	<div>
-     
-   </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/02/13/Basic-Circuit-RISC-SPM/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/timg.jpg">
-      <meta itemprop="name" content="maos520">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Maos520">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/13/Basic-Circuit-RISC-SPM/" class="post-title-link" itemprop="url">Basic Circuit —— RISC_SPM</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-02-13 11:07:33" itemprop="dateCreated datePublished" datetime="2020-02-13T11:07:33+08:00">2020-02-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-06-01 16:03:11" itemprop="dateModified" datetime="2020-06-01T16:03:11+08:00">2020-06-01</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FPGA-IC/" itemprop="url" rel="index">
-                    <span itemprop="name">FPGA&IC</span>
-                  </a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FPGA-IC/Basic-Circuit/" itemprop="url" rel="index">
-                    <span itemprop="name">Basic Circuit</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <html><head></head><body></body></html><html><head></head><body><h2 id="Perface"><a href="#Perface" class="headerlink" title="Perface"></a>Perface</h2><p>​    本篇博客主要介绍一个非常简单的CPU的设计，主要是为了了解数据通路控制器的设计和综合，学会如何合理的划分数据通路单元和控制单元，以使系统结构清晰并有利于简化设计。</p>
-<p>​    <strong>数据通路单元</strong>由计算资源（ALU、存储寄存器）、控制数字系统内的流动并完成计算单元和内部寄存器之间数据传输的逻辑资源，以及系统和外部环境之间完成输入/输出的数据通路构成。可以用数据流图来表示</p>
-<p>​    <strong>控制单元</strong>实现对数据通路的控制，重用FSM或者ASM来建模。</p>
-<h2 id="Ⅰ·-RISC-SPM-：-Processor-Architecture"><a href="#Ⅰ·-RISC-SPM-：-Processor-Architecture" class="headerlink" title="Ⅰ· RISC SPM ： Processor Architecture"></a>Ⅰ· RISC SPM ： Processor Architecture</h2><p>​    </p>
-<div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200213134204.png"></div> 
-<center><strong>Figure1 RISC SPM整体架构</strong></center>
-## Ⅱ· RISC SPM :  Instruction Set
-
-<p>​    此处理器的指令集，分为短指令和长指令，短指令由一个字节构成，高四位为操作码，低四位分为两位源地址寄存器和两位目的地址寄存器；长指令由两字节构成，第一个字节类似短指令，第二个字节用以存放存储器地址。4=6[]</p>
-<center><strong>Table 1 RISC SPM 指令集 </strong></center><div align="center"><img src="http://raw.githubusercontent.com/maos520/PictureBed/master/img/20200213145346.png">
-## Ⅲ· RISC SPM： Controller
-
-<p>​    </p>
-</div></body></html>
-      
-    </div>
-
-
-    
-    
-    
-	
-	<div>
-     
-   </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://maos520.github.io/2020/01/07/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/timg.jpg">
-      <meta itemprop="name" content="maos520">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Maos520">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/01/07/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-01-07 21:32:50" itemprop="dateCreated datePublished" datetime="2020-01-07T21:32:50+08:00">2020-01-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-08 15:24:28" itemprop="dateModified" datetime="2019-12-08T15:24:28+08:00">2019-12-08</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <html><head></head><body></body></html><html><head></head><body><p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></tbody></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></tbody></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></tbody></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-</body></html>
-      
-    </div>
-
-
-    
-    
-    
-	
-	<div>
-     
-   </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1534,7 +1880,7 @@ $$
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1547,7 +1893,7 @@ $$
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
